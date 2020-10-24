@@ -10,7 +10,7 @@ namespace Graphics.Inspector
             if (ReferenceEquals(null, Graphics.Instance.CameraSettings.MainCamera)) return;
             
             SSS sss = SSSManager.SSSInstance;
-            if (sss == null) // the fuck
+            if (sss == null) 
             {
                 Label("No subsurface scattering settings found on camera.", "");
                 return;
