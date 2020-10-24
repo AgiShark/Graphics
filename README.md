@@ -7,6 +7,16 @@ Please refer to unity's [post processing stack manual](https://docs.unity3d.com/
 
 Similar to PHIBL, Graphics uses cubemaps for imaged based lighting (IBL). Some sample cubemaps available [here](https://mega.nz/#F!PEMRkASB!I0ZTv4OgV-mSxX07MWDMQw). Put them in a folder named "cubemaps" at the root of the installation folder. You can configure the path for them with [Configuration Manager](https://github.com/BepInEx/BepInEx.ConfigurationManager).
 
+## Branch & Release Tactics
+
+### master
+
+The stable release. Do not merge other branch to master but edge.
+
+### edge
+
+Latest merged release.
+
 ## Attributions
 [Alloy](https://github.com/Josh015/Alloy)  
 [SEGI](https://github.com/sonicether/SEGI)  
