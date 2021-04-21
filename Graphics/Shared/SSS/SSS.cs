@@ -247,6 +247,7 @@ namespace Graphics
                         GetProfileRT(ref SSS_ProfileTex, (int)m_TextureSize.x, (int)m_TextureSize.y, "SSS_ProfileTex");
                         Util.RenderToTarget(ProfileCamera, SSS_ProfileTex, ProfileShader);
                         Shader.SetGlobalTexture("SSS_ProfileTex", SSS_ProfileTex);
+                        Shader.SetGlobalTexture("SSS_ProfileTexR", SSS_ProfileTex);
                     }
 
                     QualitySettings.pixelLightCount = InitialpixelLights;
@@ -367,6 +368,8 @@ namespace Graphics
                             Util.RenderToTarget(LightingCamera, LightingTex, LightingPassShader);
                             Shader.SetGlobalTexture("LightingTexBlurred", LightingTexBlurred);
                             Shader.SetGlobalTexture("LightingTex", LightingTex);
+                            Shader.SetGlobalTexture("LightingTexBlurredR", LightingTexBlurred);
+                            Shader.SetGlobalTexture("LightingTexR", LightingTex);
                         }
                     }
                 }
