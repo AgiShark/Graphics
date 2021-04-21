@@ -10,6 +10,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Alloy\AreaLight\Defaults\DefaultSpotCookie.tif" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\icon_camera.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\icon_camera_small.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\icon_camera_vsmall.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\bluenoise.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\Noise Textures\LDR_RGBA_0.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\Noise Textures\LDR_RGBA_1.png" />
@@ -94,6 +97,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Alloy\AreaLight\AlloyAreaLight.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CullingMaskExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FocusPuller.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hooks\SSSMirrorHooks.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Inspector\GUIStyles.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Inspector\GUIUtility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Inspector\Inspector.cs" />
@@ -106,6 +110,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)LightManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LocalizationManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PostProcessingManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PresetDefaultType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PresetManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SSSManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Patch\Studio.cs" />

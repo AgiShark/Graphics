@@ -6,7 +6,7 @@ namespace Graphics.Inspector
     internal class Inspector
     {
         private static Rect _windowRect;
-        private readonly int _windowID = 0;
+        private readonly int _windowID = 53157126;
         private enum Tab { Lighting, Lights, PostProcessing, SSS, Presets, Settings };
         private Tab SelectedTab { get; set; }
         internal Graphics Parent { get; set; }

@@ -101,6 +101,8 @@ namespace Graphics.Settings
             instance.UseProfileTest = ProfileTest;
             instance.ProfileColorTest = ProfileColorTest;
             instance.ProfileRadiusTest = ProfileRadiusTest;
+
+            Graphics.Instance.SSSManager.CopySettingsToOtherInstances();
         }
     }
 }

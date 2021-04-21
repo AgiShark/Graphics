@@ -7,6 +7,7 @@ using Graphics.Textures;
 using KKAPI;
 using KKAPI.Chara;
 using KKAPI.Studio.SaveLoad;
+using KKAPI.Utilities;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -68,6 +69,7 @@ namespace Graphics
             {
                 throw new InvalidOperationException("Can only create one instance of Graphics");
             }
+            Log.LogInfo("Graphics Init");
 
             Instance = this;
 
@@ -98,6 +100,7 @@ namespace Graphics
 
         private IEnumerator Start()
         {
+            Log.LogInfo("Starting");
             if (IsStudio()) StudioHooks.Init();
             yield return new WaitUntil(IsLoaded);
             Settings = new GlobalSettings();
@@ -108,6 +111,9 @@ namespace Graphics
             
             _sssManager = new SSSManager();
             _sssManager.Initialize();
+
+            SSSMirrorHooks.InitializeMirrorHooks();
+            Log.LogInfo("Mirror Hooks GO");
             
             _skyboxManager = Instance.GetOrAddComponent<SkyboxManager>();
             _skyboxManager.Parent = this;
@@ -131,7 +137,24 @@ namespace Graphics
 
             _inspector = new Inspector.Inspector(this);
             _isLoaded = true;
+            float _fov = CameraSettings.MainCamera.fieldOfView; // Grab initial FOV before we override in the preset
+            _presetManager.LoadDefaultForCurrentGameMode();
+            CameraSettings.Fov = (float)_fov; // put it back
+            CameraSettings.MainCamera.fieldOfView = _fov;
+            Log.LogInfo("Graphics...ONLINE");
+
+            if (KKAPI.Studio.StudioAPI.InsideStudio)
+            {
+                Texture2D gIconTex = new Texture2D(32, 32);
+                byte[] texData = ResourceUtils.GetEmbeddedResource("icon_camera_vsmall.png");
+                ImageConversion.LoadImage(gIconTex, texData);
+                KKAPI.Studio.UI.CustomToolbarButtons.AddLeftToolbarToggle(gIconTex, false, active => {
+                    Show = active;
+                });
+            }
         }
+
+        internal KKAPI.Studio.UI.ToolbarToggle studioToolbarToggle;
 
         internal SkyboxManager SkyboxManager => _skyboxManager;
         internal PostProcessingManager PostProcessingManager => _postProcessingManager;
@@ -220,6 +243,8 @@ namespace Graphics
                         }
                     }
                     _showGUI = value;
+                    if (studioToolbarToggle != null)
+                        studioToolbarToggle.Value = value;
                 }
             }
         }

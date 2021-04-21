@@ -115,8 +115,11 @@ namespace Graphics.Settings
                 {
                     if (InsideStudio)
                     {
-                        Studio.CameraControl control = (Studio.CameraControl)MainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera;
-                        return control.fieldOfView;
+                        Studio.CameraControl control = (Studio.CameraControl)MainCamera.GetComponent<CinemachineBrain>()?.ActiveVirtualCamera;
+                        if (control?.State.Lens.FieldOfView == null)
+                            return MainCamera.fieldOfView;
+                        else
+                            return control.State.Lens.FieldOfView;
                     }
                     else
                     {
@@ -127,7 +130,7 @@ namespace Graphics.Settings
             }
             set
             {
-                if (value != _fov)
+                if (value != _fov && (MainCamera?.stereoEnabled == false))
                 {
                     if (InsideStudio)
                     {
@@ -152,8 +155,12 @@ namespace Graphics.Settings
                 {
                     if (InsideStudio)
                     {
-                        Studio.CameraControl control = (Studio.CameraControl)MainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera;
-                        return control.State.Lens.NearClipPlane;
+                        
+                        Studio.CameraControl control = (Studio.CameraControl)MainCamera.GetComponent<CinemachineBrain>()?.ActiveVirtualCamera;
+                        if (control?.State.Lens.NearClipPlane == null)
+                            return MainCamera.nearClipPlane;
+                        else
+                            return control.State.Lens.NearClipPlane;
                     }
                     else
                     {
@@ -166,15 +173,21 @@ namespace Graphics.Settings
             {
                 if (InsideStudio)
                 {
-                    Studio.CameraControl control = (Studio.CameraControl)MainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera;
+                    Studio.CameraControl control = (Studio.CameraControl)MainCamera.GetComponent<CinemachineBrain>()?.ActiveVirtualCamera;
+                    if (control != null)
+                    {
+                        LensSettings lensSettings = control.GetFieldValue<LensSettings>("lensSettings");
+                        lensSettings.NearClipPlane = value;
+                        control.SetFieldValue<LensSettings>("lensSettings", lensSettings);
 
-                    LensSettings lensSettings = control.GetFieldValue<LensSettings>("lensSettings");
-                    lensSettings.NearClipPlane = value;
-                    control.SetFieldValue<LensSettings>("lensSettings", lensSettings);
-
-                    CameraState cameraState = control.GetFieldValue<CameraState>("cameraState");
-                    cameraState.Lens = lensSettings;
-                    control.SetFieldValue<CameraState>("cameraState", cameraState);
+                        CameraState cameraState = control.GetFieldValue<CameraState>("cameraState");
+                        cameraState.Lens = lensSettings;
+                        control.SetFieldValue<CameraState>("cameraState", cameraState);
+                    } 
+                    else
+                    {
+                        MainCamera.nearClipPlane = value;
+                    }
                 }
                 else
                 {
@@ -192,8 +205,11 @@ namespace Graphics.Settings
                 {
                     if (InsideStudio)
                     {
-                        Studio.CameraControl control = (Studio.CameraControl)MainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera;
-                        return control.State.Lens.FarClipPlane;
+                        Studio.CameraControl control = (Studio.CameraControl)MainCamera.GetComponent<CinemachineBrain>()?.ActiveVirtualCamera;
+                        if (control?.State.Lens.FarClipPlane == null)
+                            return MainCamera.farClipPlane;
+                        else
+                            return control.State.Lens.FarClipPlane; 
                     }
                     else
                     {
@@ -205,16 +221,22 @@ namespace Graphics.Settings
             set
             {
                 if (InsideStudio)
-                {
-                    Studio.CameraControl control = (Studio.CameraControl)MainCamera.GetComponent<CinemachineBrain>().ActiveVirtualCamera;
+                {                    
+                    Studio.CameraControl control = (Studio.CameraControl)MainCamera.GetComponent<CinemachineBrain>()?.ActiveVirtualCamera;
+                    if (control != null)
+                    {
+                        LensSettings lensSettings = control.GetFieldValue<LensSettings>("lensSettings");
+                        lensSettings.FarClipPlane = value;
+                        control.SetFieldValue<LensSettings>("lensSettings", lensSettings);
 
-                    LensSettings lensSettings = control.GetFieldValue<LensSettings>("lensSettings");
-                    lensSettings.FarClipPlane = value;
-                    control.SetFieldValue<LensSettings>("lensSettings", lensSettings);
-
-                    CameraState cameraState = control.GetFieldValue<CameraState>("cameraState");
-                    cameraState.Lens = lensSettings;
-                    control.SetFieldValue<CameraState>("cameraState", cameraState);
+                        CameraState cameraState = control.GetFieldValue<CameraState>("cameraState");
+                        cameraState.Lens = lensSettings;
+                        control.SetFieldValue<CameraState>("cameraState", cameraState);
+                    }
+                    else
+                    {
+                        MainCamera.farClipPlane = value;
+                    }
                 }
                 else
                 {
@@ -229,7 +251,23 @@ namespace Graphics.Settings
             get
             {
                 if (_camera == null && Camera.allCameras.Length > 0)
-                    _camera = Camera.main; // It's expensive but whatever
+                {
+                    foreach (Camera c in Camera.allCameras)
+                    {
+                        Graphics.Instance.Log.LogDebug("Checking Camera: " + c.name);
+                        if (c.name.Equals("VRGIN_Camera (eye)")) {
+                            _camera = c;
+                        }
+                    }
+                    if (_camera == null)
+                    {
+                        _camera = Camera.main;
+                    }
+                    if (_camera != null)
+                    {
+                        Graphics.Instance.Log.LogDebug("Using Camera: " + _camera.name);
+                    }
+                }
                 return _camera;
             }
         }

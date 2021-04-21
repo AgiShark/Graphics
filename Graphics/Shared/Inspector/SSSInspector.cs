@@ -73,6 +73,8 @@ namespace Graphics.Inspector
                 }
             }
             GUILayout.EndVertical();
+
+            Graphics.Instance.SSSManager.CopySettingsToOtherInstances();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using KKAPI.Utilities;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 namespace Graphics
 {
@@ -45,12 +46,14 @@ namespace Graphics
         public bool ShowGUI;
         private SSS_convolution sss_convolution;
 
-        [HideInInspector] public RenderTexture SSS_ProfileTex, LightingTex, LightingTexBlurred;
+        public bool MirrorSSS;
+
+        [HideInInspector] public RenderTexture SSS_ProfileTex, SSS_ProfileTexR, LightingTex, LightingTexBlurred, LightingTexR, LightingTexBlurredR;
         public Color sssColor = Color.yellow;
 
         public ToggleTexture toggleTexture = ToggleTexture.LightingTex;
         public bool UseProfileTest;
-        internal bool Enabled { get; set; }
+        public bool Enabled { get; set; }
         internal float Downsampling { get; set; }
 
         internal float ScatteringRadius { get; set; }
@@ -70,43 +73,52 @@ namespace Graphics
             ProfileCamera = null;
             if (ProfilePerObject)
             {
-                ProfileCameraGO = GameObject.Find("SSS profile Camera");
+                string profileGOName = $"SSS Profile Camera for {currentCamera.gameObject.name}-{currentCamera.gameObject.GetInstanceID()}";
                 if (!ProfileCameraGO)
                 {
-                    ProfileCameraGO = new GameObject("SSS profile Camera", typeof(Camera));
-                    ProfileCameraGO.transform.parent = transform;
-                    ProfileCameraGO.transform.localPosition = Vector3.zero;
-                    ProfileCameraGO.transform.localEulerAngles = Vector3.zero;
-                    ProfileCamera = ProfileCameraGO.GetComponent<Camera>();
-                    ProfileCamera.backgroundColor = Color.black;
-                    ProfileCamera.enabled = false;
-                    ProfileCamera.depth = -254;
-                    ProfileCamera.allowMSAA = false;
+                    ProfileCameraGO = GameObject.Find(profileGOName);
+                    if (!ProfileCameraGO)
+                    {
+                        ProfileCameraGO = new GameObject(profileGOName, typeof(Camera));
+                        ProfileCameraGO.transform.parent = transform;
+                        ProfileCameraGO.transform.localPosition = Vector3.zero;
+                        ProfileCameraGO.transform.localEulerAngles = Vector3.zero;
+
+                        ProfileCamera = ProfileCameraGO.GetComponent<Camera>();
+                        ProfileCamera.backgroundColor = Color.black;
+                        ProfileCamera.enabled = false;
+                        ProfileCamera.depth = -254;
+                        ProfileCamera.allowMSAA = false;
+                    }
                 }
 
                 ProfileCamera = ProfileCameraGO.GetComponent<Camera>();
             }
 
             // Camera for lighting
-            LightingCamera = null;
-            LightingCameraGO = GameObject.Find("SSS Lighting Pass Camera");
+            LightingCamera = null;            
             if (!LightingCameraGO)
             {
-                LightingCameraGO = new GameObject("SSS Lighting Pass Camera", typeof(Camera));
-                LightingCameraGO.transform.parent = transform;
-                LightingCameraGO.transform.localPosition = Vector3.zero;
-                LightingCameraGO.transform.localEulerAngles = Vector3.zero;
-                LightingCamera = LightingCameraGO.GetComponent<Camera>();
-                LightingCamera.enabled = false;
-                LightingCamera.depth = -846;
-                sss_convolution = LightingCameraGO.AddComponent<SSS_convolution>();
-                sss_convolution.BlurShader = Shader.Find("Hidden/SeparableSSS");
-                if (null == sss_convolution.BlurShader && null != _separableSSS)
+                string lightingGOName = $"SSS Lighting Camera for {currentCamera.gameObject.name}-{currentCamera.gameObject.GetInstanceID()}";
+                LightingCameraGO = GameObject.Find(lightingGOName);
+                if (!LightingCameraGO)
                 {
-                    sss_convolution.BlurShader = _separableSSS;
+                    LightingCameraGO = new GameObject(lightingGOName, typeof(Camera));
+                    LightingCameraGO.transform.parent = transform;
+                    LightingCameraGO.transform.localPosition = Vector3.zero;
+                    LightingCameraGO.transform.localEulerAngles = Vector3.zero;
+
+                    LightingCamera = LightingCameraGO.GetComponent<Camera>();
+                    LightingCamera.enabled = false;
+                    LightingCamera.depth = -846;
+                    sss_convolution = LightingCameraGO.AddComponent<SSS_convolution>();
+                    sss_convolution.BlurShader = Shader.Find("Hidden/SeparableSSS");
+                    if (null == sss_convolution.BlurShader && null != _separableSSS)
+                    {
+                        sss_convolution.BlurShader = _separableSSS;
+                    }
                 }
             }
-
             LightingCamera = LightingCameraGO.GetComponent<Camera>();
             LightingCamera.allowMSAA = currentCamera.allowMSAA;
             LightingCamera.backgroundColor = currentCamera.backgroundColor;
@@ -137,7 +149,7 @@ namespace Graphics
             if (SSS_Layer == 0)
             {
                 SSS_Layer = 1;
-                print("Setting SSS layer from Nothing to Default");
+                Graphics.Instance.Log.LogInfo("Setting SSS layer from Nothing to Default");
             }
 
             //optional
@@ -168,6 +180,7 @@ namespace Graphics
         {
             if (Enabled && !ReferenceEquals(cam, null))
             {
+
                 Shader.DisableKeyword("SCENE_VIEW");
                 if (ReferenceEquals(null, LightingPassShader))
                 {
@@ -188,12 +201,12 @@ namespace Graphics
                 CreateCameras(cam, out ProfileCamera, out LightingCamera);
 
                 #region Render Profile
-
-                if (ProfilePerObject)
+                if (ProfilePerObject && !ReferenceEquals(null, ProfileCamera))
                 {
                     UpdateCameraModes(cam, ProfileCamera);
                     //ProfileCamera.allowHDR = false;
                     ////humm, removes a lot of artifacts when far away
+                    ///
 
                     InitialpixelLights = QualitySettings.pixelLightCount;
                     InitialShadows = QualitySettings.shadows;
@@ -203,55 +216,49 @@ namespace Graphics
                     ProfileCamera.cullingMask = SSS_Layer;
                     ProfileCamera.backgroundColor = Color.black;
                     ProfileCamera.clearFlags = CameraClearFlags.SolidColor;
-                    /*
+
                     if (cam.stereoEnabled)
                     {    //Left eye   
-                        if (cam.stereoTargetEye == StereoTargetEyeMask.Both || cam.stereoTargetEye == StereoTargetEyeMask.Left)
+                        if (cam.stereoActiveEye == Camera.MonoOrStereoscopicEye.Left)
                         {
-                            ProfileCamera.stereoTargetEye = StereoTargetEyeMask.Left;
-
-                            //ProfileCamera.transform.localPosition = InputTracking.GetLocalPosition(XRNode.LeftEye);
-                            //ProfileCamera.transform.localRotation = InputTracking.GetLocalRotation(XRNode.LeftEye);
                             ProfileCamera.projectionMatrix = cam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left);
                             ProfileCamera.worldToCameraMatrix = cam.GetStereoViewMatrix(Camera.StereoscopicEye.Left);
+
                             GetProfileRT(ref SSS_ProfileTex, (int)m_TextureSize.x, (int)m_TextureSize.y, "SSS_ProfileTex");
                             Util.RenderToTarget(ProfileCamera, SSS_ProfileTex, ProfileShader);
                             Shader.SetGlobalTexture("SSS_ProfileTex", SSS_ProfileTex);
+
                         }
-                        //Right eye   
-                        if (cam.stereoTargetEye == StereoTargetEyeMask.Both || cam.stereoTargetEye == StereoTargetEyeMask.Left)
+                        else 
                         {
-                            ProfileCamera.stereoTargetEye = StereoTargetEyeMask.Right;
-                            //ProfileCamera.transform.localPosition = InputTracking.GetLocalPosition(XRNode.RightEye);
-                            //ProfileCamera.transform.localRotation = InputTracking.GetLocalRotation(XRNode.RightEye);
-                            ProfileCamera.projectionMatrix = cam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Right);
+
                             ProfileCamera.projectionMatrix = cam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Right);
                             ProfileCamera.worldToCameraMatrix = cam.GetStereoViewMatrix(Camera.StereoscopicEye.Right);
-                            GetProfileRT(ref SSS_ProfileTexR, (int)m_TextureSize.x, (int)m_TextureSize.y, "SSS_ProfileTexR");
-                            Rendering.RenderToTarget(ProfileCamera, SSS_ProfileTexR, ProfileShader);
-                            Shader.SetGlobalTexture("SSS_ProfileTexR", SSS_ProfileTexR);
-                        }
 
+                            GetProfileRT(ref SSS_ProfileTexR, (int)m_TextureSize.x, (int)m_TextureSize.y, "SSS_ProfileTexR");
+                            Util.RenderToTarget(ProfileCamera, SSS_ProfileTexR, ProfileShader);
+                            Shader.SetGlobalTexture("SSS_ProfileTexR", SSS_ProfileTexR);
+
+                        }
                     }
                     else
                     {
-                    */
-                    //Mono
-                    //ProfileCamera.projectionMatrix = cam.projectionMatrix;//avoid frustum jitter from taa
-                    GetProfileRT(ref SSS_ProfileTex, (int)m_TextureSize.x, (int)m_TextureSize.y, "SSS_ProfileTex");
-                    Util.RenderToTarget(ProfileCamera, SSS_ProfileTex, ProfileShader);
-                    Shader.SetGlobalTexture("SSS_ProfileTex", SSS_ProfileTex);
-                    //}
+                        //Mono
+                        GetProfileRT(ref SSS_ProfileTex, (int)m_TextureSize.x, (int)m_TextureSize.y, "SSS_ProfileTex");
+                        Util.RenderToTarget(ProfileCamera, SSS_ProfileTex, ProfileShader);
+                        Shader.SetGlobalTexture("SSS_ProfileTex", SSS_ProfileTex);
+                    }
 
                     QualitySettings.pixelLightCount = InitialpixelLights;
                     QualitySettings.shadows = InitialShadows;
+
                 }
                 else
                 {
                     Shader.DisableKeyword("SSS_PROFILES");
 
                     SafeDestroy(SSS_ProfileTex);
-                    //SafeDestroy(SSS_ProfileTexR);
+                    SafeDestroy(SSS_ProfileTexR);
                 }
 
                 #endregion
@@ -306,21 +313,61 @@ namespace Graphics
                     }
 
                     sss_convolution.iterations = ScatteringIterations;
-                    sss_convolution.BlurRadius = ScatteringRadius;
+
+                    if (cam.stereoEnabled)
+                        sss_convolution.BlurRadius = ScatteringRadius / 2;
+                    else
+                        sss_convolution.BlurRadius = ScatteringRadius;
 
                     LightingCamera.depthTextureMode = DepthTextureMode.DepthNormals;
-                    //LightingCamera.transform.position = cam.transform.position;
-                    //LightingCamera.transform.rotation = cam.transform.rotation;
-                    //LightingCamera.projectionMatrix = cam.projectionMatrix;//avoid frustum jitter from taa
-                    GetRT(ref LightingTex, (int)m_TextureSize.x, (int)m_TextureSize.y, "LightingTexture");
-                    GetRT(ref LightingTexBlurred, (int)m_TextureSize.x, (int)m_TextureSize.y, "SSSLightingTextureBlurred");
-                    sss_convolution.blurred = LightingTexBlurred;
-                    sss_convolution.rtFormat = LightingTex.format;
-                    if (!ReferenceEquals(null, LightingPassShader))
+                   
+                    if (cam.stereoEnabled)
                     {
-                        Util.RenderToTarget(LightingCamera, LightingTex, LightingPassShader);
-                        Shader.SetGlobalTexture("LightingTexBlurred", LightingTexBlurred);
-                        Shader.SetGlobalTexture("LightingTex", LightingTex);
+                        if (cam.stereoActiveEye == Camera.MonoOrStereoscopicEye.Left)
+                        {
+                            LightingCamera.projectionMatrix = cam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left);
+                            LightingCamera.worldToCameraMatrix = cam.GetStereoViewMatrix(Camera.StereoscopicEye.Left);
+
+                            GetRT(ref LightingTex, (int)m_TextureSize.x, (int)m_TextureSize.y, "LightingTexture");
+                            GetRT(ref LightingTexBlurred, (int)m_TextureSize.x, (int)m_TextureSize.y, "SSSLightingTextureBlurred");
+                            sss_convolution.blurred = LightingTexBlurred;
+                            sss_convolution.rtFormat = LightingTex.format;
+                            if (!ReferenceEquals(null, LightingPassShader))
+                            {
+                                Util.RenderToTarget(LightingCamera, LightingTex, LightingPassShader);
+                                Shader.SetGlobalTexture("LightingTexBlurred", LightingTexBlurred);
+                                Shader.SetGlobalTexture("LightingTex", LightingTex);
+                            }
+                        }
+                        else if (cam.stereoActiveEye == Camera.MonoOrStereoscopicEye.Right)
+                        {
+                            LightingCamera.projectionMatrix = cam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Right);
+                            LightingCamera.worldToCameraMatrix = cam.GetStereoViewMatrix(Camera.StereoscopicEye.Right);
+
+                            GetRT(ref LightingTexR, (int)m_TextureSize.x, (int)m_TextureSize.y, "LightingTextureR");
+                            GetRT(ref LightingTexBlurredR, (int)m_TextureSize.x, (int)m_TextureSize.y, "SSSLightingTextureBlurredR");
+                            sss_convolution.blurred = LightingTexBlurredR;
+                            sss_convolution.rtFormat = LightingTexR.format;
+                            if (!ReferenceEquals(null, LightingPassShader))
+                            {
+                                Util.RenderToTarget(LightingCamera, LightingTexR, LightingPassShader);
+                                Shader.SetGlobalTexture("LightingTexBlurredR", LightingTexBlurredR);
+                                Shader.SetGlobalTexture("LightingTexR", LightingTexR);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        GetRT(ref LightingTex, (int)m_TextureSize.x, (int)m_TextureSize.y, "LightingTexture");
+                        GetRT(ref LightingTexBlurred, (int)m_TextureSize.x, (int)m_TextureSize.y, "SSSLightingTextureBlurred");
+                        sss_convolution.blurred = LightingTexBlurred;
+                        sss_convolution.rtFormat = LightingTex.format;
+                        if (!ReferenceEquals(null, LightingPassShader))
+                        {
+                            Util.RenderToTarget(LightingCamera, LightingTex, LightingPassShader);
+                            Shader.SetGlobalTexture("LightingTexBlurred", LightingTexBlurred);
+                            Shader.SetGlobalTexture("LightingTex", LightingTex);
+                        }
                     }
                 }
 
@@ -334,7 +381,7 @@ namespace Graphics
 
         private void OnPostRender()
         {
-            Shader.EnableKeyword("SCENE_VIEW");
+            Shader.EnableKeyword("SCENE_VIEW");            
         }
 
         private void SafeDestroy(Object obj)
@@ -350,13 +397,17 @@ namespace Graphics
         private void Cleanup()
         {
             SafeDestroy(LightingCameraGO);
+            SafeDestroy(ProfileCameraGO);
             SafeDestroy(LightingTex);
             SafeDestroy(LightingTexBlurred);
+            SafeDestroy(LightingTexR);
+            SafeDestroy(LightingTexBlurredR);
         }
 
         // Cleanup all the objects we possibly have created
         private void OnDisable()
         {
+ //           Shader.EnableKeyword("UNITY_STEREO_EYE");
             Shader.EnableKeyword("SCENE_VIEW");
             Cleanup();
         }
@@ -395,6 +446,8 @@ namespace Graphics
             {
                 return;
             }
+
+            dest.CopyFrom(src);
 
             dest.farClipPlane = src.farClipPlane;
             dest.nearClipPlane = src.nearClipPlane;

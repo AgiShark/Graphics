@@ -130,7 +130,7 @@ namespace Graphics.Inspector
                                     }
                                     else
                                     {
-                                        Slider("Light Range", lightManager.SelectedLight.range, 0.1f, 100f, "N1", range => { lightManager.SelectedLight.range = range; });
+                                        Slider("Light Range", lightManager.SelectedLight.range, 0.1f, 500f, "N1", range => { lightManager.SelectedLight.range = range; });
                                         if (lightManager.SelectedLight.type == LightType.Spot)
                                         {
                                             Slider("Spot Angle", lightManager.SelectedLight.spotAngle, 1f, 179f, "N1", angle => { lightManager.SelectedLight.spotAngle = angle; });
