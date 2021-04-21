@@ -97,6 +97,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Alloy\AreaLight\AlloyAreaLight.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CullingMaskExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FocusPuller.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hooks\HoohSmartphoneScanner.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hooks\SSSMirrorHooks.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Inspector\GUIStyles.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Inspector\GUIUtility.cs" />

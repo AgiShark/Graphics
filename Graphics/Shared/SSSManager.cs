@@ -37,17 +37,29 @@ namespace Graphics
             {
                 otherInstance.Enabled = SSSInstance.Enabled;
                 otherInstance.ProfilePerObject = SSSInstance.ProfilePerObject;
+
                 if (otherInstance.MirrorSSS)
                     otherInstance.sssColor = Color.black;
                 else
                     otherInstance.sssColor = SSSInstance.sssColor;
+
                 otherInstance.ScatteringRadius = SSSInstance.ScatteringRadius;
-                otherInstance.ScatteringIterations = SSSInstance.ScatteringIterations;
+                
+                if (otherInstance.MirrorSSS)
+                    otherInstance.ScatteringIterations = 0;
+                else
+                    otherInstance.ScatteringIterations = SSSInstance.ScatteringIterations;
+
                 otherInstance.ShaderIterations = SSSInstance.ShaderIterations;
                 otherInstance.Downsampling = SSSInstance.Downsampling;
                 otherInstance.maxDistance = SSSInstance.maxDistance;
                 otherInstance.SSS_Layer = SSSInstance.SSS_Layer;
-                otherInstance.Dither = SSSInstance.Dither;
+
+                if (otherInstance.MirrorSSS)
+                    otherInstance.Dither = false;
+                else
+                    otherInstance.Dither = SSSInstance.Dither;
+
                 otherInstance.DitherIntensity = SSSInstance.DitherIntensity;
                 otherInstance.DitherScale = SSSInstance.DitherScale;
                 otherInstance.DepthTest = SSSInstance.DepthTest;

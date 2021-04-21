@@ -53,6 +53,8 @@ namespace Graphics
         private SSSManager _sssManager;
         private Inspector.Inspector _inspector;
 
+        private HoohSmartphoneScanner smartphoneScanner;
+
         internal GlobalSettings Settings { get; private set; }
         internal CameraSettings CameraSettings { get; private set; }
         internal LightingSettings LightingSettings { get; private set; }
@@ -113,6 +115,10 @@ namespace Graphics
             _sssManager.Initialize();
 
             SSSMirrorHooks.InitializeMirrorHooks();
+
+            if (KKAPI.Studio.StudioAPI.InsideStudio)
+                smartphoneScanner = this.gameObject.AddComponent<HoohSmartphoneScanner>();
+
             Log.LogInfo("Mirror Hooks GO");
             
             _skyboxManager = Instance.GetOrAddComponent<SkyboxManager>();
