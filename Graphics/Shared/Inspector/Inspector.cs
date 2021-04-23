@@ -14,6 +14,15 @@ namespace Graphics.Inspector
         internal Inspector(Graphics parent)
         {
             Parent = parent;
+
+            // Require at least 20 pixels of grab
+            if (StartOffsetX + 20 > Screen.width || StartOffsetY + 20 > Screen.height)
+            {
+                // offscreen protection - reset offsets
+                StartOffsetX = (Screen.width - Graphics.ConfigWindowWidth.Value) / 2;
+                StartOffsetY = (Screen.height - Graphics.ConfigWindowHeight.Value) / 2;
+            }
+
             _windowRect = new Rect(StartOffsetX, StartOffsetY, Width, Height);
         }
 
