@@ -25,7 +25,7 @@ namespace Graphics
 
         private IEnumerator ApplyPresets(Scene scene)
         {
-
+            Log.LogInfo($"Checking Apply Presets {scene.isLoaded} {CameraSettings.MainCamera} {scene.name} {KKAPI.Maker.MakerAPI.InsideAndLoaded}");
             yield return new WaitUntil(() => scene.isLoaded && CameraSettings.MainCamera != null &&
                 ( (scene.name.Equals("CharaCustom", System.StringComparison.OrdinalIgnoreCase) && KKAPI.Maker.MakerAPI.InsideAndLoaded) || (!scene.name.Equals("CharaCustom", System.StringComparison.OrdinalIgnoreCase)))
             );

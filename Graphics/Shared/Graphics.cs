@@ -158,6 +158,12 @@ namespace Graphics
                     Show = active;
                 });
             }
+
+            // Straight 2 Maker Support Fix
+            if (KKAPI.Maker.MakerAPI.InsideMaker)
+            {
+                OnSceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
+            }
         }
 
         internal KKAPI.Studio.UI.ToolbarToggle studioToolbarToggle;
