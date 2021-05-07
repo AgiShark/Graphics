@@ -450,7 +450,9 @@ namespace Graphics
                 return;
             }
 
-            dest.CopyFrom(src);
+            if (MirrorSSS)
+                dest.CopyFrom(src);
+
 
             dest.farClipPlane = src.farClipPlane;
             dest.nearClipPlane = src.nearClipPlane;
