@@ -22,7 +22,7 @@ public class AlloyAreaLight : MonoBehaviour
 
     [FormerlySerializedAs("m_size")]
     [SerializeField]
-    private float m_radius;
+    private float m_radius = 1.0f;
 
     [SerializeField]
     private float m_length;
@@ -90,7 +90,7 @@ public class AlloyAreaLight : MonoBehaviour
     private void Reset()
     {
         m_hasSpecularHightlight = true;
-        m_radius = 0.0f;
+        m_radius = 1.0f;
         m_length = 0.0f;
 
         m_lastColor = Color.black;

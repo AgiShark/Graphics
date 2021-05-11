@@ -90,6 +90,8 @@ namespace Graphics.Settings
                 }
             }
         }
+
+        public ReflectionProbeSettings DefaultReflectionProbeSettings { get; set; }
     }
 }
 

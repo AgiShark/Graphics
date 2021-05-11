@@ -59,8 +59,10 @@ namespace Graphics
                     skyboxSetting = setting;
                 }
             }
-
+            lights.DefaultReflectionProbeSettings = new ReflectionProbeSettings();
+            lights.DefaultReflectionProbeSettings.FillSettings(manager.DefaultReflectionProbe());
             skybox = manager.skyboxParams;
+
         }
         public byte[] Serialize()
         {
@@ -130,6 +132,8 @@ namespace Graphics
                 manager.skyboxParams = skybox;
                 manager.PresetUpdate = true;
                 manager.LoadSkyboxParams();
+
+                manager.SetupDefaultReflectionProbe(lights);
             }
         }
     }

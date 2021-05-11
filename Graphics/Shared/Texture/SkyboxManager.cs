@@ -46,7 +46,7 @@ namespace Graphics.Textures
         private ReflectionProbe _probe;
         private GameObject _probeGameObject;
 
-        internal ReflectionProbe DefaultProbe => _probe ? DefaultReflectionProbe() : _probe;
+        internal ReflectionProbe DefaultProbe => DefaultReflectionProbe();
 
         internal Graphics Parent { get; set; }
         internal Camera Camera => Parent.CameraSettings.MainCamera;
@@ -279,33 +279,55 @@ namespace Graphics.Textures
         {
             if (null == _probeGameObject || null == _probe)
             {
-                _probeGameObject = new GameObject("Default Reflection Probe");
-                _probe = _probeGameObject.GetOrAddComponent<ReflectionProbe>();                
-                _probe.mode = ReflectionProbeMode.Realtime;
-                _probe.boxProjection = false;
-                _probe.intensity = 1f;
-                _probe.importance = 100;
-                _probe.resolution = 512;
-                _probe.backgroundColor = Color.white;
-                _probe.hdr = true;
-                _probe.clearFlags = ReflectionProbeClearFlags.Skybox;
-                _probe.cullingMask = Camera.cullingMask;
-                _probe.size = new Vector3(100, 100, 100);
-                _probe.nearClipPlane = 0.01f;
-                _probe.transform.position = new Vector3(0, 0, 0);
-                _probe.refreshMode = ReflectionProbeRefreshMode.EveryFrame;
-                _probe.timeSlicingMode = ReflectionProbeTimeSlicingMode.AllFacesAtOnce;
-                DontDestroyOnLoad(_probeGameObject);
-                DontDestroyOnLoad(_probe);
+                SetupDefaultReflectionProbe(Graphics.Instance.LightingSettings);
             }
+                            
             return _probe;
         }
 
-        internal void SetupDefaultReflectionProbe()
+        internal void SetupDefaultReflectionProbe(LightingSettings lights, bool forceDefaultCreation = false)
         {
             ReflectionProbe[] rps = GetReflectinProbes();
-            //disable default realtime reflection probe if scene has realtime reflection probes.
-            DefaultProbe.intensity = (rps.Select(probe => probe.mode == ReflectionProbeMode.Realtime).ToArray().Length > 1) ? 0 : 1;
+
+            bool needDefaultProbe = !(rps.Select(probe => probe.mode == ReflectionProbeMode.Realtime).ToArray().Length > 1);
+            if (needDefaultProbe || forceDefaultCreation)
+            {
+                if (null == _probeGameObject || null == _probe)
+                {
+                    Graphics.Instance.Log.LogInfo($"Creating Default Reflection Probe");
+                    _probeGameObject = new GameObject("Default Reflection Probe");
+                    _probe = _probeGameObject.GetOrAddComponent<ReflectionProbe>();
+                    _probe.mode = ReflectionProbeMode.Realtime;
+                    DontDestroyOnLoad(_probeGameObject);
+                    DontDestroyOnLoad(_probe);
+                }
+
+                if (lights.DefaultReflectionProbeSettings != null && lights.DefaultReflectionProbeSettings.Importance > 0)
+                {
+                    lights.DefaultReflectionProbeSettings.ApplySettings(_probe);
+                }
+                else
+                {
+                    _probe.boxProjection = false;
+                    _probe.intensity = 1f;
+                    _probe.importance = 100;
+                    _probe.resolution = 512;
+                    _probe.backgroundColor = Color.white;
+                    _probe.hdr = true;
+                    _probe.clearFlags = ReflectionProbeClearFlags.Skybox;
+                    _probe.cullingMask = Camera.cullingMask;
+                    _probe.size = new Vector3(100, 100, 100);
+                    _probe.nearClipPlane = 0.01f;
+                    _probe.transform.position = new Vector3(0, 0, 0);
+                    _probe.refreshMode = ReflectionProbeRefreshMode.EveryFrame;
+                    _probe.timeSlicingMode = ReflectionProbeTimeSlicingMode.AllFacesAtOnce;
+                }
+            }
+            else if (_probeGameObject != null && _probe != null)
+            {
+                Graphics.Instance.Log.LogInfo($"Disabling Default Reflection Probe");
+                DestroyImmediate(_probeGameObject);
+            }            
         }
 
         internal ReflectionProbe[] GetReflectinProbes()
@@ -348,7 +370,7 @@ namespace Graphics.Textures
 
         internal void Start()
         {
-            DefaultReflectionProbe();
+            SetupDefaultReflectionProbe(Graphics.Instance.LightingSettings);
             StartCoroutine(UpdateEnvironment());
         }
     }

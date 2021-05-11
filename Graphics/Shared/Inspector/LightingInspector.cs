@@ -97,6 +97,9 @@ namespace Graphics.Inspector
                     ReflectionProbe[] rps = skyboxManager.GetReflectinProbes();
                     if (0 < rps.Length)
                     {
+                        if (selectedProbe >= rps.Length)
+                            selectedProbe = 0;
+
                         string[] probeNames = rps.Select(probe => probe.name).ToArray();
                         selectedProbe = GUILayout.SelectionGrid(selectedProbe, probeNames, 3, GUIStyles.toolbarbutton);
                         ReflectionProbe rp = rps[selectedProbe];
