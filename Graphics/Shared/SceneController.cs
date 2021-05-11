@@ -41,7 +41,7 @@ namespace Graphics
             {
                 // add scene reflection probe information
                 pluginData.data.Add("reflectionProbeBytes", MessagePackSerializer.Serialize(BuildReflectionProbeSettings()));
-                if (Graphics.Instance.SkyboxManager.DefaultReflectionProbe() != null)
+                if (Graphics.Instance.SkyboxManager.DefaultReflectionProbe() != null && Graphics.Instance.SkyboxManager.DefaultReflectionProbe().intensity > 0)
                 {
                     pluginData.data.Add("containsDefaultReflectionProbeData", true);
                 }
