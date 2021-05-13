@@ -26,10 +26,10 @@ namespace Graphics
                     return PresetDefaultType.MAKER;
                 case GameMode.Studio:
                     return PresetDefaultType.STUDIO;
-                case GameMode.Unknown:   // Until KKAPI updates this is needed -- the VR preset is also a decent fallback - likely to be a more conservative default anyway
-                    return PresetDefaultType.VR_GAME;
+                case GameMode.Unknown:  
+                    return PresetDefaultType.MAIN_GAME;
                 default:
-                    return PresetDefaultType.VR_GAME;
+                    return PresetDefaultType.MAIN_GAME;
             }
         }
     }

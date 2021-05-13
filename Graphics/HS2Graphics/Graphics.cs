@@ -49,7 +49,11 @@ namespace Graphics
                     Log.LogDebug(string.Format("Overrode CAM FOV: {0}", CameraSettings.MainCamera.fieldOfView));
                 }
             }
-            else if (gameMode == GameMode.MainGame)
+            else if (gameMode == GameMode.Maker || gameMode == GameMode.Studio)
+            {
+                _presetManager?.LoadDefaultForCurrentGameMode();
+            }
+            else
             {
                 // For other main games scenes, we need to preserve the original FOV and not replace from preset
                 float _fov = CameraSettings.MainCamera.fieldOfView;
@@ -65,10 +69,6 @@ namespace Graphics
                 CameraSettings.MainCamera.fieldOfView = _fov; // But this does...
                 Log.LogDebug(string.Format("After Load CAM FOV: {0}", CameraSettings.MainCamera.fieldOfView));
             }        
-            else
-            {
-                _presetManager?.LoadDefaultForCurrentGameMode();
-            }
 
         }
 
