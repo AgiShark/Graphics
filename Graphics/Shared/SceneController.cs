@@ -6,6 +6,7 @@ using MessagePack;
 using Studio;
 using System.Linq;
 using UnityEngine;
+using static Graphics.LightManager;
 
 namespace Graphics
 {
@@ -31,6 +32,13 @@ namespace Graphics
                 if (settings != null && settings.Length > 0)
                     ApplyReflectionProbeSettings(settings);
             }
+
+            if (pluginData != null && pluginData.data != null && pluginData.data.ContainsKey("lightDataBytes"))
+            {
+                PerLightSettings[] settings = MessagePackSerializer.Deserialize<PerLightSettings[]>((byte[])pluginData.data["lightDataBytes"]);
+               if (settings != null && settings.Length > 0)
+                    ApplyLightSettings(settings);
+            }
         }
 
         protected override void OnSceneSave()
@@ -45,10 +53,73 @@ namespace Graphics
                 {
                     pluginData.data.Add("containsDefaultReflectionProbeData", true);
                 }
+
+                // add per light settings data
+                pluginData.data.Add("lightDataBytes", MessagePackSerializer.Serialize(BuildLightSettings()));
             }
 
             SetExtendedData(pluginData);
         }
+
+        private void ApplyLightSettings(PerLightSettings[] settings)
+        {
+            LightManager lightManager = Graphics.Instance.LightManager;
+            lightManager.Light();
+            int counter = 0;
+
+            foreach (LightObject light in lightManager.DirectionalLights)
+            {
+                settings[counter++].ApplySettings(light);
+                if (counter >= settings.Length)
+                    return;
+            }
+
+            foreach (LightObject light in lightManager.PointLights)
+            {
+                settings[counter++].ApplySettings(light);
+                if (counter >= settings.Length)
+                    return;
+            }
+
+            foreach (LightObject light in lightManager.SpotLights)
+            {
+                settings[counter++].ApplySettings(light);
+                if (counter >= settings.Length)
+                    return;
+            }
+
+        }
+
+        private PerLightSettings[] BuildLightSettings()
+        {
+            LightManager lightManager = Graphics.Instance.LightManager;
+            lightManager.Light();
+            PerLightSettings[] settings = new PerLightSettings[lightManager.DirectionalLights.Count + lightManager.PointLights.Count + lightManager.SpotLights.Count];
+            int counter = 0;
+
+            foreach (LightObject light in lightManager.DirectionalLights)
+            {
+                PerLightSettings setting = new PerLightSettings();
+                setting.FillSettings(light);
+                settings[counter++] = setting;
+            }
+
+            foreach (LightObject light in lightManager.PointLights)
+            {
+                PerLightSettings setting = new PerLightSettings();
+                setting.FillSettings(light);
+                settings[counter++] = setting;
+            }
+
+            foreach (LightObject light in lightManager.SpotLights)
+            {
+                PerLightSettings setting = new PerLightSettings();
+                setting.FillSettings(light);
+                settings[counter++] = setting;
+            }
+
+            return settings;
+        } 
 
         private void ApplyReflectionProbeSettings(ReflectionProbeSettings[] settings)
         {

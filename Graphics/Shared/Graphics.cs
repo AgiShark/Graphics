@@ -23,7 +23,7 @@ namespace Graphics
     {
         public const string GUID = "ore.graphics";
         public const string PluginName = "Graphics";
-        public const string Version = "0.3.5";
+        public const string Version = "0.3.6";
 
         public static ConfigEntry<KeyCode> ConfigShortcut { get; private set; }
         public static ConfigEntry<string> ConfigCubeMapPath { get; private set; }
@@ -219,6 +219,46 @@ namespace Graphics
         internal bool IsStudio()
         {
             return GameMode.Studio == KoikatuAPI.GetCurrentGameMode();
+        }
+
+        // Pulsing Reflection Probes Support
+        public float ReflectionProbesPulseTimer { get; set; }
+
+        private bool pulseReflectionProbes;
+        public bool PulseReflectionProbes
+        {
+            get => pulseReflectionProbes;
+            set
+            {
+                pulseReflectionProbes = value;
+                if (pulseReflectionProbes)
+                    StartPulseRealtimeReflectionCoroutine();
+            }
+        }
+
+        private bool realtimeReflectionPulseCoroutineRunning = false;
+        internal void StartPulseRealtimeReflectionCoroutine()
+        {
+            if (!realtimeReflectionPulseCoroutineRunning) {                
+                StartCoroutine(doRealtimeReflectionPulse());
+                realtimeReflectionPulseCoroutineRunning = true;
+            }
+        }
+
+        internal IEnumerator doRealtimeReflectionPulse()
+        {
+            while (PulseReflectionProbes)
+            {
+                QualitySettings.realtimeReflectionProbes = true;
+                yield return null;
+                yield return null;
+                yield return null;
+                yield return null;
+                yield return null;
+                QualitySettings.realtimeReflectionProbes = false;
+                yield return new WaitForSeconds(ReflectionProbesPulseTimer);                
+            }
+            realtimeReflectionPulseCoroutineRunning = false;
         }
 
         private bool Show

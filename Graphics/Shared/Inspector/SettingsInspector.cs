@@ -40,6 +40,9 @@ namespace Graphics.Inspector
                 Selection("Anisotropic Textures", renderingSettings.AnisotropicFiltering, filtering => renderingSettings.AnisotropicFiltering = filtering);
                 Slider("MSAA Multiplier", renderingSettings.AntiAliasing, 0, 8, aa => renderingSettings.AntiAliasing = aa);
                 Toggle("Realtime Reflection Probes", renderingSettings.RealtimeReflectionProbes, false, realtime => renderingSettings.RealtimeReflectionProbes = realtime);
+                Toggle("Pulse Realtime Reflection Probes", renderingSettings.PulseReflectionProbes, false, pulse => renderingSettings.PulseReflectionProbes = pulse);
+                if (renderingSettings.PulseReflectionProbes)
+                    Slider("Pulse Timing (Secs)", renderingSettings.PulseReflectionTimer, .25f, 10f, "N2", prt => { renderingSettings.PulseReflectionTimer = prt; });
                 GUILayout.Space(10);
                 Label("Shadows", "", true);
                 GUILayout.Space(1);

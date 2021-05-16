@@ -34,6 +34,18 @@ namespace Graphics.Settings
             set => QualitySettings.realtimeReflectionProbes = value;
         }
 
+        public bool PulseReflectionProbes
+        {
+            get => Graphics.Instance.PulseReflectionProbes; 
+            set => Graphics.Instance.PulseReflectionProbes = value;               
+        }
+       
+        public float PulseReflectionTimer
+        {
+            get => Graphics.Instance.ReflectionProbesPulseTimer;
+            set => Graphics.Instance.ReflectionProbesPulseTimer = value;
+        }
+
         public ShadowmaskMode ShadowmaskModeSetting
         {
             get => QualitySettings.shadowmaskMode;

@@ -113,6 +113,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)PostProcessingManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PresetDefaultType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PresetManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Setting\PerLightSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Setting\ReflectionProbeSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SSSManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Patch\Studio.cs" />
