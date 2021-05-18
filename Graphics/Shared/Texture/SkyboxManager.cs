@@ -286,10 +286,10 @@ namespace Graphics.Textures
         }
 
         internal void SetupDefaultReflectionProbe(LightingSettings lights, bool forceDefaultCreation = false)
-        {
+        {            
             ReflectionProbe[] rps = GetReflectinProbes();
 
-            bool needDefaultProbe = !(rps.Select(probe => probe.mode == ReflectionProbeMode.Realtime).ToArray().Length > 1);
+            bool needDefaultProbe = !(rps.Where(probe => probe.mode == ReflectionProbeMode.Realtime && probe != _probe).ToArray().Length > 0);
             if (needDefaultProbe || forceDefaultCreation)
             {
                 if (null == _probeGameObject || null == _probe)

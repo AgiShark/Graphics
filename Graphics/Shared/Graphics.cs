@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
+using Graphics.Hooks;
 using Graphics.Inspector;
 using Graphics.Patch;
 using Graphics.Settings;
@@ -23,7 +24,7 @@ namespace Graphics
     {
         public const string GUID = "ore.graphics";
         public const string PluginName = "Graphics";
-        public const string Version = "0.3.6";
+        public const string Version = "0.3.7";
 
         public static ConfigEntry<KeyCode> ConfigShortcut { get; private set; }
         public static ConfigEntry<string> ConfigCubeMapPath { get; private set; }
@@ -120,6 +121,9 @@ namespace Graphics
                 smartphoneScanner = this.gameObject.AddComponent<HoohSmartphoneScanner>();
 
             Log.LogInfo("Mirror Hooks GO");
+
+            if (KKAPI.Studio.StudioAPI.InsideStudio)
+                StudioReset.InitializeStudioHooks();
             
             _skyboxManager = Instance.GetOrAddComponent<SkyboxManager>();
             _skyboxManager.Parent = this;

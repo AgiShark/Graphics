@@ -20,12 +20,6 @@ namespace Graphics
 
             parent?.PresetManager?.Load(pluginData);
 
-            // load scene reflection probe information
-            if (pluginData != null && pluginData.data != null && pluginData.data.ContainsKey("containsDefaultReflectionProbeData") && (bool)pluginData.data["containsDefaultReflectionProbeData"])
-            {
-                Graphics.Instance.SkyboxManager.SetupDefaultReflectionProbe(Graphics.Instance.LightingSettings, true);
-            }
-
             if (pluginData != null && pluginData.data != null && pluginData.data.ContainsKey("reflectionProbeBytes"))
             {
                 ReflectionProbeSettings[] settings = MessagePackSerializer.Deserialize<ReflectionProbeSettings[]>((byte[])pluginData.data["reflectionProbeBytes"]);
@@ -33,12 +27,22 @@ namespace Graphics
                     ApplyReflectionProbeSettings(settings);
             }
 
+            // load scene reflection probe information
+            if (pluginData != null && pluginData.data != null && pluginData.data.ContainsKey("containsDefaultReflectionProbeData") && (bool)pluginData.data["containsDefaultReflectionProbeData"])
+            {
+                Graphics.Instance.SkyboxManager.SetupDefaultReflectionProbe(Graphics.Instance.LightingSettings, true);
+            }
+            else
+            {
+                Graphics.Instance.SkyboxManager.SetupDefaultReflectionProbe(Graphics.Instance.LightingSettings, false);
+            }
+
             if (pluginData != null && pluginData.data != null && pluginData.data.ContainsKey("lightDataBytes"))
             {
                 PerLightSettings[] settings = MessagePackSerializer.Deserialize<PerLightSettings[]>((byte[])pluginData.data["lightDataBytes"]);
                if (settings != null && settings.Length > 0)
                     ApplyLightSettings(settings);
-            }
+            }            
         }
 
         protected override void OnSceneSave()

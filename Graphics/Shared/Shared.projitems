@@ -99,6 +99,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)FocusPuller.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hooks\HoohSmartphoneScanner.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hooks\SSSMirrorHooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hooks\StudioReset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Inspector\GUIStyles.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Inspector\GUIUtility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Inspector\Inspector.cs" />
