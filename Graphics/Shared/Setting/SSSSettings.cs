@@ -8,6 +8,8 @@ namespace Graphics.Settings
     [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     public class SSSSettings
     {
+        public int presetVersion = -1;
+
         public float BlurSize = 0.1f; // Small Values by default.
         public float[] Color = {1f, 0f, 0f}; // red by default.
         public bool Debug = false;
@@ -60,6 +62,8 @@ namespace Graphics.Settings
             ProfileTest = instance.UseProfileTest;
             ProfileColorTest = instance.ProfileColorTest;
             ProfileRadiusTest = instance.ProfileRadiusTest;
+
+            presetVersion = 2;
         }
 
         private void RescueWithHelicopter()
@@ -101,6 +105,13 @@ namespace Graphics.Settings
             instance.UseProfileTest = ProfileTest;
             instance.ProfileColorTest = ProfileColorTest;
             instance.ProfileRadiusTest = ProfileRadiusTest;
+
+            if (presetVersion < 2)
+            {
+                instance.toggleTexture = SSS.ToggleTexture.None;
+                instance.SSS_Layer = instance.SSS_Layer | (1 << LayerMask.NameToLayer("Chara")) | (1 << LayerMask.NameToLayer("Map"));
+                instance.ProfilePerObject = true;
+            }
 
             Graphics.Instance.SSSManager.CopySettingsToOtherInstances();
         }

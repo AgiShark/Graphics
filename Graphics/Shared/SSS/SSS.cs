@@ -1,6 +1,10 @@
 ﻿using KKAPI.Utilities;
 using UnityEngine;
+using UnityEngine.XR;
 using UnityEngine.Rendering.PostProcessing;
+using System.Collections.Generic;
+using Illusion.Extensions;
+using System.Linq;
 
 namespace Graphics
 {
@@ -31,16 +35,15 @@ namespace Graphics
         public bool FixPixelLeaks;
         private int InitialpixelLights;
         private ShadowQuality InitialShadows;
-        private Camera LightingCamera;
-        private GameObject LightingCameraGO;
         private Vector2 m_TextureSize;
+
+        private Dictionary<string, GameObject> LightingCameraGOs;
+        private Dictionary<string, GameObject> ProfileCameraGOs;
 
         public int maxDistance = 10000;
         public Texture NoiseTexture;
-        private Camera ProfileCamera;
-
-        private GameObject ProfileCameraGO;
         public bool ProfilePerObject;
+
         public Shader ProfileShader, LightingPassShader;
         [Range(0, 10f)] public bool ShowCameras;
         public bool ShowGUI;
@@ -51,7 +54,7 @@ namespace Graphics
         [HideInInspector] public RenderTexture SSS_ProfileTex, SSS_ProfileTexR, LightingTex, LightingTexBlurred, LightingTexR, LightingTexBlurredR;
         public Color sssColor = Color.yellow;
 
-        public ToggleTexture toggleTexture = ToggleTexture.LightingTex;
+        public ToggleTexture toggleTexture = ToggleTexture.None;
         public bool UseProfileTest;
         public bool Enabled { get; set; }
         internal float Downsampling { get; set; }
@@ -70,10 +73,21 @@ namespace Graphics
 
         private void CreateCameras(Camera currentCamera, out Camera ProfileCamera, out Camera LightingCamera)
         {
+            if (LightingCameraGOs == null)
+            {
+                LightingCameraGOs = new Dictionary<string, GameObject>();
+            }
+            if (ProfileCameraGOs == null)
+            { 
+                ProfileCameraGOs = new Dictionary<string, GameObject>();
+            }
+
             ProfileCamera = null;
             if (ProfilePerObject)
-            {
+            {                
                 string profileGOName = $"SSS Profile Camera for {currentCamera.gameObject.name}-{currentCamera.gameObject.GetInstanceID()}";
+                GameObject ProfileCameraGO = null;
+                ProfileCameraGOs.TryGetValue(profileGOName, out ProfileCameraGO);
                 if (!ProfileCameraGO)
                 {
                     ProfileCameraGO = GameObject.Find(profileGOName);
@@ -90,16 +104,23 @@ namespace Graphics
                         ProfileCamera.depth = -254;
                         ProfileCamera.allowMSAA = false;
                     }
+
+                    ProfileCameraGOs[profileGOName] = ProfileCameraGO;
                 }
 
                 ProfileCamera = ProfileCameraGO.GetComponent<Camera>();
+                ProfileCamera.backgroundColor = Color.black;
+                ProfileCamera.depth = -254;
             }
 
             // Camera for lighting
-            LightingCamera = null;            
+            LightingCamera = null;
+
+            string lightingGOName = $"SSS Lighting Camera for {currentCamera.gameObject.name}-{currentCamera.gameObject.GetInstanceID()}";
+            GameObject LightingCameraGO = null;
+            LightingCameraGOs.TryGetValue(lightingGOName, out LightingCameraGO);
             if (!LightingCameraGO)
-            {
-                string lightingGOName = $"SSS Lighting Camera for {currentCamera.gameObject.name}-{currentCamera.gameObject.GetInstanceID()}";
+            {                
                 LightingCameraGO = GameObject.Find(lightingGOName);
                 if (!LightingCameraGO)
                 {
@@ -118,6 +139,7 @@ namespace Graphics
                         sss_convolution.BlurShader = _separableSSS;
                     }
                 }
+                LightingCameraGOs[lightingGOName] = LightingCameraGO;
             }
             LightingCamera = LightingCameraGO.GetComponent<Camera>();
             LightingCamera.allowMSAA = currentCamera.allowMSAA;
@@ -148,8 +170,8 @@ namespace Graphics
         {
             if (SSS_Layer == 0)
             {
-                SSS_Layer = 1;
-                Graphics.Instance.Log.LogInfo("Setting SSS layer from Nothing to Default");
+                SSS_Layer = LayerMask.NameToLayer("Chara");
+                Graphics.Instance.Log.LogInfo($"Setting SSS layer from Nothing to {LayerMask.LayerToName(SSS_Layer)}");
             }
 
             //optional
@@ -178,9 +200,11 @@ namespace Graphics
 
         private void OnPreRender()
         {
-            if (Enabled && !ReferenceEquals(cam, null))
-            {
+            Camera ProfileCamera = null;
+            Camera LightingCamera = null;
 
+            if (Enabled && cam != null && !ReferenceEquals(cam, null))
+            {
                 Shader.DisableKeyword("SCENE_VIEW");
                 if (ReferenceEquals(null, LightingPassShader))
                 {
@@ -196,14 +220,26 @@ namespace Graphics
                         ProfileShader = _profile;
                 }
 
-                m_TextureSize.x = cam.pixelWidth / Downsampling;
-                m_TextureSize.y = cam.pixelHeight / Downsampling;
-                CreateCameras(cam, out ProfileCamera, out LightingCamera);
+                if (cam.stereoEnabled)
+                {
+                    m_TextureSize.x = XRSettings.eyeTextureWidth / Downsampling;
+                    m_TextureSize.y = XRSettings.eyeTextureHeight / Downsampling;
+                }
+                else
+                {
+                    m_TextureSize.x = cam.pixelWidth / Downsampling;
+                    m_TextureSize.y = cam.pixelHeight / Downsampling;
+                }
 
+                CreateCameras(cam, out ProfileCamera, out LightingCamera);
                 #region Render Profile
                 if (ProfilePerObject && !ReferenceEquals(null, ProfileCamera))
                 {
                     UpdateCameraModes(cam, ProfileCamera);
+
+                    ProfileCamera.depth = -254;
+                    ProfileCamera.allowMSAA = false;
+
                     //ProfileCamera.allowHDR = false;
                     ////humm, removes a lot of artifacts when far away
                     ///
@@ -220,7 +256,7 @@ namespace Graphics
                     if (cam.stereoEnabled)
                     {    //Left eye   
                         if (cam.stereoActiveEye == Camera.MonoOrStereoscopicEye.Left)
-                        {
+                        {                            
                             ProfileCamera.projectionMatrix = cam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left);
                             ProfileCamera.worldToCameraMatrix = cam.GetStereoViewMatrix(Camera.StereoscopicEye.Left);
 
@@ -229,9 +265,8 @@ namespace Graphics
                             Shader.SetGlobalTexture("SSS_ProfileTex", SSS_ProfileTex);
 
                         }
-                        else 
+                        else if (cam.stereoActiveEye == Camera.MonoOrStereoscopicEye.Right)
                         {
-
                             ProfileCamera.projectionMatrix = cam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Right);
                             ProfileCamera.worldToCameraMatrix = cam.GetStereoViewMatrix(Camera.StereoscopicEye.Right);
 
@@ -252,7 +287,6 @@ namespace Graphics
 
                     QualitySettings.pixelLightCount = InitialpixelLights;
                     QualitySettings.shadows = InitialShadows;
-
                 }
                 else
                 {
@@ -266,11 +300,12 @@ namespace Graphics
 
                 #region Render Lighting
 
+
                 UpdateCameraModes(cam, LightingCamera);
                 LightingCamera.allowHDR = cam.allowHDR;
                 // if (SurfaceScattering)
                 {
-                    if (ReferenceEquals(null, sss_convolution)) sss_convolution = LightingCameraGO.GetComponent<SSS_convolution>();
+                    if (ReferenceEquals(null, sss_convolution)) sss_convolution = LightingCamera.gameObject.GetComponent<SSS_convolution>();
 
                     if (sss_convolution && sss_convolution._BlurMaterial)
                     {
@@ -278,6 +313,8 @@ namespace Graphics
                         maxDistance = Mathf.Max(0, maxDistance);
                         sss_convolution._BlurMaterial.SetFloat("maxDistance", maxDistance);
                         sss_convolution._BlurMaterial.SetFloat("NormalTest", Mathf.Max(.001f, NormalTest));
+                        sss_convolution._BlurMaterial.SetFloat("ProfileColorTest", Mathf.Max(.001f, ProfileColorTest));
+                        sss_convolution._BlurMaterial.SetFloat("ProfileRadiusTest", Mathf.Max(.001f, ProfileRadiusTest));
                         sss_convolution._BlurMaterial.SetFloat("EdgeOffset", EdgeOffset);
                         sss_convolution._BlurMaterial.SetInt("_SSS_NUM_SAMPLES", ShaderIterations + 1);
                         sss_convolution._BlurMaterial.SetColor("sssColor", sssColor);
@@ -313,6 +350,10 @@ namespace Graphics
                         else sss_convolution._BlurMaterial.DisableKeyword("DITHER_EDGE_TEST");
                     }
 
+                    LightingCamera.backgroundColor = cam.backgroundColor;
+                    LightingCamera.clearFlags = cam.clearFlags;
+                    LightingCamera.cullingMask = SSS_Layer;
+                    LightingCamera.depth = -846;
                     sss_convolution.iterations = ScatteringIterations;
 
                     if (cam.stereoEnabled)
@@ -320,8 +361,8 @@ namespace Graphics
                     else
                         sss_convolution.BlurRadius = ScatteringRadius;
 
+
                     LightingCamera.depthTextureMode = DepthTextureMode.DepthNormals;
-                   
                     if (cam.stereoEnabled)
                     {
                         if (cam.stereoActiveEye == Camera.MonoOrStereoscopicEye.Left)
@@ -372,19 +413,67 @@ namespace Graphics
                             Shader.SetGlobalTexture("LightingTexR", LightingTex);
                         }
                     }
-                }
 
+                }
                 #endregion
             }
             else
             {
-                //LightingCamera.depthTextureMode = DepthTextureMode.None;
+                if (LightingCamera != null)
+                    LightingCamera.depthTextureMode = DepthTextureMode.None;
+
+                if (sss_buffers_viewer != null && sss_buffers_viewer.enabled)
+                    sss_buffers_viewer.enabled = false;
             }
+
+            #region Debug
+            if (sss_buffers_viewer != null && Enabled)
+                switch (toggleTexture)
+                {
+                    case ToggleTexture.LightingTex:
+                        sss_buffers_viewer.InputBuffer = LightingTex;
+                        sss_buffers_viewer.enabled = true;
+                        break;
+                    case ToggleTexture.LightingTexBlurred:
+                        sss_buffers_viewer.InputBuffer = LightingTexBlurred;
+                        sss_buffers_viewer.enabled = true;
+                        break;
+                    case ToggleTexture.ProfileTex:
+                        sss_buffers_viewer.InputBuffer = SSS_ProfileTex;
+                        sss_buffers_viewer.enabled = true;
+                        break;
+                    case ToggleTexture.None:
+                        sss_buffers_viewer.enabled = false;
+                        break;
+                }
+            #endregion
+
         }
 
         private void OnPostRender()
         {
-            Shader.EnableKeyword("SCENE_VIEW");            
+            Shader.EnableKeyword("SCENE_VIEW");
+
+            List<string> keysToDestroy = new List<string>();
+            if (LightingCameraGOs != null) 
+            {
+                LightingCameraGOs.Keys.ToList().ForEach(s =>
+                {
+                    if (LightingCameraGOs[s]) keysToDestroy.Add(s);
+                });
+            }
+            keysToDestroy.ForEach(s => LightingCameraGOs.Remove(s));
+
+            keysToDestroy.Clear();
+            if (ProfileCameraGOs != null)
+            {
+                ProfileCameraGOs.Keys.ToList().ForEach(s =>
+                {
+                    if (ProfileCameraGOs[s]) keysToDestroy.Add(s);
+                });
+            }
+            keysToDestroy.ForEach(s => ProfileCameraGOs.Remove(s));
+
         }
 
         private void SafeDestroy(Object obj)
@@ -399,8 +488,17 @@ namespace Graphics
 
         private void Cleanup()
         {
-            SafeDestroy(LightingCameraGO);
-            SafeDestroy(ProfileCameraGO);
+            if (LightingCameraGOs != null)
+            {
+                LightingCameraGOs.Values.ToList().ForEach(go => SafeDestroy(go));
+                LightingCameraGOs.Clear();
+            }
+            if (ProfileCameraGOs != null)
+            {
+                ProfileCameraGOs.Values.ToList().ForEach(go => SafeDestroy(go));
+                ProfileCameraGOs.Clear();
+            }
+
             SafeDestroy(LightingTex);
             SafeDestroy(LightingTexBlurred);
             SafeDestroy(LightingTexR);

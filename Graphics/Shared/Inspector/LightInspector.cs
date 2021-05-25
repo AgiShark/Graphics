@@ -179,6 +179,38 @@ namespace Graphics.Inspector
             {
                 Label(typeName, "", true);
                 GUILayout.FlexibleSpace();
+                if (GUILayout.Button("All ON"))
+                {
+                    switch (type)
+                    {
+                        case LightSettings.LightType.Directional:
+                            lightManager.DirectionalLights.ForEach(l => l.enabled = true);
+                            break;
+                        case LightSettings.LightType.Point:
+                            lightManager.PointLights.ForEach(l => l.enabled = true);
+                            break;
+                        case LightSettings.LightType.Spot:
+                            lightManager.SpotLights.ForEach(l => l.enabled = true);
+                            break;
+                    }
+                }
+                GUILayout.Space(5);
+                if (GUILayout.Button("All OFF"))
+                {
+                    switch (type)
+                    {
+                        case LightSettings.LightType.Directional:
+                            lightManager.DirectionalLights.ForEach(l => l.enabled = false);
+                            break;
+                        case LightSettings.LightType.Point:
+                            lightManager.PointLights.ForEach(l => l.enabled = false);
+                            break;
+                        case LightSettings.LightType.Spot:
+                            lightManager.SpotLights.ForEach(l => l.enabled = false);
+                            break;
+                    }
+                }
+                GUILayout.Space(15);
                 if (Graphics.Instance.IsStudio())
                 {
                     if (GUILayout.Button("+"))
@@ -198,7 +230,7 @@ namespace Graphics.Inspector
                         lightGameObject.GetComponent<Light>().type = LightType.Directional;
                         lightManager.Light();
                     }
-                }
+                }                
             }
             GUILayout.EndHorizontal();
         }

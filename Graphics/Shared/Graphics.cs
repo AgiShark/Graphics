@@ -24,7 +24,7 @@ namespace Graphics
     {
         public const string GUID = "ore.graphics";
         public const string PluginName = "Graphics";
-        public const string Version = "0.3.7";
+        public const string Version = "0.3.8";
 
         public static ConfigEntry<KeyCode> ConfigShortcut { get; private set; }
         public static ConfigEntry<string> ConfigCubeMapPath { get; private set; }
@@ -226,7 +226,7 @@ namespace Graphics
         }
 
         // Pulsing Reflection Probes Support
-        public float ReflectionProbesPulseTimer { get; set; }
+        public float ReflectionProbesPulseTimer { get; set; } = 2.0f;
 
         private bool pulseReflectionProbes;
         public bool PulseReflectionProbes
@@ -236,7 +236,12 @@ namespace Graphics
             {
                 pulseReflectionProbes = value;
                 if (pulseReflectionProbes)
+                {
+                    if (ReflectionProbesPulseTimer == 0.0f)
+                        ReflectionProbesPulseTimer = 2.0f;
+
                     StartPulseRealtimeReflectionCoroutine();
+                }
             }
         }
 
