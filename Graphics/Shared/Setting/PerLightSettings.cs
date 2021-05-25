@@ -66,7 +66,11 @@ namespace Graphics
                     }
                 }
             }
-            lightObject.rotation = Rotation;
+
+            // Exclude Cam Light from rotation setting
+            if (lightObject.light.name != "Cam Light")
+                lightObject.rotation = Rotation;
+
             lightObject.range = Range;
             lightObject.spotAngle = SpotAngle;
             if (Graphics.Instance.LightManager.UseAlloyLight)

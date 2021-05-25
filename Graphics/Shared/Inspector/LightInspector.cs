@@ -119,13 +119,16 @@ namespace Graphics.Inspector
                                             GUI.enabled = true;
                                         }
 
-                                        Vector3 rot = lightManager.SelectedLight.rotation;
-                                        Slider("Vertical Rotation", rot.x, LightSettings.RotationXMin, LightSettings.RotationXMax, "N1", x => { rot.x = x; });
-                                        Slider("Horizontal Rotation", rot.y, LightSettings.RotationYMin, LightSettings.RotationYMax, "N1", y => { rot.y = y; });
-
-                                        if (rot != lightManager.SelectedLight.rotation)
+                                        if (lightManager.SelectedLight.light.name != "Cam Light")
                                         {
-                                            lightManager.SelectedLight.rotation = rot;
+                                            Vector3 rot = lightManager.SelectedLight.rotation;
+                                            Slider("Vertical Rotation", rot.x, LightSettings.RotationXMin, LightSettings.RotationXMax, "N1", x => { rot.x = x; });
+                                            Slider("Horizontal Rotation", rot.y, LightSettings.RotationYMin, LightSettings.RotationYMax, "N1", y => { rot.y = y; });
+
+                                            if (rot != lightManager.SelectedLight.rotation)
+                                            {
+                                                lightManager.SelectedLight.rotation = rot;
+                                            }
                                         }
                                     }
                                     else
