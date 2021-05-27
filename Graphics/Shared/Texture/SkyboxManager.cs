@@ -302,7 +302,7 @@ namespace Graphics.Textures
                     DontDestroyOnLoad(_probe);
                 }
 
-                if (lights.DefaultReflectionProbeSettings != null && lights.DefaultReflectionProbeSettings.Importance > 0)
+                if (lights.DefaultReflectionProbeSettings != null && lights.DefaultReflectionProbeSettings.Intensity > 0)
                 {
                     lights.DefaultReflectionProbeSettings.ApplySettings(_probe);
                 }
@@ -321,6 +321,8 @@ namespace Graphics.Textures
                     _probe.transform.position = new Vector3(0, 0, 0);
                     _probe.refreshMode = ReflectionProbeRefreshMode.EveryFrame;
                     _probe.timeSlicingMode = ReflectionProbeTimeSlicingMode.AllFacesAtOnce;
+                    lights.DefaultReflectionProbeSettings = new ReflectionProbeSettings();
+                    lights.DefaultReflectionProbeSettings.FillSettings(_probe);
                 }
             }
             else if (_probeGameObject != null && _probe != null)

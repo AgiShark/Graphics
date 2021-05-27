@@ -75,7 +75,7 @@ namespace Graphics.Settings
 
         public void FillSettings(ReflectionProbe probe)
         {
-            if (probe != null && !probe.isActiveAndEnabled)
+            if (probe == null || (probe != null && !probe.isActiveAndEnabled))
                 return;
 
             try
