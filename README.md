@@ -9,7 +9,7 @@ Similar to PHIBL, Graphics uses cubemaps for imaged based lighting (IBL). Some s
 
 # Note from OrangeSpork
 
-While Hooh labs works on the proper overhaul of this mod, the version of HS2Graphics I've been packaging with the VR plugin has picked up a bunch of...non-VR related stuff in it. I'm finally breaking down and moving the release out of the VR plugin over into the proper repo. This is just an update to the link to the release place going forward.
+While Hooh labs works on the proper overhaul of this mod, the version of HS2Graphics I've been packaging with the VR plugin has picked up a bunch of...non-VR related stuff in it. I'm finally breaking down and moving the release out of the VR plugin over into the proper repo. 
 
 This is totally optional, if you don't know why you want this, you can just stay on what you've got, no issues.
 
