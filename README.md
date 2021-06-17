@@ -36,7 +36,7 @@ Does Graphics mod make the game slower. Short answer is no. Long answer is yes. 
 
 But seriously, Graphics mod doesn't do anything itself, instead it allows you to access and enable advanced Graphics features not normally turned on in the game. Some of which come at a performance cost. If you have the same settings as Vanilla you'll get the same performance as Vanilla. Most people are using this mod specifically to improve the looks of things, but that degrades performance. It all depends on your preset. So, let's dive it to a discussion of the options and I'll point out some of the most expensive in terms of FPS and you can make your own choices.
 
-##Starting with the Settings tab:
+## Starting with the Settings tab:
 
 **Clear Flags** - Ignore these. You either know what these do and know not to touch them or you don't know what they do...and so shouldn't touch them.
 
