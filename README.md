@@ -28,6 +28,137 @@ Major changes list:
 - Pulsed Realtime Reflection Probes setting - Updates realtime reflection probes every N seconds, benefits of realtime probes with less overall performance impact.
 - Numerous small bug fixes
 
+# Performance Tips
+
+My FPS is terrible, halp...
+
+Does Graphics mod make the game slower. Short answer is no. Long answer is yes. Because 3 letters is longer than 2...thank you, thank you, try the veal.
+
+But seriously, Graphics mod doesn't do anything itself, instead it allows you to access and enable advanced Graphics features not normally turned on in the game. Some of which come at a performance cost. If you have the same settings as Vanilla you'll get the same performance as Vanilla. Most people are using this mod specifically to improve the looks of things, but that degrades performance. It all depends on your preset. So, let's dive it to a discussion of the options and I'll point out some of the most expensive in terms of FPS and you can make your own choices.
+
+##Starting with the Settings tab:
+
+**Clear Flags** - Ignore these. You either know what these do and know not to touch them or you don't know what they do...and so shouldn't touch them.
+
+**Near/Far Clipping Plane**. Basically makes stuff closer or further than the distance specified not render. Near clipping plane is mostly used to prevent stuff really close to the camera from clogging up the view. I recommend leaving this at a very small value (0.01 -> 0.1). There are better tools to help with this, see the HS2 Map Masking plugin stuff. Far clip plane allows you to save performance by not drawing stuff that's very far away. This game however really doesn't tend to actually have stuff very far away. If you can't see the skybox, check to see if this is set too close.
+
+**Rendering Path** Hmm, complicated one. VertexLit is an option you'll ignore, it's only for some very stylized type games and stuff. Forward and Deferred are interesting choices though. The difference is how shadows and some occlusion (things in front of other things) are handled. Short version is that doing stuff right for calculating shadows gets very complicated very quickly. Sure, this object is in front of this other object and show should block it and cast a shadow right? Nope, partially transparent...blegh. Hence all the excitement about hardware ray tracing to handle this. Meantime, Unity Engine handles this quandary by offering two modes. Forward mode calculates shadows and stuff more accurately. But to avoid crippling performance issues Unity only handles shadows from the 4 strongest light sources present. Deferred calculates for all lights, but uses an approximation mode that's less accurate but faster. Use Forward when you have few, strong lights (like a daytime scene with just the Sun). Use Deferred if you have lots of smaller lights. 
+
+**Field of View** Self explanatory.
+**Occlusion Culling** Unity spends extra CPU time calculating stuff it can save GPU time by not needing to render. Only works with baked in occlusion rendering (built into the map) which Illusion is notorious for not using. Can probably leave this off and save time as a result, but some modded maps may actually use this correctly. Unless your CPU bound, this won't affect FPS either way.
+
+**Allow HDR** Allows HDR. Better color handling and allows for certain post processing effects (like post-exposure). Small performance hit on some systems (especially VR).
+**Allow MSAA** Allows Multisampling AntiAliasing (see the multiplier set below). Only works in Forward rendering mode. A bit redundant to the algorithms available over in PostProcessing.  Personally I find it does basically nothing over SMAA and has a larger frame rate hit. Recommend off.
+**Allow Dynamic Resoultion** Not supported on PC in this Unity version...ignore.
+**Pixel Light Count** Maximum number of lights that effect an object, additional dimmest lights render as Vertex lights only (low quality). Don't touch this. 
+**Anisotropic Textures** Do you have a 15 year old GPU? Turning this off will net you some FPS. For all modern GPUs they do this in their sleep. Force Enabling sets this to 8x. Enabling leaves it at what Illusion has, which may vary from scene to scene. Monkey testing seems to indicate Forced Enable results in sharper textures than the game base settings, your mileage may vary. No real FPS hit here either way.
+**MSAA Multiplier** See MSAA above.
+**Realtime Reflection Probes/Pulse/Pulse Timing** A reflection probe is a thing that calculates how ambient light, shadows and whatnot effect the lighting of an area of the scene. In most games you can precalculate this since your major light sources and map stuff is all fixed. This is part of 'baked' lighting. Realtime probes in comparison continuously update such effects with the latest information. Given that stuff (especially in Studio) moves around and can't be pre-baked entirely as we are basically building the scene realtime, this is rather handy for correct lighting but is, as you might imagine, expensive to calculate. Enabling realtime probes will hit your FPS noticeably. As a partial solution, the pulse feature allows you to turn the realtime probes on for a few frames every N seconds. Rather than continuously updating things it updates every few seconds instead. While studio scenes change on the fly when you load/add/move stuff, they don't move the stuff that effects this (like lights especially) continuously. So this grants the advantages of realtime probes at a much cheaper cost, if you aren't moving lights or major scene pieces rapidly around the scene. Small movements and angle changes aren't an issue. Recommendation: Pulsed Probes at about 5-10 second update interval. 2 seconds if you have a strong CPU.
+
+**Shadowmask Mode** Simplifying things but Distance better/more expensive (better at casting map shadows onto dynamic objects in simple terms). Very small (read imperceptible) actual performance difference in practice. Recommend setting to Distance. If you want more framerate, turning shadows off entirely is better.
+**Shadows** Let's you turn shadows Off, Hard mode means sharp edged (but cheaper) shadows. Soft is more realistically shaded (but expensive and tend to have alias artifacts). Switch to hard or even off to get more FPS.
+**Shadow Resolution** Higher = more shadow quality, Lower = better performance. Much smaller impact then turning shadows completely off, but might be a good compromise.
+**Shadow Projection/Distance/Near Plane** These affect visual look and not really performance. Generally scene specific, recommend leave these alone and then adjust only if you want to fine tune the look of shadows in a particular scene.
+
+**Language/Font/WindowSize/Advanced Mode** Graphics mod options for itself...no performance impact here..duh.
+
+**Advanced Mode Stuff**
+**Culling Mask** - Don't touch.
+**PCSS** - See here: https://github.com/TheMasonX/UnityPCSS - Basically fancy shadows...bit fiddly and scene specific.
+
+## Presets Tab
+
+Lists all your presets from your presets folder (default is...presets in the game directory). Use the F1 plugin settings menu to check where this is pointed at. Note: it is an absolute path, so if you move the game, it's going to be still pointed to the last place.
+
+There's a save box, type in a name and click save to save the current settings as the new preset file name. You can share these around. 
+
+Finally the defaults. These are what gets loaded when scenes (in the Unity sense) change in each of the listed modes. Note that for studio only the INITAL load into studio counts as a 'Scene' change. Loading Studio scenes doesn't count as a Unity scene change. Main game changes scenes every time you sneeze. Load immediately loads that preset. Save updates the preset to your current settings. Reset sets it back to the out of box configuration.
+
+## SSS
+
+Used for Subsurface Scattering Effects...which is currently...one, Hanmens Nextgen Skin Mod. Though presumably more will come in time. So if you aren't using Hanmen Nextgen Skin mod...this does nothing, turn it off. If you are using Hanmen Nextgen skin...turn this on, duh.
+
+**Profile Per Object** Determines if the subsurface scattering color is determined by the object being looked at or the setting here. Turning this off lets you set the color. Leave this on.
+**Blur Size** Look and feel trade off. Increasing this makes the scattering effect 'better' but will blur fine skin features. Set to taste, no real performance impact.
+**Postprocess Iterations** More is higher quality at higher cost. Strong diminishing returns effect, around 2-4 is plenty. 
+**Shader iterations per pass** Ditto. I find higher than about 6 does essentially nothing I can see.
+**Downscale factor** Divides the resolution of the object when calculating. BIG performance gain but lowers fidelity and can introduce aliasing artifacts. For beauty shots leave it at 1 (full size). For moving scenes (like in the main game) I find setting this to 2 provides large frame rate improvements (almost refunds SSS being on entirely) at minimal quality loss.
+**Max Distance** - Not implemented.
+**Debug Distance** - Not implemented.
+**Layers** What the SSS checks and processes. Only enable Chara or Map basically. Use Chara for skins and Map for SSS studio accessories. Since we don't have any SSS studio accessories setting this to Chara being the only selected layer is recommended. Turning off Map will improve peformance very noticeably.
+**Dither** Turns dithering on/off. Dithering blurs the underlying skin features a bit and looks more 'natural'. CPU performance hit, unless you are CPU bound this doesn't cost you anything. If you are turning this off will grant some FPS but make the underlying skin a bit...blotchy.
+**Intensity** More is a stronger effect and more expensive. I find I can't tell much difference above 2 (or things just get blurry).
+**Scale** ...leave this at default basically.
+**Debug** Umm, debug stuff for me basically...
+
+## SSS Performance Tips
+
+Most important: Turn off all layers except Chara. Until we have SSS studio items anything else does nothing and costs frames.
+Next: Downscale factor. Turn this up to 2.0 for big frame rate gains, quality loss...isn't bad honestly. Try for even numbers (it's a divider) (1, 2, 4).
+Next: Postprovess iterations/Shader Iterations (lower is faster)
+Dither/Dither Intensity: If you are CPU bound this'll grant performance, doesn't help.
+
+I find Chara only layer, Downscale of 2, 2 postprocess iterations, 4 shader iterations, dither on...looks quite nice and the framerate hit is surprisingly small.
+
+## Post Processing
+
+**Anti-aliasing** Makes the Jaggies go away. In order of both performance impact and quality it goes None->FXAA->SMAA->TAA. Unless your graphics card is ancient however, FXAA or SMAA won't even be noticeable, so turn on one of these and SMAA is frankly just straight better. If you have a really Potato PC turn the quality down a bit to Medium even Low if you need to, but honestly doubt you'll notice it on.
+
+**TAA** - TAA needs a discussion all by itself. It's a bit more expensive (barely) than SMAA. It CAN produce much better results than SMAA, the problem is that one size does not fit all for this mode. Basically it makes things look better and better until it goes too far and makes things flash (especially Pantyhose, gloves and other skin tight stuff). Some studio items as well get blinky with this turned up too far. 
+
+**Sharpness** - Higher means more processing, stronger de-aliasing but if you crank it too far everything will get artificially straight/blocky.
+**Stationary/Motion Blending** Controls how much history goes into the TAA algorithm for moving/non-moving items. In simple terms...Lower equals stronger de-aliasing, higher does a better job avoiding...flicker in simple terms. Basically lower until you get flicker and then increase.
+**Jitter Spread** TAA...subtly moves stuff and then uses that to try and prevent unrealistic anti-aliasing issues. Too high however will cause flicker. Basically you want the highest value you can hit without stuff flickering.
+
+Basically TAA can look the best of all of them, especially with some fine detail stuff like hair (at least as good as HS2 gets), but is finicky. I recommend using SMAA most of the time and then doing a per-scene TAA, setting Jitter as high and blending as low as possible until you get flicker. TAA can also cause ghosting sometimes, especially if you are having low FPS issues, if you get that just go back to SMAA. Note, in VR mode TAA hits the UX and will make it blurry, either use SMAA or...suffer with a blurred UX.
+
+**Post Process Effects**
+
+None of these are really paricularly expensive and I haven't noticed any real performance issues with them...Mostly they effect how things actually look. What they all do is waaayyy too long for here, just RTFM: https://docs.unity3d.com/Packages/com.unity.postprocessing@2.1/manual/Ambient-Occlusion.html
+
+## Lights
+
+Individual light settings 
+
+**Alloy Light** - Advanced Setting - Slightly better light look, small performance hit. Leave it on.
+
+**Light Controls** - You can add lights here (same as adding in Studio) and turn lights on/off. Turning lights off removes lighting and shadow work so makes things faster. Performance impact of any particular light depends on numerous factors such as what all it affects, the shaders being used, other graphics settings. So hard to say. Fewer is faster in general, but most lights have a small FPS effect, usually requires large numbers of lights to really make a difference. Note that directional lights, since they hit everything are most expensive, Points are generally cheaper, spots...vary.
+
+**Color** - Color of the light...duh. No performance impact, just...visual.
+**Shadows** Same as shadow discussion above, really. Note, bias/normal bias and near plane all refer to the shadows cast by the light. No real performance issues here but do change the way it looks, sometimes dramatically, fun to play with.
+**Intensity** - Higher=stronger light. Note, certain effects (especially in Forward mode) only apply to the 4 or so strongest lights.
+**Indirect Multiplier** In theory this effects how much the light bounces to hit objects it doesn't directly see. Very scene specific setting.
+**Rotation** - Another way to set the direction of the light (same as the studio controls)
+**Specular Highlight** - Strength of the Alloy lighting effect...leave at default.
+**SEGI Sun Source** - Use this if you know what SEGI does, otherwise pretend you don't see this.
+**Range** - For spots and point lights, how far they reach
+**Angle** - For spots, same as the studio control - angle of the spotlight cone.
+
+**Render Mode** - Advanced Setting - Interesting choices. ForcePixel is higher quality but more expensive, ForceVertex is cheaper but faster. Auto lets the game pick (I believe it always picks Pixel). If you just want a cheap, background sorta filler light to supplement better lighting, setting ForceVertex is an interesting option, but normally stick with Pixel.
+**Culling Mask** - What the light effects. You can make the light hit only certain things by changing this. Can be handy in some modded maps that may have stuff in strange layers.
+
+## Lighting
+
+This tab deals with scene wide effects such as skyboxes and reflection probes.
+
+**Environment Skybox** -- Somewhat misnamed, allows you to pick a cubemap. A cubemap is a skybox (an enormous box the scene is basically inside of) that also provides lighting emanating from it into the scene - so both a texture in the sky and a source of light. Cubemaps are from the cubemaps folder (check F1 plugin settings for your location). 
+
+
+**Source** - Ambient scene lighting - one of four modes Custom (not shown but the mode if you picked a cubemap), Skybox (either from the selected skybox (NOT CUBEMAP) selected from the Illusion scene options if you picked one or the single color picked below), Flat (Single color from Illusion scene options - Not sure this works at all honestly), Trilight (3 colors Sky/Ground/Horizon) from the Illusion scene options. 
+
+**Intensity** - With a cubemap or skybox selected, determines the brightness of ambient light produced by the skybox/cubemap.
+**Exposure** - Brightness of the cubemap/skybox itself - does nothing in other modes.
+**Rotation** - Rotation of the cubemap/skybox
+**Tint** - Color tint applied to the cubemap/skybox
+
+**Resolution** - Skybox only - Resolution of the skybox for purposes of reflections (more is higher quality, but more expensive). Only for skyboxes. More = Quality, Less = Faster
+**Intensity** - How strongly the reflected cubemap/skybox appears on items reflecting it. 
+**Bounces** - Maximum number of times light is allowed to bounce off objects. 1 means the lights reflect off one object, higher than 1 means reflections can chain. Big performance impact here potentially dependingon lighting source and number of reflecting objects.
+
+**Reflection Probes** - Long and complex, short version? RTFM: https://docs.unity3d.com/2018.4/Documentation/Manual/ReflectionProbes.html
+
+For performance purposes, Lower resolution, turn off HDR and set your Culling Mask and Time Slicing Mode correctly to reduce performance hit. However, see the Pulsed Realtime setting to get a possible High Quality/Fast Performance compromise, assuming you don't have lights and objects zooming around the scene rapidly.
+
 ## Attributions
 [Alloy](https://github.com/Josh015/Alloy)  
 [SEGI](https://github.com/sonicether/SEGI)  
