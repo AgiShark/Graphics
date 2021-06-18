@@ -106,7 +106,7 @@ Used for Subsurface Scattering Effects...which is currently...one, Hanmens Nextg
 
 **Layers** What the SSS checks and processes. Only enable Chara or Map basically. Use Chara for skins and Map for SSS studio accessories. Since we don't have any SSS studio accessories setting this to Chara being the only selected layer is recommended. Turning off Map will improve peformance very noticeably.
 
-**Dither** Turns dithering on/off. Dithering blurs the underlying skin features a bit and looks more 'natural'. CPU performance hit, unless you are CPU bound this doesn't cost you anything. If you are turning this off will grant some FPS but make the underlying skin a bit...blotchy.
+**Dither** Turns dithering on/off. Dithering blurs the underlying skin features a bit and looks more 'natural'. CPU performance hit, unless you are CPU bound this doesn't cost you anything. If you are CPU limited, turning this off will grant some FPS but make the underlying skin a bit...blotchy.
 
 **Intensity** More is a stronger effect and more expensive. I find I can't tell much difference above 2 (or things just get blurry).
 
@@ -119,7 +119,7 @@ Used for Subsurface Scattering Effects...which is currently...one, Hanmens Nextg
 Most important: Turn off all layers except Chara. Until we have SSS studio items anything else does nothing and costs frames.\
 Next: Downscale factor. Turn this up to 2.0 for big frame rate gains, quality loss...isn't bad honestly. Try for even numbers (it's a divider) (1, 2, 4).\
 Next: Postprovess iterations/Shader Iterations (lower is faster)\
-Dither/Dither Intensity: If you are CPU bound this'll grant performance, doesn't help.\
+Dither/Dither Intensity: If you are CPU bound this'll grant performance, otherwise doesn't help.
 
 I find Chara only layer, Downscale of 2, 2 postprocess iterations, 4 shader iterations, dither on...looks quite nice and the framerate hit is surprisingly small.
 
