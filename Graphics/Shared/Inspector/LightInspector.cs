@@ -70,7 +70,14 @@ namespace Graphics.Inspector
                                 {
                                     alloyLight = lightManager.SelectedLight.light.GetComponent<AlloyAreaLight>();
                                 }
-                                Label(lightManager.SelectedLight.light.name, "", true);
+                                if (Graphics.Instance.IsStudio())
+                                {
+                                    Text("Light Name", lightManager.SelectedLight.light.name, lightName => lightManager.SelectedLight.light.name = lightName, !lightManager.SelectedLight.light.transform.IsChildOf(GameObject.Find("StudioScene/Camera").transform));
+                                }
+                                else
+                                {
+                                    Label(lightManager.SelectedLight.light.name, "", true);
+                                }
                                 GUILayout.BeginVertical(GUIStyles.Skin.box);
                                 inspectorScrollView = GUILayout.BeginScrollView(inspectorScrollView);
                                 {
@@ -119,7 +126,7 @@ namespace Graphics.Inspector
                                             GUI.enabled = true;
                                         }
 
-                                        if (lightManager.SelectedLight.light.name != "Cam Light")
+                                        if (lightManager.SelectedLight.light.name != "Cam Light" || !lightManager.SelectedLight.light.transform.IsChildOf(GameObject.Find("StudioScene/Camera").transform))
                                         {
                                             Vector3 rot = lightManager.SelectedLight.rotation;
                                             Slider("Vertical Rotation", rot.x, LightSettings.RotationXMin, LightSettings.RotationXMax, "N1", x => { rot.x = x; });
