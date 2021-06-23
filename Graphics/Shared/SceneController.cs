@@ -71,27 +71,52 @@ namespace Graphics
             lightManager.Light();
             int counter = 0;
 
-            foreach (LightObject light in lightManager.DirectionalLights)
+            if (settings.Length > 0 && settings[0].Path != null)
             {
-                settings[counter++].ApplySettings(light);
-                if (counter >= settings.Length)
-                    return;
-            }
+                foreach (LightObject light in lightManager.DirectionalLights)
+                {
+                    PerLightSettings setting = settings.FirstOrDefault(s => s.Path == PerLightSettings.BuildPath(light.light.gameObject) && s.Index == light.light.gameObject.transform.GetSiblingIndex());
+                    if (setting != null)
+                        setting.ApplySettings(light);
+                }
 
-            foreach (LightObject light in lightManager.PointLights)
+                foreach (LightObject light in lightManager.PointLights)
+                {
+                    PerLightSettings setting = settings.FirstOrDefault(s => s.Path == PerLightSettings.BuildPath(light.light.gameObject) && s.Index == light.light.gameObject.transform.GetSiblingIndex());
+                    if (setting != null)
+                        setting.ApplySettings(light);
+                }
+
+                foreach (LightObject light in lightManager.SpotLights)
+                {
+                    PerLightSettings setting = settings.FirstOrDefault(s => s.Path == PerLightSettings.BuildPath(light.light.gameObject) && s.Index == light.light.gameObject.transform.GetSiblingIndex());
+                    if (setting != null)
+                        setting.ApplySettings(light);
+                }
+            }
+            else
             {
-                settings[counter++].ApplySettings(light);
-                if (counter >= settings.Length)
-                    return;
-            }
+                foreach (LightObject light in lightManager.DirectionalLights)
+                {
+                    settings[counter++].ApplySettings(light);
+                    if (counter >= settings.Length)
+                        return;
+                }
 
-            foreach (LightObject light in lightManager.SpotLights)
-            {
-                settings[counter++].ApplySettings(light);
-                if (counter >= settings.Length)
-                    return;
-            }
+                foreach (LightObject light in lightManager.PointLights)
+                {
+                    settings[counter++].ApplySettings(light);
+                    if (counter >= settings.Length)
+                        return;
+                }
 
+                foreach (LightObject light in lightManager.SpotLights)
+                {
+                    settings[counter++].ApplySettings(light);
+                    if (counter >= settings.Length)
+                        return;
+                }
+            }
         }
 
         private PerLightSettings[] BuildLightSettings()

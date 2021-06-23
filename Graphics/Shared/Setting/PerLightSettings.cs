@@ -11,6 +11,8 @@ namespace Graphics
     [MessagePackObject(keyAsPropertyName: true)]
     public class PerLightSettings
     {
+        public string Path { get; set; }
+        public int Index { get; set; }
         public bool Disabled { get; set; } = true;
         public bool UseAlloyLight { get; set; }
         public Color Color { get; set; }
@@ -83,7 +85,7 @@ namespace Graphics
                 }
             }
             lightObject.light.renderMode = (LightRenderMode)RenderMode;
-            lightObject.light.cullingMask = CullingMask;
+            lightObject.light.cullingMask = CullingMask;            
         }
 
         internal void FillSettings(LightObject lightObject)
@@ -119,6 +121,7 @@ namespace Graphics
                 SegiSun = false;
 
             Rotation = lightObject.rotation;
+
             Range = lightObject.range;
             SpotAngle = lightObject.spotAngle;
             if (Graphics.Instance.LightManager.UseAlloyLight)
@@ -143,6 +146,21 @@ namespace Graphics
 
             RenderMode = (int)lightObject.light.renderMode;
             CullingMask = lightObject.light.cullingMask;
+
+            Index = lightObject.light.gameObject.transform.GetSiblingIndex();            
+            Path = BuildPath(lightObject.light.gameObject);
+        }
+
+        public static string BuildPath(GameObject go)
+        {
+            string path = go.transform.name;
+            Transform parent = go.transform.parent;
+            while (parent != null)
+            {
+                path = parent.name + "/" + path;
+                parent = parent.parent;
+            }
+            return path;
         }
     }
 }
