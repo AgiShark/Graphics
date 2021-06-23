@@ -12,12 +12,26 @@ namespace Graphics
 {
     internal class SceneController : SceneCustomFunctionController
     {
+        public byte[] ExportSettingBytes()
+        {
+            return MessagePackSerializer.Serialize(DoSave());            
+        }
+
+        public void ImportSettingBytes(byte[] bytes)
+        {
+            DoLoad(MessagePackSerializer.Deserialize<PluginData>(bytes));
+        }
+
         protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
+        {
+            PluginData pluginData = GetExtendedData();
+            DoLoad(pluginData);
+        }        
+
+        private void DoLoad(PluginData pluginData)
         {
             Studio.Studio studio = GetStudio();
             Graphics parent = Graphics.Instance;
-            PluginData pluginData = GetExtendedData();
-
             parent?.PresetManager?.Load(pluginData);
 
             if (pluginData != null && pluginData.data != null && pluginData.data.ContainsKey("reflectionProbeBytes"))
@@ -46,6 +60,11 @@ namespace Graphics
         }
 
         protected override void OnSceneSave()
+        {           
+            SetExtendedData(DoSave());
+        }
+
+        private PluginData DoSave()
         {
             PluginData pluginData = Graphics.Instance?.PresetManager.GetExtendedData();
 
@@ -62,7 +81,7 @@ namespace Graphics
                 pluginData.data.Add("lightDataBytes", MessagePackSerializer.Serialize(BuildLightSettings()));
             }
 
-            SetExtendedData(pluginData);
+            return pluginData;
         }
 
         private void ApplyLightSettings(PerLightSettings[] settings)
@@ -152,22 +171,34 @@ namespace Graphics
 
         private void ApplyReflectionProbeSettings(ReflectionProbeSettings[] settings)
         {
-            string[] probeNames = settings.Select(s => s.Name).ToArray();
 
             ReflectionProbe[] probes = Graphics.Instance.SkyboxManager.GetReflectinProbes();
-            if (probes != null)
+            if (probes != null && settings != null)
             {
-                foreach (string probeName in probeNames)
+                if (settings.Length > 0 && settings[0].Path == null) 
                 {
-                    int counter = 0;
-                    foreach (ReflectionProbeSettings setting in settings.Where(s => s.Name == probeName).ToList())
+                    string[] probeNames = settings.Select(s => s.Name).ToArray();
+                    foreach (string probeName in probeNames)
                     {
-                        if (probes.Where(p => p.name == probeName).Skip(counter).Any())
+                        int counter = 0;
+                        foreach (ReflectionProbeSettings setting in settings.Where(s => s.Name == probeName).ToList())
                         {
-                            ReflectionProbe probe = probes.Where(p => p.name == probeName).Skip(counter).First();
-                            setting.ApplySettings(probe);
-                            counter++;
+                            if (probes.Where(p => p.name == probeName).Skip(counter).Any())
+                            {
+                                ReflectionProbe probe = probes.Where(p => p.name == probeName).Skip(counter).First();
+                                setting.ApplySettings(probe);
+                                counter++;
+                            }
                         }
+                    }
+                }
+                else
+                {
+                    foreach (ReflectionProbe probe in probes)
+                    {
+                        ReflectionProbeSettings setting = settings.FirstOrDefault(s => s.Path == ReflectionProbeSettings.BuildPath(probe.gameObject) && s.Index == probe.transform.GetSiblingIndex());
+                        if (setting != null)
+                            setting.ApplySettings(probe);
                     }
                 }
             }
