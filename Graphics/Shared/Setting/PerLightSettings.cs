@@ -15,6 +15,7 @@ namespace Graphics
         public int Index { get; set; }
         public bool Disabled { get; set; } = true;
         public bool UseAlloyLight { get; set; }
+        public string LightName { get; set; }
         public Color Color { get; set; }
         public float ColorTemperature { get; set; }
         public int ShadowType { get; set; }
@@ -40,6 +41,8 @@ namespace Graphics
             lightObject.enabled = !Disabled;
 
             Graphics.Instance.LightManager.UseAlloyLight = UseAlloyLight;
+
+            if (!string.IsNullOrEmpty(LightName)) lightObject.light.name = LightName;
 
             lightObject.color = Color;
             lightObject.light.colorTemperature = ColorTemperature;
@@ -70,7 +73,7 @@ namespace Graphics
             }
 
             // Exclude Cam Light from rotation setting
-            if (lightObject.light.name != "Cam Light")
+            if (lightObject.light.name != "Cam Light" && !lightObject.light.transform.IsChildOf(GameObject.Find("StudioScene/Camera").transform))
                 lightObject.rotation = Rotation;
 
             lightObject.range = Range;
@@ -93,6 +96,8 @@ namespace Graphics
             Disabled = !lightObject.enabled;
 
             UseAlloyLight = Graphics.Instance.LightManager.UseAlloyLight;
+
+            LightName = lightObject.light.name;
 
             Color = lightObject.color;
             ColorTemperature = lightObject.light.colorTemperature;
