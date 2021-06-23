@@ -158,7 +158,7 @@ namespace Graphics
                 Texture2D gIconTex = new Texture2D(32, 32);
                 byte[] texData = ResourceUtils.GetEmbeddedResource("icon_camera_vsmall.png");
                 ImageConversion.LoadImage(gIconTex, texData);
-                KKAPI.Studio.UI.CustomToolbarButtons.AddLeftToolbarToggle(gIconTex, false, active => {
+                studioToolbarToggle = KKAPI.Studio.UI.CustomToolbarButtons.AddLeftToolbarToggle(gIconTex, false, active => {
                     Show = active;
                 });
             }
@@ -188,7 +188,12 @@ namespace Graphics
                 GUISkin originalSkin = GUI.skin;
                 GUI.skin = GUIStyles.Skin;
                 _inspector.DrawWindow();
-                GUI.skin = originalSkin;
+                GUI.skin = originalSkin;                
+            }
+
+            if (Event.current?.type == EventType.KeyDown && ConfigShortcut.Value == Event.current?.keyCode)
+            {
+                ToggleGUI();
             }
         }
 
@@ -199,16 +204,11 @@ namespace Graphics
                 return;
             }
 
-            if (Input.GetKeyDown(ConfigShortcut.Value))
-            {
-                Show = !Show;
-            }
-
             if (Show)
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-            }
+            }           
         }
 
         internal void LateUpdate()
@@ -270,6 +270,14 @@ namespace Graphics
             realtimeReflectionPulseCoroutineRunning = false;
         }
 
+        public void ToggleGUI()
+        {
+            if (studioToolbarToggle == null)
+                Show = !Show;
+            else
+                studioToolbarToggle.Value = !Show;
+        }
+
         private bool Show
         {
             get => _showGUI;
@@ -303,9 +311,8 @@ namespace Graphics
                             Cursor.visible = _previousCursorVisible;
                         }
                     }
+                    
                     _showGUI = value;
-                    if (studioToolbarToggle != null)
-                        studioToolbarToggle.Value = value;
                 }
             }
         }

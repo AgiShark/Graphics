@@ -10,7 +10,7 @@ using static Graphics.LightManager;
 
 namespace Graphics
 {
-    internal class SceneController : SceneCustomFunctionController
+    public class SceneController : SceneCustomFunctionController
     {
         public byte[] ExportSettingBytes()
         {
