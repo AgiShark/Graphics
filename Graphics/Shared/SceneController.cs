@@ -90,25 +90,25 @@ namespace Graphics
             lightManager.Light();
             int counter = 0;
 
-            if (settings.Length > 0 && settings[0].Path != null)
+            if (settings.Length > 0 && settings[0].HierarchyPath != null)
             {
                 foreach (LightObject light in lightManager.DirectionalLights)
                 {
-                    PerLightSettings setting = settings.FirstOrDefault(s => s.Path == PerLightSettings.BuildPath(light.light.gameObject) && s.Index == light.light.gameObject.transform.GetSiblingIndex());
+                    PerLightSettings setting = settings.FirstOrDefault(s => s.HierarchyPath.Matches(light.light.gameObject.transform));
                     if (setting != null)
                         setting.ApplySettings(light);
                 }
 
                 foreach (LightObject light in lightManager.PointLights)
                 {
-                    PerLightSettings setting = settings.FirstOrDefault(s => s.Path == PerLightSettings.BuildPath(light.light.gameObject) && s.Index == light.light.gameObject.transform.GetSiblingIndex());
+                    PerLightSettings setting = settings.FirstOrDefault(s => s.HierarchyPath.Matches(light.light.gameObject.transform));
                     if (setting != null)
                         setting.ApplySettings(light);
                 }
 
                 foreach (LightObject light in lightManager.SpotLights)
                 {
-                    PerLightSettings setting = settings.FirstOrDefault(s => s.Path == PerLightSettings.BuildPath(light.light.gameObject) && s.Index == light.light.gameObject.transform.GetSiblingIndex());
+                    PerLightSettings setting = settings.FirstOrDefault(s => s.HierarchyPath.Matches(light.light.gameObject.transform));
                     if (setting != null)
                         setting.ApplySettings(light);
                 }
@@ -175,7 +175,7 @@ namespace Graphics
             ReflectionProbe[] probes = Graphics.Instance.SkyboxManager.GetReflectinProbes();
             if (probes != null && settings != null)
             {
-                if (settings.Length > 0 && settings[0].Path == null) 
+                if (settings.Length > 0 && settings[0].HierarchyPath == null) 
                 {
                     string[] probeNames = settings.Select(s => s.Name).ToArray();
                     foreach (string probeName in probeNames)
@@ -196,7 +196,7 @@ namespace Graphics
                 {
                     foreach (ReflectionProbe probe in probes)
                     {
-                        ReflectionProbeSettings setting = settings.FirstOrDefault(s => s.Path == ReflectionProbeSettings.BuildPath(probe.gameObject) && s.Index == probe.transform.GetSiblingIndex());
+                        ReflectionProbeSettings setting = settings.FirstOrDefault(s => s.HierarchyPath.Matches(probe.gameObject.transform));
                         if (setting != null)
                             setting.ApplySettings(probe);
                     }

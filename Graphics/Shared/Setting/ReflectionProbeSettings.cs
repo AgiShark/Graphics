@@ -21,10 +21,6 @@ namespace Graphics.Settings
             NoTimeSlicing = ReflectionProbeTimeSlicingMode.NoTimeSlicing
         }
 
-        public string Path { get; set; }
-
-        public int Index { get; set; }
-
         public int Importance { get; set; }
 
         public float Intensity { get; set; }
@@ -56,6 +52,8 @@ namespace Graphics.Settings
         public AIReflectionProbeTimeSlicingMode TimeSlicingMode { get; set; }
 
         public string Name { get; set; }
+
+        public PathElement HierarchyPath { get; set; }
 
         public void ApplySettings(ReflectionProbe probe)
         {
@@ -101,25 +99,12 @@ namespace Graphics.Settings
                 TimeSlicingMode = (AIReflectionProbeTimeSlicingMode)probe.timeSlicingMode;
                 Name = probe.name;
 
-                Index = probe.gameObject.transform.GetSiblingIndex();
-                Path = BuildPath(probe.gameObject);
+                HierarchyPath = PathElement.Build(probe.gameObject.transform);
             }
             catch (Exception err)
             {
                 Graphics.Instance.Log.LogInfo($"{err.Message} {err.StackTrace}");
             }
-        }
-        public static string BuildPath(GameObject go)
-        {
-            string path = go.transform.name;
-            Transform parent = go.transform.parent;
-            while (parent != null)
-            {
-                path = parent.name + "/" + path;
-                parent = parent.parent;
-            }
-            return path;
-        }
-
+        }     
     }
 }

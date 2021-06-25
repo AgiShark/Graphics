@@ -11,8 +11,6 @@ namespace Graphics
     [MessagePackObject(keyAsPropertyName: true)]
     public class PerLightSettings
     {
-        public string Path { get; set; }
-        public int Index { get; set; }
         public bool Disabled { get; set; } = true;
         public bool UseAlloyLight { get; set; }
         public string LightName { get; set; }
@@ -35,6 +33,7 @@ namespace Graphics
         public float Length { get; set; }
         public int RenderMode { get; set; }
         public int CullingMask { get; set; }
+        public PathElement HierarchyPath { get; set; }
 
         internal void ApplySettings(LightObject lightObject)
         {
@@ -152,20 +151,7 @@ namespace Graphics
             RenderMode = (int)lightObject.light.renderMode;
             CullingMask = lightObject.light.cullingMask;
 
-            Index = lightObject.light.gameObject.transform.GetSiblingIndex();            
-            Path = BuildPath(lightObject.light.gameObject);
-        }
-
-        public static string BuildPath(GameObject go)
-        {
-            string path = go.transform.name;
-            Transform parent = go.transform.parent;
-            while (parent != null)
-            {
-                path = parent.name + "/" + path;
-                parent = parent.parent;
-            }
-            return path;
-        }
+            HierarchyPath = PathElement.Build(lightObject.light.gameObject.transform);
+        }        
     }
 }
