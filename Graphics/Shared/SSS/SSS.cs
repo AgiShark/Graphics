@@ -279,6 +279,9 @@ namespace Graphics
                     else
                     {
                         //Mono
+              //          ProfileCamera.projectionMatrix = cam.projectionMatrix;//avoid frustum jitter from taa
+              //          ProfileCamera.worldToCameraMatrix = cam.worldToCameraMatrix;
+
                         GetProfileRT(ref SSS_ProfileTex, (int)m_TextureSize.x, (int)m_TextureSize.y, "SSS_ProfileTex");
                         Util.RenderToTarget(ProfileCamera, SSS_ProfileTex, ProfileShader);
                         Shader.SetGlobalTexture("SSS_ProfileTex", SSS_ProfileTex);
@@ -337,17 +340,25 @@ namespace Graphics
                         }
                         else sss_convolution._BlurMaterial.DisableKeyword("RANDOMIZED_ROTATION");
 
-                        if (UseProfileTest && ProfilePerObject) sss_convolution._BlurMaterial.EnableKeyword("PROFILE_TEST");
-                        else sss_convolution._BlurMaterial.DisableKeyword("PROFILE_TEST");
+                        if (UseProfileTest && ProfilePerObject)
+                            sss_convolution._BlurMaterial.EnableKeyword("PROFILE_TEST");
+                        else
+                            sss_convolution._BlurMaterial.DisableKeyword("PROFILE_TEST");
 
-                        if (DEBUG_DISTANCE) sss_convolution._BlurMaterial.EnableKeyword("DEBUG_DISTANCE");
-                        else sss_convolution._BlurMaterial.DisableKeyword("DEBUG_DISTANCE");
+                        if (DEBUG_DISTANCE)
+                            sss_convolution._BlurMaterial.EnableKeyword("DEBUG_DISTANCE");
+                        else
+                            sss_convolution._BlurMaterial.DisableKeyword("DEBUG_DISTANCE");
 
-                        if (FixPixelLeaks) sss_convolution._BlurMaterial.EnableKeyword("OFFSET_EDGE_TEST");
-                        else sss_convolution._BlurMaterial.DisableKeyword("OFFSET_EDGE_TEST");
+                        if (FixPixelLeaks)
+                            sss_convolution._BlurMaterial.EnableKeyword("OFFSET_EDGE_TEST");
+                        else
+                            sss_convolution._BlurMaterial.DisableKeyword("OFFSET_EDGE_TEST");
 
-                        if (DitherEdgeTest) sss_convolution._BlurMaterial.EnableKeyword("DITHER_EDGE_TEST");
-                        else sss_convolution._BlurMaterial.DisableKeyword("DITHER_EDGE_TEST");
+                        if (DitherEdgeTest)
+                            sss_convolution._BlurMaterial.EnableKeyword("DITHER_EDGE_TEST");
+                        else
+                            sss_convolution._BlurMaterial.DisableKeyword("DITHER_EDGE_TEST"); 
                     }
 
                     LightingCamera.backgroundColor = cam.backgroundColor;
@@ -357,9 +368,9 @@ namespace Graphics
                     sss_convolution.iterations = ScatteringIterations;
 
                     if (cam.stereoEnabled)
-                        sss_convolution.BlurRadius = ScatteringRadius / 2;
+                        sss_convolution.BlurRadius = (ScatteringRadius / Downsampling ) / 2;
                     else
-                        sss_convolution.BlurRadius = ScatteringRadius;
+                        sss_convolution.BlurRadius = (ScatteringRadius / Downsampling);
 
 
                     LightingCamera.depthTextureMode = DepthTextureMode.DepthNormals;
@@ -400,6 +411,9 @@ namespace Graphics
                     }
                     else
                     {
+                        //LightingCamera.projectionMatrix = cam.projectionMatrix;
+                        //LightingCamera.worldToCameraMatrix = cam.worldToCameraMatrix;
+
                         GetRT(ref LightingTex, (int)m_TextureSize.x, (int)m_TextureSize.y, "LightingTexture");
                         GetRT(ref LightingTexBlurred, (int)m_TextureSize.x, (int)m_TextureSize.y, "SSSLightingTextureBlurred");
                         sss_convolution.blurred = LightingTexBlurred;

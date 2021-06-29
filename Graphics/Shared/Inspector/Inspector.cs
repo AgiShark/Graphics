@@ -23,6 +23,12 @@ namespace Graphics.Inspector
                 StartOffsetY = (Screen.height - Graphics.ConfigWindowHeight.Value) / 2;
             }
 
+            if (StartOffsetX < 0)
+                StartOffsetX = 0;
+
+            if (StartOffsetY < 0)
+                StartOffsetY = 0;
+
             _windowRect = new Rect(StartOffsetX, StartOffsetY, Width, Height);
         }
 
