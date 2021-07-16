@@ -119,11 +119,13 @@
       <HintPath>..\packages\IllusionLibs.HoneySelect2.UnityEngine.UI.2018.4.11.4\lib\net46\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.VRModule">
-      <HintPath>..\..\..\..\illusion\hs2dx\HoneySelect2VR_Data\Managed\UnityEngine.VRModule.dll</HintPath>
+    <Reference Include="UnityEngine.VRModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionLibs.HoneySelect2.UnityEngine.VRModule.2018.4.11.4\lib\net46\UnityEngine.VRModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.XRModule">
-      <HintPath>..\..\..\..\illusion\hs2dx\HoneySelect2VR_Data\Managed\UnityEngine.XRModule.dll</HintPath>
+    <Reference Include="UnityEngine.XRModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionLibs.HoneySelect2.UnityEngine.XRModule.2018.4.11.4\lib\net46\UnityEngine.XRModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +162,8 @@
     <Error Condition="!Exists('..\packages\IllusionLibs.HoneySelect2.UnityEngine.PhysicsModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.PhysicsModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.HoneySelect2.UnityEngine.PhysicsModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.PhysicsModule.targets'))" />
     <Error Condition="!Exists('..\packages\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.targets'))" />
     <Error Condition="!Exists('..\packages\IllusionLibs.HoneySelect2.UnityEngine.UI.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.UI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.HoneySelect2.UnityEngine.UI.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.UI.targets'))" />
+    <Error Condition="!Exists('..\packages\IllusionLibs.HoneySelect2.UnityEngine.VRModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.VRModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.HoneySelect2.UnityEngine.VRModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.VRModule.targets'))" />
+    <Error Condition="!Exists('..\packages\IllusionLibs.HoneySelect2.UnityEngine.XRModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.XRModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.HoneySelect2.UnityEngine.XRModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.XRModule.targets'))" />
   </Target>
   <Import Project="..\packages\IllusionLibs.HoneySelect2.Assembly-CSharp.2020.5.29.4\build\IllusionLibs.HoneySelect2.Assembly-CSharp.targets" Condition="Exists('..\packages\IllusionLibs.HoneySelect2.Assembly-CSharp.2020.5.29.4\build\IllusionLibs.HoneySelect2.Assembly-CSharp.targets')" />
   <Import Project="..\packages\IllusionLibs.HoneySelect2.Assembly-CSharp-firstpass.2020.5.29.4\build\IllusionLibs.HoneySelect2.Assembly-CSharp-firstpass.targets" Condition="Exists('..\packages\IllusionLibs.HoneySelect2.Assembly-CSharp-firstpass.2020.5.29.4\build\IllusionLibs.HoneySelect2.Assembly-CSharp-firstpass.targets')" />
@@ -174,4 +178,6 @@
   <Import Project="..\packages\IllusionLibs.HoneySelect2.UnityEngine.PhysicsModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.PhysicsModule.targets" Condition="Exists('..\packages\IllusionLibs.HoneySelect2.UnityEngine.PhysicsModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.PhysicsModule.targets')" />
   <Import Project="..\packages\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.targets" Condition="Exists('..\packages\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.targets')" />
   <Import Project="..\packages\IllusionLibs.HoneySelect2.UnityEngine.UI.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.UI.targets" Condition="Exists('..\packages\IllusionLibs.HoneySelect2.UnityEngine.UI.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.UI.targets')" />
+  <Import Project="..\packages\IllusionLibs.HoneySelect2.UnityEngine.VRModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.VRModule.targets" Condition="Exists('..\packages\IllusionLibs.HoneySelect2.UnityEngine.VRModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.VRModule.targets')" />
+  <Import Project="..\packages\IllusionLibs.HoneySelect2.UnityEngine.XRModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.XRModule.targets" Condition="Exists('..\packages\IllusionLibs.HoneySelect2.UnityEngine.XRModule.2018.4.11.4\build\IllusionLibs.HoneySelect2.UnityEngine.XRModule.targets')" />
 </Project>
