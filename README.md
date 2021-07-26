@@ -172,7 +172,7 @@ Used for Subsurface Scattering Effects...which is currently...one, Hanmens Nextg
 
 Most important: Turn off all layers except Chara. Until we have SSS studio items anything else does nothing and costs frames.\
 Next: Downscale factor. Turn this up to 2.0 for big frame rate gains, quality loss...isn't bad honestly. Try for even numbers (it's a divider) (1, 2, 4).\
-Next: Postprovess iterations/Shader Iterations (lower is faster)\
+Next: Postprocess iterations/Shader Iterations (lower is faster)\
 Dither/Dither Intensity: If you are CPU bound this'll grant performance, otherwise doesn't help.
 
 I find Chara only layer, Downscale of 2, 2 postprocess iterations, 4 shader iterations, dither on...looks quite nice and the framerate hit is surprisingly small.
@@ -193,7 +193,7 @@ Basically TAA can look the best of all of them, especially with some fine detail
 
 **Post Process Effects**
 
-None of these are really paricularly expensive and I haven't noticed any real performance issues with them...Mostly they effect how things actually look. What they all do is waaayyy too long for here, just RTFM: https://docs.unity3d.com/Packages/com.unity.postprocessing@2.1/manual/Ambient-Occlusion.html
+None of these are really particularly expensive and I haven't noticed any real performance issues with them...Mostly they effect how things actually look. What they all do is waaayyy too long for here, just RTFM: https://docs.unity3d.com/Packages/com.unity.postprocessing@2.1/manual/Ambient-Occlusion.html
 
 ## Lights
 
