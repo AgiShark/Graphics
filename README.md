@@ -30,53 +30,53 @@ Major changes list:
 
 # FAQ
 
-How do I bring up the settings? 
+**How do I bring up the settings?**
 
 Press F5 at any time. In studio you can also use the toolbar icon. 
 
-How do I create a preset?
+**How do I create a preset?**
 
 Just bring up settings with F5, navigate to the presets tab, enter a name for your preset in the text field and click save. If you'd like you can also set the current setup as the default preset using the buttons down lower. It is recommended to always create a named preset for any defaults you update so you have a permanent copy of your prior versions.
 
-I have a preset file, where does it go? I have presets or cubemaps but they don't show in game? 
+**I have a preset file, where does it go? I have presets or cubemaps but they don't show in game?**
 
 Press F1 -> Plugin Settings ->  Graphics and look at where your directories are pointing to, fix them if necessary. By default that's the presets folder in your game install for presets and cubemaps for cubemaps. You may need to create the directory if it didn't previously exist. If you move installations, this is probably pointing at the old spot, hitting reset on the setting will move it to your current install location (or you can always manually set it).
 
-Can I get back to vanilla settings?
+**Can I get back to vanilla settings?**
 
 No. For one thing there is no singular vanilla settings, the game applies different settings in different scenes - so it's flat not possible to have a 'vanilla' preset. However, there are some presets available that mimic the vanilla feel, but it's never going to be an exact match in all scenarios.
 
-My presets don't save my light changes?
+**My presets don't save my light changes?**
 
 Presets do not save light or cubemap settings, only studio scenes save that information. Saving light setting changes in the main game needs structural and UI changes beyond the scope of what I intend to do with this maintenance branch. This would be something to look at in the rewritten version.
 
-Bloom doesn't seem to do anything?
+**Bloom doesn't seem to do anything?**
 
 Try lowering threshold...slider operates backwards as to how folks tend to think it should. Also make sure the bloom color isn't black.
 
-I'm having issues with rendered (F11) screenshots...DOF doesn't work? SSS doesn't render?
+**I'm having issues with rendered (F11) screenshots...DOF doesn't work? SSS doesn't render?**
 
 Unity DOF doesn't work with upsampling, you'll need to pick one of the two features, either turn off DOF or set the upsampling slider to 1 in the Screenshot plugin settings.
 
 For SSS switch from Forward to Deferred rendering.
 
-I turned the cam light off but my scene loads with it back on?
+**I turned the cam light off but my scene loads with it back on?**
 
 Known issue, game and plugin are fighting over control. Workaround is to turn the intensity down rather than turn it off. Generally speaking, if the game and graphics both expose a setting, you'll need to modify both to the same thing to ensure consistency.
 
-My scene looks a bit different when I load it vs. if I reapply the preset?
+**My scene looks a bit different when I load it vs. if I reapply the preset?**
 
 There are known issues around skybox/cubemap settings not always applying correctly during scene load. Future improvements are in the works but for now try to 1) set vanilla game settings the same as graphics where possible and 2) if necessary reload the preset after the scene loads and stabilizes. In rare scenarios you may actually need to create two presets of the same settings and switch back and forth (double apply the preset) to get everything in correctly (I think I got all the issues that drove that need, but as a last resort that should always work).
 
-My 3090 has bad framerate?
+**My 3090 has a bad framerate?**
 
 See the performance tips below, but there is definitely a driver side issue with the 3090 cards. They are simply pumping out lower framerate for the *same presets* as a 20X0 card - which shouldn't ever be a thing. If anyone can identify a specific setting that relates to the fps drop (assuming there even is one) let me know and we can try to work around, but realistically this'll probably be a thing until some random driver update makes it go away just as mysteriously. 
 
-Sitting on the Lights tab with a light open drops my framerate significantly?
+**Sitting on the Lights tab with a light open drops my framerate significantly?**
 
 Yep, especially with the advanced settings showing. Some of the individual light options are expensive to query the state of. So...don't linger, get in, set things up and get out.
 
-My cubemap/skybox isn't showing no matter what I do?
+**My cubemap/skybox isn't showing no matter what I do?**
 
 Check the far clip plane...make sure that is at the full 15,000, most cubemaps/skyboxes show up around 14,500ish, so a closer far clip plane will cause them not to render.
 
