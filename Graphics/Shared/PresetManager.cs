@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Graphics
 {
@@ -53,6 +54,23 @@ namespace Graphics
             LoadPresets();
         }
 
+        internal void SaveMapLights(bool original = false)
+        {
+            string sceneName = SceneManager.GetActiveScene().name;
+            string mapName = null;
+
+#if AI
+#else
+            if (Manager.HSceneManager.isHScene)
+                mapName = Manager.BaseMap.infoTable[Singleton<Manager.HSceneManager>.Instance.mapID].MapNames[0];
+#endif
+
+            MapLightPreset mapLightPreset = new MapLightPreset();
+            string path = Graphics.ConfigPresetPath.Value;
+            string targetPath = Path.Combine(path, "mapLightPresets", sceneName + (mapName == null ? "" : "-" + mapName) + (original ? "-original" : "") + ".light");
+            mapLightPreset.Save(targetPath);
+        }
+
         internal void SaveDefault(PresetDefaultType defaultType)
         {
             Preset preset = new Preset(_parent.Settings, _parent.CameraSettings, _parent.LightingSettings, _parent.PostProcessingSettings, _parent.SkyboxManager.skyboxParams, _parent.SSSSettings);
@@ -78,6 +96,39 @@ namespace Graphics
             presetName = (presetName == null ? "default" : presetName);
             string targetPath = PresetPath(presetName);
             return preset.Load(targetPath, presetName);
+        }
+
+        internal bool MapLightOriginalExists()
+        {
+            string sceneName = SceneManager.GetActiveScene().name;
+            string mapName = null;
+
+#if AI
+#else
+            if (Manager.HSceneManager.isHScene)
+                mapName = Manager.BaseMap.infoTable[Singleton<Manager.HSceneManager>.Instance.mapID].MapNames[0];
+#endif
+
+            string presetName = sceneName + (mapName == null ? "" : "-" + mapName) + "-original";
+            string targetPath = Path.Combine(_path, "mapLightPresets", presetName + ".light");
+            return File.Exists(targetPath);
+        }
+
+        internal bool LoadMapLights(bool original = false)
+        {
+            string sceneName = SceneManager.GetActiveScene().name;
+            string mapName = null;
+
+#if AI
+#else
+            if (Manager.HSceneManager.isHScene)
+                mapName = Manager.BaseMap.infoTable[Singleton<Manager.HSceneManager>.Instance.mapID].MapNames[0];
+#endif
+
+            MapLightPreset mapLightPreset = new MapLightPreset();
+            string presetName = sceneName + (mapName == null ? "" : "-" + mapName) + (original ? "-original" : "");
+            string targetPath = Path.Combine(_path, "mapLightPresets", presetName + ".light");
+            return mapLightPreset.Load(targetPath, presetName);
         }
 
         internal bool LoadDefault(PresetDefaultType defaultType)

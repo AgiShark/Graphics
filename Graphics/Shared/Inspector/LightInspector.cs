@@ -1,4 +1,5 @@
 ﻿using Graphics.Settings;
+using System.Collections.Generic;
 using UnityEngine;
 using static Graphics.Inspector.Util;
 using static Graphics.LightManager;
@@ -15,6 +16,7 @@ namespace Graphics.Inspector
         private static SEGI segi;
         internal static void Draw(GlobalSettings renderingSettings, LightManager lightManager, bool showAdvanced)
         {
+            lightToDestroy = null;
             GUILayout.BeginVertical(GUIStyles.Skin.box);
             {
                 if (showAdvanced)
@@ -23,6 +25,25 @@ namespace Graphics.Inspector
                     Toggle("Lights Use Linear Intensity", renderingSettings.LightsUseLinearIntensity, false, useLinear => renderingSettings.LightsUseLinearIntensity = useLinear);
                     Toggle("Lights Use Color Temperature", renderingSettings.LightsUseColorTemperature, false, useTemperature => renderingSettings.LightsUseColorTemperature = useTemperature);
                 }
+                GUILayout.BeginHorizontal();
+                {
+                    if (KKAPI.KoikatuAPI.GetCurrentGameMode() != KKAPI.GameMode.Studio)
+                    {
+                        if (GUILayout.Button("Save Map Lights to Preset"))
+                        {
+                            Graphics.Instance.PresetManager.SaveMapLights(false);
+                        }
+                        if (GUILayout.Button("Load Map Lights Preset"))
+                        {
+                            Graphics.Instance.PresetManager.LoadMapLights(false);
+                        }
+                        if (GUILayout.Button("Load Default Map Lights"))
+                        {
+                            Graphics.Instance.PresetManager.LoadMapLights(true);
+                        }
+                    }
+                }
+                GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.BeginVertical(GUIStyles.Skin.box, GUILayout.Width(200), GUILayout.MaxWidth(250));
@@ -181,6 +202,13 @@ namespace Graphics.Inspector
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndVertical();
+
+            if (lightToDestroy != null)
+            {
+                GameObject.DestroyImmediate(lightToDestroy.gameObject);
+                lightManager.Light();
+            }
+
         }
 
         private static void LightGroup(LightManager lightManager, string typeName, LightSettings.LightType type)
@@ -230,12 +258,12 @@ namespace Graphics.Inspector
                     }
                 }
                 //add custom directional lights in maker
-                else if (KKAPI.GameMode.Maker == KKAPI.KoikatuAPI.GetCurrentGameMode() && LightSettings.LightType.Directional == type)
+                else if (LightSettings.LightType.Directional == type)
                 {
                     if (GUILayout.Button("+"))
                     {
                         customLightIndex += 1;
-                        GameObject lightGameObject = new GameObject("Directional Light " + customLightIndex);
+                        GameObject lightGameObject = new GameObject("(Graphics) Directional Light " + customLightIndex);
                         Light lightComp = lightGameObject.AddComponent<Light>();
                         lightGameObject.GetComponent<Light>().type = LightType.Directional;
                         lightManager.Light();
@@ -245,6 +273,7 @@ namespace Graphics.Inspector
             GUILayout.EndHorizontal();
         }
 
+        private static GameObject lightToDestroy = null;
         private static void LightOverviewModule(LightManager lightManager, LightObject l)
         {
             if (null == l || null == l.light)
@@ -261,6 +290,14 @@ namespace Graphics.Inspector
             }
             GUILayout.FlexibleSpace();
             l.enabled = ToggleButton(l.enabled ? " ON" : "OFF", l.enabled, true);
+            if (!KKAPI.Studio.StudioAPI.InsideStudio && l.light.name.StartsWith("(Graphics)"))
+            {
+                if (GUILayout.Button("-"))
+                {
+                    lightToDestroy = l.light.gameObject;
+                }
+            }
+
             GUILayout.EndHorizontal();
         }
     }

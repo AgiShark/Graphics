@@ -171,6 +171,9 @@ namespace Graphics.Settings
             }
             set
             {
+                if (MainCamera.stereoEnabled)
+                    value = 0.0001f;
+
                 if (InsideStudio)
                 {
                     Studio.CameraControl control = (Studio.CameraControl)MainCamera.GetComponent<CinemachineBrain>()?.ActiveVirtualCamera;

@@ -4,6 +4,8 @@ using KKAPI.Studio.SaveLoad;
 using KKAPI.Utilities;
 using MessagePack;
 using Studio;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static Graphics.LightManager;
@@ -84,11 +86,13 @@ namespace Graphics
             return pluginData;
         }
 
-        private void ApplyLightSettings(PerLightSettings[] settings)
+        public static void ApplyLightSettings(PerLightSettings[] settings)
         {
             LightManager lightManager = Graphics.Instance.LightManager;
             lightManager.Light();
             int counter = 0;
+
+            List<PerLightSettings> newDirectionalLights = new List<PerLightSettings>(settings.Where(pls => pls.Type == (int)LightType.Directional));
 
             if (settings.Length > 0 && settings[0].HierarchyPath != null)
             {
@@ -96,7 +100,10 @@ namespace Graphics
                 {
                     PerLightSettings setting = settings.FirstOrDefault(s => s.HierarchyPath.Matches(light.light.gameObject.transform));
                     if (setting != null)
+                    {
                         setting.ApplySettings(light);
+                        newDirectionalLights.Remove(setting);
+                    }
                 }
 
                 foreach (LightObject light in lightManager.PointLights)
@@ -136,9 +143,29 @@ namespace Graphics
                         return;
                 }
             }
+
+            if (!KKAPI.Studio.StudioAPI.InsideStudio && newDirectionalLights.Count > 0)
+            {
+                // Add extra lights if requested
+                foreach (PerLightSettings setting in newDirectionalLights)
+                {
+                    GameObject lightGameObject = new GameObject(setting.LightName);
+                    Light lightComp = lightGameObject.AddComponent<Light>();
+                    lightGameObject.GetComponent<Light>().type = LightType.Directional;      
+                }
+                lightManager.Light();
+                foreach (LightObject light in lightManager.DirectionalLights)
+                {
+                    PerLightSettings setting = settings.FirstOrDefault(s => s.HierarchyPath.Matches(light.light.gameObject.transform));
+                    if (setting != null)
+                    {
+                        setting.ApplySettings(light);
+                    }
+                }
+            }
         }
 
-        private PerLightSettings[] BuildLightSettings()
+        public static PerLightSettings[] BuildLightSettings()
         {
             LightManager lightManager = Graphics.Instance.LightManager;
             lightManager.Light();
@@ -167,9 +194,9 @@ namespace Graphics
             }
 
             return settings;
-        } 
+        }
 
-        private void ApplyReflectionProbeSettings(ReflectionProbeSettings[] settings)
+        public static void ApplyReflectionProbeSettings(ReflectionProbeSettings[] settings)
         {
 
             ReflectionProbe[] probes = Graphics.Instance.SkyboxManager.GetReflectinProbes();
@@ -204,7 +231,7 @@ namespace Graphics
             }
         }
 
-        private ReflectionProbeSettings[] BuildReflectionProbeSettings()
+        public static ReflectionProbeSettings[] BuildReflectionProbeSettings()
         {
             ReflectionProbe[] probes = Graphics.Instance.SkyboxManager.GetReflectinProbes();
             if (probes.Length > 0)

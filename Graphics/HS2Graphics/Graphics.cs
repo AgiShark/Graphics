@@ -68,7 +68,19 @@ namespace Graphics
                 CameraSettings.Fov = _fov;  // Not sure why this sometimes doesn't work...
                 CameraSettings.MainCamera.fieldOfView = _fov; // But this does...
                 Log.LogDebug(string.Format("After Load CAM FOV: {0}", CameraSettings.MainCamera.fieldOfView));
-            }        
+            }    
+            
+            if (gameMode != GameMode.Studio)
+            {
+                // Check for saved Lights
+                if (!_presetManager.LoadMapLights())
+                {
+                    if (!_presetManager.MapLightOriginalExists())
+                    {
+                        _presetManager.SaveMapLights(true);
+                    }
+                }
+            }
 
         }
 

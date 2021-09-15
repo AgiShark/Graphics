@@ -35,9 +35,11 @@ namespace Graphics
         public int CullingMask { get; set; }
         public PathElement HierarchyPath { get; set; }
 
+        public int Type { get; set; }
+
         internal void ApplySettings(LightObject lightObject)
         {
-            lightObject.enabled = !Disabled;
+            lightObject.enabled = !Disabled;            
 
             Graphics.Instance.LightManager.UseAlloyLight = UseAlloyLight;
 
@@ -72,8 +74,11 @@ namespace Graphics
             }
 
             // Exclude Cam Light from rotation setting
-            if (lightObject.light.name != "Cam Light" && !lightObject.light.transform.IsChildOf(GameObject.Find("StudioScene/Camera").transform))
+            if (KKAPI.Studio.StudioAPI.InsideStudio && lightObject.light.name != "Cam Light" && !lightObject.light.transform.IsChildOf(GameObject.Find("StudioScene/Camera").transform))
                 lightObject.rotation = Rotation;
+            else if (!KKAPI.Studio.StudioAPI.InsideStudio && lightObject.light.name.StartsWith("(Graphics)"))
+                lightObject.rotation = Rotation;
+
 
             lightObject.range = Range;
             lightObject.spotAngle = SpotAngle;
@@ -87,12 +92,14 @@ namespace Graphics
                 }
             }
             lightObject.light.renderMode = (LightRenderMode)RenderMode;
-            lightObject.light.cullingMask = CullingMask;            
+            lightObject.light.cullingMask = CullingMask;
         }
 
         internal void FillSettings(LightObject lightObject)
         {
             Disabled = !lightObject.enabled;
+
+            Type = (int)lightObject.type;
 
             UseAlloyLight = Graphics.Instance.LightManager.UseAlloyLight;
 
