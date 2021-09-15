@@ -172,7 +172,7 @@ namespace Graphics.Settings
             set
             {
                 if (MainCamera.stereoEnabled)
-                    value = 0.0001f;
+                    value = 0.01f;
 
                 if (InsideStudio)
                 {

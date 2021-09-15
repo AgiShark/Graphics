@@ -40,6 +40,7 @@ namespace Graphics.Inspector
                         if (GUILayout.Button("Load Default Map Lights"))
                         {
                             Graphics.Instance.PresetManager.LoadMapLights(true);
+                            Graphics.Instance.PresetManager.SaveMapLights(false);
                         }
                     }
                 }
