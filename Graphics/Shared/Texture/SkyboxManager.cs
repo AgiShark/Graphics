@@ -90,6 +90,9 @@ namespace Graphics.Textures
         }
         public void LoadSkyboxParams()
         {
+            Exposure = skyboxParams.exposure;
+            Tint = skyboxParams.tint;
+            Rotation = skyboxParams.rotation;
             CurrentTexturePath = skyboxParams.selectedCubeMap;
             Exposure = skyboxParams.exposure;
             Tint = skyboxParams.tint;
@@ -179,6 +182,7 @@ namespace Graphics.Textures
             assetBundleCreateRequest = null;
 
             ApplySkybox();
+            yield return null;
             ApplySkyboxParams();
 
             // dynSkyboxSetting is only being used for setting up parameters from preset after assetbundle loading.

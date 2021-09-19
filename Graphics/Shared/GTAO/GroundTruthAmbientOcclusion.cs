@@ -1,8 +1,10 @@
-﻿using System;
+﻿using KKAPI.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Rendering;
+using static Graphics.Settings.CameraSettings;
 
 namespace Graphics.GTAO
 {
@@ -29,31 +31,31 @@ namespace Graphics.GTAO
 
         [SerializeField]
         [Range(1, 4)]
-        int DirSampler = 2;
+        public int DirSampler = 2;
 
 
         [SerializeField]
         [Range(1, 8)]
-        int SliceSampler = 2;
+        public int SliceSampler = 2;
 
 
         [SerializeField]
         [Range(1, 5)]
-        float Radius = 2.5f;
+        public float Radius = 2.5f;
 
 
         [SerializeField]
         [Range(0, 1)]
-        float Intensity = 1;
+        public float Intensity = 1;
 
 
         [SerializeField]
         [Range(1, 8)]
-        float Power = 2.5f;
+        public float Power = 2.5f;
 
 
         [SerializeField]
-        bool MultiBounce = true;
+        public bool MultiBounce = true;
 
 
 
@@ -61,25 +63,22 @@ namespace Graphics.GTAO
 
         [Range(0, 1)]
         [SerializeField]
-        float Sharpeness = 0.25f;
+        public float Sharpeness = 0.25f;
 
         [Range(1, 5)]
         [SerializeField]
-        float TemporalScale = 1;
+        public float TemporalScale = 1;
 
         [Range(0, 1)]
         [SerializeField]
-        float TemporalResponse = 1;
+        public float TemporalResponse = 1;
 
 
 
         [Header("DeBug")]
 
         [SerializeField]
-        private OutPass AODeBug = OutPass.Combien;
-
-
-
+        public OutPass AODeBug = OutPass.Combien;
 
         //////BaseProperty
         private Camera RenderCamera;
@@ -152,11 +151,17 @@ namespace Graphics.GTAO
         private static int _CurrRT_ID = Shader.PropertyToID("_CurrRT");
         private static int _Combien_AO_RT_ID = Shader.PropertyToID("_Combien_AO_RT");
 
+
+        private Shader gtaoShader;
+        private AssetBundle assetBundle;
+
         /* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* */
         void Awake()
         {
             RenderCamera = gameObject.GetComponent<Camera>();
-            GTAOMaterial = new Material(Shader.Find("Hidden/GroundTruthAmbientOcclusion"));
+            assetBundle = AssetBundle.LoadFromMemory(ResourceUtils.GetEmbeddedResource("gtao.unity3d"));
+            gtaoShader = assetBundle.LoadAsset<Shader>("Assets/shaders/gtao.shader");
+            GTAOMaterial = new Material(gtaoShader);
         }
 
         void OnEnable()
@@ -173,6 +178,8 @@ namespace Graphics.GTAO
 
             if (GTAOBuffer != null)
             {
+                Graphics.Instance.Settings.AntiAliasing = 0;
+
                 UpdateVariable_SSAO();
                 RenderSSAO();
             }
@@ -183,6 +190,7 @@ namespace Graphics.GTAO
             if (GTAOBuffer != null)
             {
                 RenderCamera.RemoveCommandBuffer(CameraEvent.BeforeImageEffectsOpaque, GTAOBuffer);
+                GTAOBuffer.Dispose();
                 GTAOBuffer = null;
             }
         }
@@ -293,7 +301,7 @@ namespace Graphics.GTAO
                 }
                 Prev_RT = new RenderTexture((int)RenderResolution.x, (int)RenderResolution.y, 0, RenderTextureFormat.RGHalf);
                 Prev_RT.filterMode = FilterMode.Point;
-            }
+            }           
         }
 
         private void RenderSSAO()

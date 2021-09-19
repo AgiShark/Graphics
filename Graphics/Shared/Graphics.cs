@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
+using Graphics.GTAO;
 using Graphics.Hooks;
 using Graphics.Inspector;
 using Graphics.Patch;
@@ -24,7 +25,7 @@ namespace Graphics
     {
         public const string GUID = "ore.graphics";
         public const string PluginName = "Graphics";
-        public const string Version = "0.4.3";
+        public const string Version = "0.4.4";
 
         public static ConfigEntry<KeyCode> ConfigShortcut { get; private set; }
         public static ConfigEntry<string> ConfigCubeMapPath { get; private set; }
@@ -52,6 +53,7 @@ namespace Graphics
         private PostProcessingManager _postProcessingManager;
         private PresetManager _presetManager;
         private SSSManager _sssManager;
+        private GTAOManager _gtaoManager;
         private Inspector.Inspector _inspector;
 
         private HoohSmartphoneScanner smartphoneScanner;
@@ -114,6 +116,9 @@ namespace Graphics
             
             _sssManager = new SSSManager();
             _sssManager.Initialize();
+
+            _gtaoManager = new GTAOManager();
+            _gtaoManager.Initialize();
 
             SSSMirrorHooks.InitializeMirrorHooks();
 

@@ -39,7 +39,7 @@ namespace Graphics
             Log.LogInfo(string.Format("AIS Scene Loaded: {0} Game: {1} CAM FOV: {2}", scene.name, gameMode, CameraSettings.MainCamera.fieldOfView));
 
             _sssManager?.CheckInstance();
-
+            _gtaoManager?.CheckInstance();
             if (CameraSettings.MainCamera.stereoEnabled) // VR...use VR
             {
                 _presetManager?.LoadDefault(PresetDefaultType.VR_GAME);

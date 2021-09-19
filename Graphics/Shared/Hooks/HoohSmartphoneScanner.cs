@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Graphics.GTAO;
+using System.Collections;
 using UnityEngine;
 
 namespace Graphics
@@ -50,6 +51,11 @@ namespace Graphics
                 camSSS.Enabled = true;
                 SSSManager.RegisterAdditionalInstance(camSSS);
                 Graphics.Instance.Log.LogInfo($"Adding SSS Component to Camera: {cam.name} GO: {cam.gameObject.name}");
+            }
+            if (cam.gameObject.GetComponent<GroundTruthAmbientOcclusion>() == null)
+            {
+                GroundTruthAmbientOcclusion gtao = cam.gameObject.AddComponent<GroundTruthAmbientOcclusion>();
+                GTAOManager.RegisterAdditionalInstance(gtao);
             }
         }
         

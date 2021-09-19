@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using Graphics.GTAO;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -61,6 +62,11 @@ namespace Graphics
                     refreshCamMethod.Invoke(__instance, new object[] { });
                 }
             }
+            if (planeCam.gameObject.GetComponent<GroundTruthAmbientOcclusion>() == null)
+            {
+                GroundTruthAmbientOcclusion gtao = planeCam.gameObject.AddComponent<GroundTruthAmbientOcclusion>();
+                GTAOManager.RegisterAdditionalInstance(gtao);
+            }
         }
 
         private static void AddSSSComponentToMirrorCamera(Camera currentCamera, Camera reflectionCamera)
@@ -73,6 +79,11 @@ namespace Graphics
                 mirrorSSS.Enabled = true;
                 mirrorSSS.MirrorSSS = true;
                 SSSManager.RegisterAdditionalInstance(mirrorSSS);
+            }
+            if (reflectionCamera.gameObject.GetComponent<GroundTruthAmbientOcclusion>() == null)
+            {
+                GroundTruthAmbientOcclusion gtao = reflectionCamera.gameObject.AddComponent<GroundTruthAmbientOcclusion>();
+                GTAOManager.RegisterAdditionalInstance(gtao);
             }
         }
 

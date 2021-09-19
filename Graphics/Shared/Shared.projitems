@@ -98,6 +98,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CullingMaskExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FocusPuller.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GTAO\GroundTruthAmbientOcclusion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GTAO\GTAOManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GTAO\GTAOShaderIDs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GTAO\GTAOUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hooks\HoohSmartphoneScanner.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)PostProcessingManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PresetDefaultType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PresetManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Setting\GTAOSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Setting\PathElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Setting\PerLightSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Setting\ReflectionProbeSettings.cs" />
@@ -196,30 +198,6 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\sss" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\GTAO\GTAO.shader" />
-    <None Include="$(MSBuildThisFileDirectory)Resources\GTAO\GTAO.shader.meta" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\GTAO\GTAO_Common.cginc" />
-    <None Include="$(MSBuildThisFileDirectory)Resources\GTAO\GTAO_Common.cginc.meta" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\GTAO\GTAO_Pass.cginc" />
-    <None Include="$(MSBuildThisFileDirectory)Resources\GTAO\GTAO_Pass.cginc.meta" />
-    <None Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include.meta" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\AreaLight.hlsl" />
-    <None Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\AreaLight.hlsl.meta" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\BSDF_Library.hlsl" />
-    <None Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\BSDF_Library.hlsl.meta" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\Common.hlsl" />
-    <None Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\Common.hlsl.meta" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\Filtter_Library.hlsl" />
-    <None Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\Filtter_Library.hlsl.meta" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\ImageBasedLighting.hlsl" />
-    <None Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\ImageBasedLighting.hlsl.meta" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\Include_HLSL.hlsl" />
-    <None Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\Include_HLSL.hlsl.meta" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\Montcalo_Library.hlsl" />
-    <None Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\Montcalo_Library.hlsl.meta" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\Noise_Library.hlsl" />
-    <None Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\Noise_Library.hlsl.meta" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\ShadingModel.hlsl" />
-    <None Include="$(MSBuildThisFileDirectory)Resources\GTAO\Shader_Include\ShadingModel.hlsl.meta" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\gtao.unity3d" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
-﻿using Graphics.Settings;
+﻿using Graphics.GTAO;
+using Graphics.Settings;
 using System;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
@@ -113,6 +114,29 @@ namespace Graphics.Inspector
                         colour => settings.ambientOcclusionLayer.color.value = colour, false, settings.ambientOcclusionLayer.color.overrideState,
                         overrideState => settings.ambientOcclusionLayer.color.overrideState = overrideState);
                     Toggle("Ambient Only", settings.ambientOcclusionLayer.ambientOnly.value, false, ambient => settings.ambientOcclusionLayer.ambientOnly.value = ambient);
+                }
+                GUILayout.EndVertical();
+            }
+
+            if (GTAOManager.settings != null)
+            {
+                GTAOSettings gtaoSettings = GTAOManager.settings;
+                GUILayout.BeginVertical(GUIStyles.Skin.box);
+                Toggle("Ground Truth Ambient Occlusion", gtaoSettings.Enabled, true, enabled => { gtaoSettings.Enabled = enabled; GTAOManager.UpdateSettings(); });
+                if (gtaoSettings.Enabled)
+                {
+                    Slider("Intensity", gtaoSettings.Intensity.value, 0f, 1f, "N2", intensity => { gtaoSettings.Intensity.value = intensity; GTAOManager.UpdateSettings(); }, gtaoSettings.Intensity.overrideState, overrideState => {gtaoSettings.Intensity.overrideState = overrideState; GTAOManager.UpdateSettings(); });
+                    Slider("Power", gtaoSettings.Power.value, 1f, 8f, "N2", power => { gtaoSettings.Power.value = power; GTAOManager.UpdateSettings(); }, gtaoSettings.Power.overrideState, overrideState => { gtaoSettings.Power.overrideState = overrideState; GTAOManager.UpdateSettings(); });
+                    Slider("Radius", gtaoSettings.Radius.value, 1f, 5f, "N2", radius => { gtaoSettings.Radius.value = radius; GTAOManager.UpdateSettings(); }, gtaoSettings.Radius.overrideState, overrideState => { gtaoSettings.Radius.overrideState = overrideState; GTAOManager.UpdateSettings(); });
+
+                    Slider("Sharpeness", gtaoSettings.Sharpeness.value, 0f, 1f, "N2", sharpeness => { gtaoSettings.Sharpeness.value = sharpeness; GTAOManager.UpdateSettings(); }, gtaoSettings.Sharpeness.overrideState, overrideState => { gtaoSettings.Sharpeness.overrideState = overrideState; GTAOManager.UpdateSettings(); });
+                    Slider("DirSampler", gtaoSettings.DirSampler.value, 1, 4, dirSampler => { gtaoSettings.DirSampler.value = dirSampler; GTAOManager.UpdateSettings(); }, gtaoSettings.DirSampler.overrideState, overrideState => { gtaoSettings.DirSampler.overrideState = overrideState; GTAOManager.UpdateSettings(); });
+                    Slider("SliceSampler", gtaoSettings.SliceSampler.value, 1, 8, sliceSampler => { gtaoSettings.SliceSampler.value = sliceSampler; GTAOManager.UpdateSettings(); }, gtaoSettings.SliceSampler.overrideState, overrideState => { gtaoSettings.SliceSampler.overrideState = overrideState; GTAOManager.UpdateSettings(); });
+
+                    Slider("TemporalScale", gtaoSettings.TemporalScale.value, 1f, 5f, "N2", temporalScale => { gtaoSettings.TemporalScale.value = temporalScale; GTAOManager.UpdateSettings(); }, gtaoSettings.TemporalScale.overrideState, overrideState => { gtaoSettings.TemporalScale.overrideState = overrideState; GTAOManager.UpdateSettings(); });
+                    Slider("TemporalResponse", gtaoSettings.TemporalResponse.value, 0f, 1f, "N2", temporalResponse => { gtaoSettings.TemporalResponse.value = temporalResponse; GTAOManager.UpdateSettings(); }, gtaoSettings.TemporalResponse.overrideState, overrideState => { gtaoSettings.TemporalResponse.overrideState = overrideState; GTAOManager.UpdateSettings(); });
+                    Toggle("MultiBounce", gtaoSettings.MultiBounce.value, true, multiBounce => { gtaoSettings.MultiBounce.value = multiBounce; GTAOManager.UpdateSettings(); });           
+
                 }
                 GUILayout.EndVertical();
             }
