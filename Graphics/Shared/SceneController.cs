@@ -163,6 +163,8 @@ namespace Graphics
                     }
                 }
             }
+
+            PerLightSettings.FlushAliases();
         }
 
         public static PerLightSettings[] BuildLightSettings()

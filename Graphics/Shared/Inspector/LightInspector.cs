@@ -94,7 +94,18 @@ namespace Graphics.Inspector
                                 }
                                 if (Graphics.Instance.IsStudio())
                                 {
-                                    Text("Light Name", lightManager.SelectedLight.light.name, lightName => lightManager.SelectedLight.light.name = lightName, !lightManager.SelectedLight.light.transform.IsChildOf(GameObject.Find("StudioScene/Camera").transform));
+                                    string currentAliasedName = PerLightSettings.NameForLight(lightManager.SelectedLight.light);
+                                    Text("Light Name", currentAliasedName, lightName => {
+                                            if (lightName != currentAliasedName && lightName != lightManager.SelectedLight.light.name)
+                                            {
+                                                PerLightSettings.SetAlias(lightManager.SelectedLight.light, lightName);
+                                            }
+                                            else if (lightName == lightManager.SelectedLight.light.name && PerLightSettings.AliasedLight(lightManager.SelectedLight.light))
+                                            {
+                                                PerLightSettings.ClearAlias(lightManager.SelectedLight.light);
+                                            }
+                                        }, 
+                                        !lightManager.SelectedLight.light.transform.IsChildOf(GameObject.Find("StudioScene/Camera").transform));
                                 }
                                 else
                                 {
@@ -285,7 +296,7 @@ namespace Graphics.Inspector
             GUILayout.BeginHorizontal();
             GUILayout.Space(5);
 
-            if (ToggleButton(l.light.name, ReferenceEquals(l, lightManager.SelectedLight), true))
+            if (ToggleButton(PerLightSettings.NameForLight(l.light), ReferenceEquals(l, lightManager.SelectedLight), true))
             {
                 lightManager.SelectedLight = l;
             }

@@ -43,7 +43,10 @@ namespace Graphics
 
             Graphics.Instance.LightManager.UseAlloyLight = UseAlloyLight;
 
-            if (!string.IsNullOrEmpty(LightName)) lightObject.light.name = LightName;
+            if (!string.IsNullOrEmpty(LightName))
+            {
+                SetAlias(lightObject.light, LightName);
+            }
 
             lightObject.color = Color;
             lightObject.light.colorTemperature = ColorTemperature;
@@ -103,7 +106,11 @@ namespace Graphics
 
             UseAlloyLight = Graphics.Instance.LightManager.UseAlloyLight;
 
-            LightName = lightObject.light.name;
+            if (AliasedLight(lightObject.light))
+            {
+                LightName = NameForLight(lightObject.light);
+                Graphics.Instance.Log.LogInfo($"Storing Light Alias {LightName}");
+            }
 
             Color = lightObject.color;
             ColorTemperature = lightObject.light.colorTemperature;
@@ -159,6 +166,115 @@ namespace Graphics
             CullingMask = lightObject.light.cullingMask;
 
             HierarchyPath = PathElement.Build(lightObject.light.gameObject.transform);
-        }        
+        }
+
+        internal static Dictionary<WeakReference<Light>, string> LightNameAliases = new Dictionary<WeakReference<Light>, string>();
+        internal static bool AliasedLight(Light light)
+        {
+            if (!KKAPI.Studio.StudioAPI.InsideStudio)
+                return false;
+
+            foreach (WeakReference<Light> lightRef in LightNameAliases.Keys)
+            {
+                if (lightRef.TryGetTarget(out Light storedRef))
+                {
+                    if (ReferenceEquals(storedRef, light))
+                        return true;
+                }
+            }
+
+            return false;
+        }
+        internal static string NameForLight(Light light)
+        {
+            if (!KKAPI.Studio.StudioAPI.InsideStudio)
+                return light.name;
+
+            foreach (WeakReference<Light> lightRef in LightNameAliases.Keys)
+            {
+                if (lightRef.TryGetTarget(out Light storedRef))
+                {
+                    if (ReferenceEquals(storedRef, light))
+                        return LightNameAliases[lightRef];
+                }
+            }
+
+            return light.name;
+        }
+
+        internal static void ClearAlias(Light light)
+        {
+            if (!KKAPI.Studio.StudioAPI.InsideStudio)
+                return;
+
+            foreach (Studio.TreeNodeObject node in Studio.Studio.Instance.dicInfo.Keys)
+            {
+                if (Studio.Studio.Instance.dicInfo[node] != null && Studio.Studio.Instance.dicInfo[node] is Studio.OCILight && ReferenceEquals(light, ((Studio.OCILight)Studio.Studio.Instance.dicInfo[node]).light))
+                {
+                    node.textName = light.name;
+                    break;
+                }
+            }
+            foreach (WeakReference<Light> lightRef in LightNameAliases.Keys)
+            {
+                if (lightRef.TryGetTarget(out Light storedRef))
+                {
+                    if (ReferenceEquals(storedRef, light))
+                    {
+                        LightNameAliases.Remove(lightRef);
+                        return;
+                    }
+                }
+            }
+        }
+
+        internal static void SetAlias(Light light, string name)
+        {
+            if (!KKAPI.Studio.StudioAPI.InsideStudio)
+                return;
+
+            foreach (Studio.TreeNodeObject node in Studio.Studio.Instance.dicInfo.Keys)
+            {
+                if (Studio.Studio.Instance.dicInfo[node] != null && Studio.Studio.Instance.dicInfo[node] is Studio.OCILight && ReferenceEquals(light, ((Studio.OCILight)Studio.Studio.Instance.dicInfo[node]).light))
+                {
+                    node.textName = name;
+                    break;
+                }
+            }
+
+            foreach (WeakReference<Light> lightRef in LightNameAliases.Keys)
+            {
+                if (lightRef.TryGetTarget(out Light storedRef))
+                {
+                    if (ReferenceEquals(storedRef, light))
+                    {
+                        LightNameAliases[lightRef] = name;
+                        return;
+                    }
+                }
+            }
+
+            LightNameAliases.Add(new WeakReference<Light>(light), name);
+
+        }
+
+        internal static void FlushAliases()
+        {
+            if (!KKAPI.Studio.StudioAPI.InsideStudio)
+                return;
+
+            List<WeakReference<Light>> keysToPurge = new List<WeakReference<Light>>();
+            foreach (WeakReference<Light> lightRef in LightNameAliases.Keys)
+            {
+                if (!lightRef.TryGetTarget(out Light target))
+                {
+                    keysToPurge.Add(lightRef);
+                }
+            }
+            foreach (WeakReference<Light> key in keysToPurge)
+            {
+                LightNameAliases.Remove(key);
+            }
+        }
     }
 }
