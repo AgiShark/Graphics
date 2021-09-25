@@ -306,6 +306,28 @@ namespace Graphics
 
                 UpdateCameraModes(cam, LightingCamera);
                 LightingCamera.allowHDR = cam.allowHDR;
+
+
+                if (GTAO.GTAOManager.settings.Enabled)
+                {
+                    if (LightingCamera.GetComponent<GTAO.GroundTruthAmbientOcclusion>() == null)
+                    {                        
+                        GTAO.GroundTruthAmbientOcclusion gtao = LightingCamera.GetOrAddComponent<GTAO.GroundTruthAmbientOcclusion>();
+                        GTAO.GTAOManager.RegisterAdditionalInstance(gtao);
+                        GTAO.GTAOManager.CopySettingsToOtherInstances();
+                    }
+                }
+                else
+                {
+                    if (LightingCamera.GetComponent<GTAO.GroundTruthAmbientOcclusion>() != null)
+                    {
+                        GTAO.GroundTruthAmbientOcclusion gtao = LightingCamera.GetOrAddComponent<GTAO.GroundTruthAmbientOcclusion>();
+                        GTAO.GTAOManager.DestroyGTAOInstance(gtao);
+                        Destroy(gtao);
+                    }
+                }
+
+
                 // if (SurfaceScattering)
                 {
                     if (ReferenceEquals(null, sss_convolution)) sss_convolution = LightingCamera.gameObject.GetComponent<SSS_convolution>();

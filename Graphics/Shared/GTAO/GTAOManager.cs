@@ -75,9 +75,9 @@ namespace Graphics.GTAO
             }
         }
 
-        internal void DestroyGTAOInstance(GroundTruthAmbientOcclusion GTAOInstance)
+        public static void DestroyGTAOInstance(GroundTruthAmbientOcclusion GTAOInstance)
         {
-           
+            otherGTAOInstances.Remove(GTAOInstance);
         }
 
         IEnumerator WaitForCamera()

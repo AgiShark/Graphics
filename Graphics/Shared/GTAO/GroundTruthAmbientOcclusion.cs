@@ -154,6 +154,7 @@ namespace Graphics.GTAO
 
         private Shader gtaoShader;
         private AssetBundle assetBundle;
+        private RenderingPath lastRenderPath;
 
         /* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* *//* */
         void Awake()
@@ -164,15 +165,41 @@ namespace Graphics.GTAO
             GTAOMaterial = new Material(gtaoShader);
         }
 
+
         void OnEnable()
         {
             GTAOBuffer = new CommandBuffer();
             GTAOBuffer.name = "GroundTruthAmbientOcclusion";
-            RenderCamera.AddCommandBuffer(CameraEvent.BeforeImageEffectsOpaque, GTAOBuffer);
+            if (Graphics.Instance.CameraSettings.MainCamera.renderingPath == RenderingPath.DeferredShading)
+                RenderCamera.AddCommandBuffer(CameraEvent.AfterFinalPass, GTAOBuffer);
+            else
+                RenderCamera.AddCommandBuffer(CameraEvent.BeforeImageEffectsOpaque, GTAOBuffer);
         }
 
         void OnPreRender()
         {
+            if (Graphics.Instance.CameraSettings.MainCamera.renderingPath != RenderingPath.DeferredShading)
+            {
+                GTAO.GTAOManager.settings.Enabled = false;
+                GTAO.GTAOManager.UpdateSettings();
+            }
+
+            RenderingPath currentRenderPath = Graphics.Instance.CameraSettings.MainCamera.renderingPath;
+            if (lastRenderPath != currentRenderPath)
+            {
+                lastRenderPath = currentRenderPath;
+                if (currentRenderPath == RenderingPath.DeferredShading)
+                {
+                    RenderCamera.RemoveCommandBuffer(CameraEvent.BeforeImageEffectsOpaque, GTAOBuffer);
+                    RenderCamera.AddCommandBuffer(CameraEvent.AfterFinalPass, GTAOBuffer);
+                }
+                else
+                {
+                    RenderCamera.RemoveCommandBuffer(CameraEvent.AfterFinalPass, GTAOBuffer);
+                    RenderCamera.AddCommandBuffer(CameraEvent.BeforeImageEffectsOpaque, GTAOBuffer);
+                }
+            }
+
             //RenderResolution = new Vector2(RenderCamera.pixelWidth, RenderCamera.pixelHeight) / (int)SamplerResolution;
             RenderResolution = new Vector2(RenderCamera.pixelWidth, RenderCamera.pixelHeight);
 
@@ -189,7 +216,11 @@ namespace Graphics.GTAO
         {
             if (GTAOBuffer != null)
             {
-                RenderCamera.RemoveCommandBuffer(CameraEvent.BeforeImageEffectsOpaque, GTAOBuffer);
+                if (lastRenderPath == RenderingPath.DeferredShading)
+                    RenderCamera.RemoveCommandBuffer(CameraEvent.AfterFinalPass, GTAOBuffer);
+                else
+                    RenderCamera.RemoveCommandBuffer(CameraEvent.BeforeImageEffectsOpaque, GTAOBuffer);
+
                 GTAOBuffer.Dispose();
                 GTAOBuffer = null;
             }
@@ -218,6 +249,7 @@ namespace Graphics.GTAO
             if (GTAOBuffer != null)
             {
                 GTAOBuffer.Dispose();
+                GTAOBuffer = null;
             }
         }
 
