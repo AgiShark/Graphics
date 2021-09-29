@@ -26,6 +26,7 @@ Major changes list:
 - Studio toolbar icon
 - Lights and Reflection Probe settings save and load along with scenes
 - Pulsed Realtime Reflection Probes setting - Updates realtime reflection probes every N seconds, benefits of realtime probes with less overall performance impact.
+- Save Customized Light Profiles for each Main Game Scene
 - Numerous small bug fixes
 
 # FAQ
@@ -48,7 +49,7 @@ No. For one thing there is no singular vanilla settings, the game applies differ
 
 **My presets don't save my light changes?**
 
-Presets do not save light or cubemap settings, only studio scenes save that information. Saving light setting changes in the main game needs structural and UI changes beyond the scope of what I intend to do with this maintenance branch. This would be something to look at in the rewritten version.
+Presets do not save light or cubemap settings, for Studio lighting is saved as part of the scene. For the main game lighting can be saved via a button on the lights tab. There is just one save slot per scene. Note that the same map is used in different scenes. For example the lobby selection screen, lobby ADV and lobby H Scene are all separate scenes and have separate light setups. Lighting presets are stored in the mapLightPresets subdirectory of the presets folder by scene name.
 
 **Bloom doesn't seem to do anything?**
 
