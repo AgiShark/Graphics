@@ -16,7 +16,7 @@ namespace Graphics.Inspector
         private static Vector2 presetScrollView;
         internal static void Draw(PresetManager presetManager)
         {
-            GUILayout.BeginVertical(GUIStyles.Skin.box);
+            GUILayout.BeginVertical(GUIStyles.Skin.box, GUILayout.ExpandHeight(true));
             Label("Presets","");
             GUILayout.Space(1);
             if (presetManager.PresetNames.IsNullOrEmpty())

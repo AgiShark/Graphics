@@ -122,17 +122,17 @@ namespace Graphics.Inspector
             {
                 GTAOSettings gtaoSettings = GTAOManager.settings;
                 GUILayout.BeginVertical(GUIStyles.Skin.box);
-                if (Graphics.Instance.CameraSettings.RenderingPath != CameraSettings.AIRenderingPath.Deferred)
-                {
-                    if (gtaoSettings.Enabled)
-                    {
-                        gtaoSettings.Enabled = false;
-                        GTAOManager.UpdateSettings();
-                    }
-                    Label("Ground Truth Ambient Occlusion - Available in Deferred Rendering Mode Only", "", true);
-                }
-                else
-                {
+      //          if (Graphics.Instance.CameraSettings.RenderingPath != CameraSettings.AIRenderingPath.Deferred)
+      //          {
+      //              if (gtaoSettings.Enabled)
+      //              {
+      //                  gtaoSettings.Enabled = false;
+       //                 GTAOManager.UpdateSettings();
+      //              }
+      //              Label("Ground Truth Ambient Occlusion - Available in Deferred Rendering Mode Only", "", true);
+     //           }
+      //          else
+     //           {
                     Toggle("Ground Truth Ambient Occlusion", gtaoSettings.Enabled, true, enabled => { gtaoSettings.Enabled = enabled; GTAOManager.UpdateSettings(); });
                     if (gtaoSettings.Enabled)
                     {
@@ -149,7 +149,7 @@ namespace Graphics.Inspector
                         Toggle("MultiBounce", gtaoSettings.MultiBounce.value, true, multiBounce => { gtaoSettings.MultiBounce.value = multiBounce; GTAOManager.UpdateSettings(); });
 
                     }
-                }
+     //           }
                 GUILayout.EndVertical();
             }
 #if AI

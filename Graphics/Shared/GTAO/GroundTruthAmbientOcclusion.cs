@@ -162,6 +162,7 @@ namespace Graphics.GTAO
             RenderCamera = gameObject.GetComponent<Camera>();
             assetBundle = AssetBundle.LoadFromMemory(ResourceUtils.GetEmbeddedResource("gtao.unity3d"));
             gtaoShader = assetBundle.LoadAsset<Shader>("Assets/shaders/gtao.shader");
+            RenderCamera.depthTextureMode = DepthTextureMode.Depth | DepthTextureMode.DepthNormals | DepthTextureMode.MotionVectors;
             GTAOMaterial = new Material(gtaoShader);
         }
 
@@ -180,8 +181,8 @@ namespace Graphics.GTAO
         {
             if (Graphics.Instance.CameraSettings.MainCamera.renderingPath != RenderingPath.DeferredShading)
             {
-                GTAO.GTAOManager.settings.Enabled = false;
-                GTAO.GTAOManager.UpdateSettings();
+       //         GTAO.GTAOManager.settings.Enabled = false;
+       //         GTAO.GTAOManager.UpdateSettings();
             }
 
             RenderingPath currentRenderPath = Graphics.Instance.CameraSettings.MainCamera.renderingPath;

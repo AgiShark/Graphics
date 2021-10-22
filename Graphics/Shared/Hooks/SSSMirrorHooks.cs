@@ -73,7 +73,7 @@ namespace Graphics
         {
             if (reflectionCamera.gameObject.GetComponent<SSS>() == null)
             {
-        //        Graphics.Instance.Log.LogInfo($"Adding SSS Component to Camera: {reflectionCamera.name} GO: {reflectionCamera.gameObject.name}");
+                Graphics.Instance.Log.LogInfo($"Adding SSS Component to Camera: {reflectionCamera.name} GO: {reflectionCamera.gameObject.name}");
                 SSS mirrorSSS = reflectionCamera.gameObject.AddComponent<SSS>();
                 mirrorSSS.enabled = true;
                 mirrorSSS.Enabled = true;
