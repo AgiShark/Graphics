@@ -86,6 +86,48 @@ namespace Graphics
             return pluginData;
         }
 
+
+        // Using a mix of hierarchy and object id key allows us to handle both Object lights and Scene lights
+        private static PerLightSettings FindLightSettingsForLight(LightObject light, PerLightSettings[] settings)
+        {
+#if DEBUG
+            Graphics.Instance.Log.LogInfo($"Light: {light?.ociLight} {light?.ociLight?.lightInfo?.dicKey} {light?.light?.gameObject?.transform}");
+#endif
+
+            PerLightSettings setting = null;
+            if (light.ociLight != null)
+            {
+                // Try by dic key AND path
+                setting = settings.FirstOrDefault(s => s.LightId == light?.ociLight?.lightInfo.dicKey && s.HierarchyPath != null && s.HierarchyPath.Matches(light.light.gameObject.transform));
+                if (setting != null)
+                {
+#if DEBUG
+                    Graphics.Instance.Log.LogInfo($"Found by dic key and hierarchy: {setting.LightId}:{setting.HierarchyPath}");
+#endif
+                    return setting;
+                }
+
+                // Try by dic key
+                setting = settings.FirstOrDefault(s => s.LightId == light.ociLight.lightInfo.dicKey);
+                if (setting != null)
+                {
+#if DEBUG
+                    Graphics.Instance.Log.LogInfo($"Found by dic key only: {setting.LightId}:{setting.HierarchyPath}");
+#endif
+                    return setting;
+                }
+            }
+            // Try by path
+            setting = settings.FirstOrDefault(s => s.HierarchyPath.Matches(light.light.gameObject.transform));
+#if DEBUG
+            if (setting != null)
+                Graphics.Instance.Log.LogInfo($"Found by hierarchy only: {setting.LightId}:{setting.HierarchyPath}");
+            else
+                Graphics.Instance.Log.LogInfo($"New Light");
+#endif
+            return setting;
+        }
+
         public static void ApplyLightSettings(PerLightSettings[] settings)
         {
             LightManager lightManager = Graphics.Instance.LightManager;
@@ -98,7 +140,7 @@ namespace Graphics
             {
                 foreach (LightObject light in lightManager.DirectionalLights)
                 {
-                    PerLightSettings setting = settings.FirstOrDefault(s => s.HierarchyPath.Matches(light.light.gameObject.transform));
+                    PerLightSettings setting = FindLightSettingsForLight(light, settings);
                     if (setting != null)
                     {
                         setting.ApplySettings(light);
@@ -108,14 +150,14 @@ namespace Graphics
 
                 foreach (LightObject light in lightManager.PointLights)
                 {
-                    PerLightSettings setting = settings.FirstOrDefault(s => s.HierarchyPath.Matches(light.light.gameObject.transform));
+                    PerLightSettings setting = FindLightSettingsForLight(light, settings);
                     if (setting != null)
                         setting.ApplySettings(light);
                 }
 
                 foreach (LightObject light in lightManager.SpotLights)
                 {
-                    PerLightSettings setting = settings.FirstOrDefault(s => s.HierarchyPath.Matches(light.light.gameObject.transform));
+                    PerLightSettings setting = FindLightSettingsForLight(light, settings);
                     if (setting != null)
                         setting.ApplySettings(light);
                 }
@@ -149,6 +191,10 @@ namespace Graphics
                 // Add extra lights if requested
                 foreach (PerLightSettings setting in newDirectionalLights)
                 {
+#if DEBUG
+                    Graphics.Instance.Log.LogInfo($"Adding Additional Light {setting.LightName}");
+#endif
+
                     GameObject lightGameObject = new GameObject(setting.LightName);
                     Light lightComp = lightGameObject.AddComponent<Light>();
                     lightGameObject.GetComponent<Light>().type = LightType.Directional;      
@@ -156,7 +202,7 @@ namespace Graphics
                 lightManager.Light();
                 foreach (LightObject light in lightManager.DirectionalLights)
                 {
-                    PerLightSettings setting = settings.FirstOrDefault(s => s.HierarchyPath.Matches(light.light.gameObject.transform));
+                    PerLightSettings setting = FindLightSettingsForLight(light, settings);
                     if (setting != null)
                     {
                         setting.ApplySettings(light);

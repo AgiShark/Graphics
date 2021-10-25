@@ -114,6 +114,14 @@ namespace Graphics
 
             private bool IsStudioLight { get => Graphics.Instance.IsStudio() && null == _light && null != _ociLight; }
 
+            internal OCILight ociLight
+            {
+                get
+                {
+                    return _ociLight;
+                }
+            }
+
             internal Light light
             {
                 get

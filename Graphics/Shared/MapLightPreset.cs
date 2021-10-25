@@ -69,9 +69,14 @@ namespace Graphics
 
         public void ApplyParameters()
         {
+#if DEBUG
+            Graphics.Instance.Log.LogInfo($"Loading Reflection Probes.");
+#endif
             if (reflectionProbes != null && reflectionProbes.Length > 0)
                 SceneController.ApplyReflectionProbeSettings(reflectionProbes);
-
+#if DEBUG
+            Graphics.Instance.Log.LogInfo($"Loaded Light Settings.");
+#endif
             if (lights != null && lights.Length > 0)
                 SceneController.ApplyLightSettings(lights);
         }       
@@ -79,6 +84,9 @@ namespace Graphics
         public void Load(byte[] bytes)
         {
             Deserialize(bytes);
+#if DEBUG
+            Graphics.Instance.Log.LogInfo($"Loaded map preset, applying.");
+#endif
             ApplyParameters();
         }
 

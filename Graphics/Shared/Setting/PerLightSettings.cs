@@ -34,11 +34,12 @@ namespace Graphics
         public int RenderMode { get; set; }
         public int CullingMask { get; set; }
         public PathElement HierarchyPath { get; set; }
+        public int LightId { get; set; }
 
         public int Type { get; set; }
 
         internal void ApplySettings(LightObject lightObject)
-        {
+        {            
             lightObject.enabled = !Disabled;            
 
             Graphics.Instance.LightManager.UseAlloyLight = UseAlloyLight;
@@ -47,10 +48,11 @@ namespace Graphics
             {
                 SetAlias(lightObject.light, LightName);
             }
-
+            
             lightObject.color = Color;
             lightObject.light.colorTemperature = ColorTemperature;
 
+            
             lightObject.shadows = (LightShadows)ShadowType;
             lightObject.light.shadowStrength = ShadowStrength;
             if (LightType.Directional == lightObject.type && Graphics.Instance.Settings.UsePCSS)
@@ -58,12 +60,14 @@ namespace Graphics
             else
                 lightObject.light.shadowResolution = (LightShadowResolution)ShadowResolutionType;
 
+            
             lightObject.light.shadowBias = ShadowBias;
             lightObject.light.shadowNormalBias = ShadowNormalBias;
             lightObject.light.shadowNearPlane = ShadowNearPlane;
-
+            
             lightObject.intensity = LightIntensity;
             lightObject.light.bounceIntensity = IndirectMultiplier;
+            
             if (SegiSun)
             {
                 if (null != Graphics.Instance.CameraSettings.MainCamera)
@@ -81,7 +85,6 @@ namespace Graphics
                 lightObject.rotation = Rotation;
             else if (!KKAPI.Studio.StudioAPI.InsideStudio && lightObject.light.name.StartsWith("(Graphics)"))
                 lightObject.rotation = Rotation;
-
 
             lightObject.range = Range;
             lightObject.spotAngle = SpotAngle;
@@ -110,6 +113,10 @@ namespace Graphics
             {
                 LightName = NameForLight(lightObject.light);
                 Graphics.Instance.Log.LogInfo($"Storing Light Alias {LightName}");
+            }
+            else if (GraphicsAddedLight(lightObject.light))
+            {
+                LightName = lightObject.light.gameObject.name;
             }
 
             Color = lightObject.color;
@@ -166,6 +173,14 @@ namespace Graphics
             CullingMask = lightObject.light.cullingMask;
 
             HierarchyPath = PathElement.Build(lightObject.light.gameObject.transform);
+
+            if (lightObject.ociLight != null)
+                LightId = lightObject.ociLight.lightInfo.dicKey;
+        }
+
+        internal static bool GraphicsAddedLight(Light light)
+        {
+            return light.gameObject.name.StartsWith("(Graphics)");
         }
 
         internal static Dictionary<WeakReference<Light>, string> LightNameAliases = new Dictionary<WeakReference<Light>, string>();
