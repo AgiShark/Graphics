@@ -159,7 +159,7 @@ Used for Subsurface Scattering Effects...which is currently...one, Hanmens Nextg
 
 **Debug Distance** - Not implemented.
 
-**Layers** What the SSS checks and processes. Only enable Chara or Map basically. Use Chara for skins and Map for SSS studio accessories. Since we don't have any SSS studio accessories setting this to Chara being the only selected layer is recommended. Turning off Map will improve peformance very noticeably.
+**Layers** What the SSS checks and processes. Only enable Chara and/or Map basically. Use Chara for skins and Map for SSS studio accessories primarily. Since we don't have any SSS studio accessories setting this to Chara being the only selected layer will grant some fps back, but won't process some map obstructions changing lighting on the character skin. Normally this isn't particularly noticeable unless you have a really shadow heavy scene with map elements in the field of view, and even then it isn't enormous. Chara only is good enough for most scenes, you can enable Map before key screenshots for the literal extra bit of fidelity if you like. Other layers are noramlly irrelevant.
 
 **Dither** Turns dithering on/off. Dithering blurs the underlying skin features a bit and looks more 'natural'. CPU performance hit, unless you are CPU bound this doesn't cost you anything. If you are CPU limited, turning this off will grant some FPS but make the underlying skin a bit...blotchy.
 
@@ -171,7 +171,7 @@ Used for Subsurface Scattering Effects...which is currently...one, Hanmens Nextg
 
 ## SSS Performance Tips
 
-Most important: Turn off all layers except Chara. Until we have SSS studio items anything else does nothing and costs frames.\
+Most important: Turn off all layers except Chara.\
 Next: Downscale factor. Turn this up to 2.0 for big frame rate gains, quality loss...isn't bad honestly. Try for even numbers (it's a divider) (1, 2, 4).\
 Next: Postprocess iterations/Shader Iterations (lower is faster)\
 Dither/Dither Intensity: If you are CPU bound this'll grant performance, otherwise doesn't help.
