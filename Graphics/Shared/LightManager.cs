@@ -8,7 +8,7 @@ namespace Graphics
 {
     internal class LightManager
     {
-        private List<LightObject> allLights;
+        internal List<LightObject> allLights;
         internal List<LightObject> DirectionalLights { get; private set; }
         internal List<LightObject> PointLights { get; private set; }
         internal List<LightObject> SpotLights { get; private set; }

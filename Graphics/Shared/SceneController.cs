@@ -27,7 +27,19 @@ namespace Graphics
         protected override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
         {
             PluginData pluginData = GetExtendedData();
-            DoLoad(pluginData);
+
+            if (operation == SceneOperationKind.Import)
+            {
+                // Copy over light settings from the newly imported lights
+                if (pluginData != null && pluginData.data != null && pluginData.data.ContainsKey("lightDataBytes"))
+                {
+                    PerLightSettings[] settings = MessagePackSerializer.Deserialize<PerLightSettings[]>((byte[])pluginData.data["lightDataBytes"]);
+                    if (settings != null && settings.Length > 0)
+                        ImportLightSettings(settings, loadedItems);
+                }
+            }
+            else
+                DoLoad(pluginData);
         }        
 
         private void DoLoad(PluginData pluginData)
@@ -86,6 +98,33 @@ namespace Graphics
             return pluginData;
         }
 
+        private static PerLightSettings FindMappedLightSettings(LightObject light, ReadOnlyDictionary<int, ObjectCtrlInfo> objects, PerLightSettings[] settings)
+        {
+#if DEBUG
+            Graphics.Instance.Log.LogInfo($"Importing Light: {light?.ociLight} {light?.ociLight?.lightInfo?.dicKey} {light?.light?.gameObject?.transform}");
+#endif
+            if (light.ociLight != null)
+            {
+                if (objects.Values.Any(oci => oci.GetType() == typeof(OCILight) && oci?.objectInfo?.dicKey == light?.ociLight?.lightInfo?.dicKey))
+                {
+                    int oldKey = objects.FirstOrDefault(kvp => kvp.Value.GetType() == typeof(OCILight) && kvp.Value?.objectInfo?.dicKey == light?.ociLight?.lightInfo?.dicKey).Key;
+                    PerLightSettings setting = settings.FirstOrDefault(s => s.LightId == oldKey);
+                    if (setting != null)
+                    {
+#if DEBUG
+                        Graphics.Instance.Log.LogInfo($"Found by dic key Old: {oldKey} New: {light.ociLight.lightInfo.dicKey}");
+#endif
+                        return setting;
+                    }
+                }
+            }
+#if DEBUG
+            Graphics.Instance.Log.LogInfo($"No Settings Found");
+#endif
+
+            return null;
+        }
+
 
         // Using a mix of hierarchy and object id key allows us to handle both Object lights and Scene lights
         private static PerLightSettings FindLightSettingsForLight(LightObject light, PerLightSettings[] settings)
@@ -126,6 +165,26 @@ namespace Graphics
                 Graphics.Instance.Log.LogInfo($"New Light");
 #endif
             return setting;
+        }
+
+        public static void ImportLightSettings(PerLightSettings[] settings, ReadOnlyDictionary<int, ObjectCtrlInfo> importedObjects)
+        {
+            LightManager lightManager = Graphics.Instance.LightManager;
+            lightManager.Light();
+            if (settings.Length > 0 && settings[0].HierarchyPath != null)
+            {
+                foreach (ObjectCtrlInfo oci in importedObjects.Values)
+                {
+                    if (oci.GetType() == typeof(OCILight))
+                    {
+                        LightObject light = lightManager.allLights.FirstOrDefault(li => li.ociLight != null && li.ociLight == (OCILight)oci);
+                        if (light != null)
+                        {
+                            FindMappedLightSettings(light, importedObjects, settings)?.ApplySettings(light);
+                        }
+                    }
+                }             
+            }
         }
 
         public static void ApplyLightSettings(PerLightSettings[] settings)
