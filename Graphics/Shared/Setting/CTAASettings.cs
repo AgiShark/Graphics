@@ -68,7 +68,7 @@ namespace Graphics.Settings
             {
                 return;
             }
-            else if (ctaa == null)
+            else if (ctaa == null && Enabled)
             {
                 ctaa = Graphics.Instance.CameraSettings.MainCamera.GetOrAddComponent<CTAA_PC>();
                 SwitchMode(Mode, true);

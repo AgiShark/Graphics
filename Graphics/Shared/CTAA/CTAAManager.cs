@@ -11,7 +11,8 @@ namespace Graphics.CTAA
 
         public static void ApplySetting()
         {
-            CTaaSettings.SwitchMode(CTaaSettings.Mode, true);
+            if (CTaaSettings.Enabled)
+                CTaaSettings.SwitchMode(CTaaSettings.Mode, true);
         }
     }
 }
