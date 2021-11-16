@@ -17,6 +17,7 @@ namespace Graphics.Settings
         public FloatValue EdgeResponse = new FloatValue(0.5f, false);
         public FloatValue AdaptiveSharpness = new FloatValue(0.2f, false);
         public FloatValue TemporalJitterScale = new FloatValue(0.475f, false);
+        public FloatValue VRTemporalEdgePower = new FloatValue(2.0f, false);
         public CTAA_MODE Mode = CTAA_MODE.STANDARD;
 
         public enum CTAA_MODE
@@ -39,7 +40,7 @@ namespace Graphics.Settings
         }
 
         public IEnumerator DoSwitchMode()
-        {
+        {            
             CTAA_PC ctaa = Graphics.Instance.CameraSettings.MainCamera.GetOrAddComponent<CTAA_PC>();
             if (ctaa != null && ctaa.SuperSampleMode != (int)Mode)
             {
@@ -59,6 +60,26 @@ namespace Graphics.Settings
             }
         }
 
+        public void Load(CTAAVR_VIVE vrCtaa)
+        {
+            if (vrCtaa == null && !Enabled)
+            {
+                return;
+            }
+            else if (vrCtaa == null)
+            {
+                CTAAVR_Velocity_OPENVR vrCtaaVelocity = Graphics.Instance.CameraSettings.MainCamera.GetOrAddComponent<CTAAVR_Velocity_OPENVR>();
+                vrCtaa = Graphics.Instance.CameraSettings.MainCamera.GetOrAddComponent<CTAAVR_VIVE>();
+                if (vrCtaa != null)
+                {
+                    DoLoad(vrCtaa);
+                    Graphics.Instance.Log.LogInfo($"Enabling VR CTAA");
+                }
+                return;
+            }
+            DoLoad(vrCtaa);
+        }
+
         public void Load(CTAA_PC ctaa)
         {            
             if (runningCoroutine)
@@ -70,12 +91,34 @@ namespace Graphics.Settings
             }
             else if (ctaa == null)
             {
-                ctaa = Graphics.Instance.CameraSettings.MainCamera.GetOrAddComponent<CTAA_PC>();
                 SwitchMode(Mode, true);
                 return;
             }
 
             DoLoad(ctaa);
+        }
+
+        private void DoLoad(CTAAVR_VIVE vrCtaa)
+        {
+            vrCtaa.enabled = Enabled;
+            vrCtaa.CTAA_Enabled = Enabled;
+
+            if (VRTemporalEdgePower.overrideState)
+                vrCtaa.TemporalEdgePower = VRTemporalEdgePower.value;
+            else
+                vrCtaa.TemporalEdgePower = 2.0f;
+
+            if (TemporalJitterScale.overrideState)
+                vrCtaa.TemporalJitterScale = TemporalJitterScale.value;
+            else
+                vrCtaa.TemporalJitterScale = 0.25f;
+
+            if (AdaptiveSharpness.overrideState)
+                vrCtaa.AdaptiveSharpness = AdaptiveSharpness.value;
+            else
+                vrCtaa.AdaptiveSharpness = 0.33f;
+
+
         }
 
         private void DoLoad(CTAA_PC ctaa)
@@ -106,7 +149,7 @@ namespace Graphics.Settings
             if (TemporalJitterScale.overrideState)
                 ctaa.TemporalJitterScale = TemporalJitterScale.value;
             else
-                ctaa.TemporalJitterScale = 0.475f;
+                ctaa.TemporalJitterScale = 0.475f;            
         }
     }
 }

@@ -359,21 +359,46 @@ namespace Graphics.Settings
             }            
             set
             {
-                CTAA_PC ctaa = Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAA_PC>();
-                if (value == Antialiasing.CTAA && (!CTAAManager.CTaaSettings.Enabled || ctaa == null || !ctaa.enabled))
-                {                    
-                    PostProcessLayer.antialiasingMode = PostProcessLayer.Antialiasing.None;
-                    CTAAManager.CTaaSettings.Enabled = true;
-                    CTAAManager.CTaaSettings.SwitchMode(CTAAManager.CTaaSettings.Mode, true);
-                }
-                else
-                {                    
-                    if (CTAAManager.CTaaSettings.Enabled)
-                        CTAAManager.CTaaSettings.Enabled = false;
-                    if (ctaa != null)
-                        GameObject.DestroyImmediate(ctaa);
+  /*              if (Graphics.Instance.CameraSettings.MainCamera.stereoEnabled)
+                {
+                    CTAAVR_VIVE vrCtaa = Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAAVR_VIVE>();
+                    if (value == Antialiasing.CTAA && (!CTAAManager.CTaaSettings.Enabled || vrCtaa == null || !vrCtaa.enabled))
+                    {
+                        PostProcessLayer.antialiasingMode = PostProcessLayer.Antialiasing.None;
+                        CTAAManager.CTaaSettings.Enabled = true;
+                        CTAAManager.CTaaSettings.Load(vrCtaa);
+                    }
+                    else
+                    {
+                        if (CTAAManager.CTaaSettings.Enabled)
+                            CTAAManager.CTaaSettings.Enabled = false;
+                        if (vrCtaa != null)
+                        {                            
+                            GameObject.DestroyImmediate(vrCtaa);
+                            GameObject.DestroyImmediate(Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAAVR_Velocity_OPENVR>());
+                        }
 
-                    PostProcessLayer.antialiasingMode = (PostProcessLayer.Antialiasing)value;
+                        PostProcessLayer.antialiasingMode = (PostProcessLayer.Antialiasing)value;
+                    }
+                }
+                else */
+                {
+                    CTAA_PC ctaa = Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAA_PC>();
+                    if (value == Antialiasing.CTAA && (!CTAAManager.CTaaSettings.Enabled || ctaa == null || !ctaa.enabled))
+                    {
+                        PostProcessLayer.antialiasingMode = PostProcessLayer.Antialiasing.None;
+                        CTAAManager.CTaaSettings.Enabled = true;
+                        CTAAManager.CTaaSettings.SwitchMode(CTAAManager.CTaaSettings.Mode, true);
+                    }
+                    else
+                    {
+                        if (CTAAManager.CTaaSettings.Enabled)
+                            CTAAManager.CTaaSettings.Enabled = false;
+                        if (ctaa != null)
+                            GameObject.DestroyImmediate(ctaa);
+
+                        PostProcessLayer.antialiasingMode = (PostProcessLayer.Antialiasing)value;
+                    }
                 }
             }
         }

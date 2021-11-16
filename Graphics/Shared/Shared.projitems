@@ -92,7 +92,10 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CharaController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CTAA\CTAAManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CTAA\CTAAVR_Velocity_OPENVR.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CTAA\CTAAVR_VIVE.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CTAA\CTAA_PC.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CTAA\DynamicObjectTag.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CTAA\RenderPostCTAA.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Alloy\AlloyPropertyAttributes.cs" />

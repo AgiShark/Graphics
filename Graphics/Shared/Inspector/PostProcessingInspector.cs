@@ -60,30 +60,53 @@ namespace Graphics.Inspector
                 }
                 else if (PostProcessingSettings.Antialiasing.CTAA == postProcessingSettings.AntialiasingMode)
                 {
-                    Slider("Temporal Stability", CTAAManager.CTaaSettings.TemporalStability.value, 3, 16, 
-                        stability => CTAAManager.CTaaSettings.TemporalStability.value = stability,
-                        CTAAManager.CTaaSettings.TemporalStability.overrideState,
-                        overrideState => CTAAManager.CTaaSettings.TemporalStability.overrideState = overrideState);
-                    Slider("HDR Response", CTAAManager.CTaaSettings.HdrResponse.value, 0.001f, 4f, "N3",
-                        hdrResponse => CTAAManager.CTaaSettings.HdrResponse.value = hdrResponse,
-                        CTAAManager.CTaaSettings.HdrResponse.overrideState,
-                        overrideState => CTAAManager.CTaaSettings.HdrResponse.overrideState = overrideState);
-                    Slider("Edge Response", CTAAManager.CTaaSettings.EdgeResponse.value, 0f, 2f, "N1",
-                        edgeResponse => CTAAManager.CTaaSettings.EdgeResponse.value = edgeResponse,
-                        CTAAManager.CTaaSettings.EdgeResponse.overrideState,
-                        overrideState => CTAAManager.CTaaSettings.EdgeResponse.overrideState = overrideState);
-                    Slider("Adaptive Sharpness", CTAAManager.CTaaSettings.AdaptiveSharpness.value, 0f, 1.5f, "N1",
-                        adaptiveSharpness => CTAAManager.CTaaSettings.AdaptiveSharpness.value = adaptiveSharpness,
-                        CTAAManager.CTaaSettings.AdaptiveSharpness.overrideState,
-                        overrideState => CTAAManager.CTaaSettings.AdaptiveSharpness.overrideState = overrideState);
-                    Slider("Temporal Jitter Scale", CTAAManager.CTaaSettings.TemporalJitterScale.value, 0f, 0.5f, "N3",
-                        temporalJitterScale => CTAAManager.CTaaSettings.TemporalJitterScale.value = temporalJitterScale,
-                        CTAAManager.CTaaSettings.TemporalJitterScale.overrideState,
-                        overrideState => CTAAManager.CTaaSettings.TemporalJitterScale.overrideState = overrideState);
+//                    bool VREnabled = Graphics.Instance.CameraSettings.MainCamera.stereoEnabled;
 
-                    Selection("Mode", CTAAManager.CTaaSettings.Mode, mode => CTAAManager.CTaaSettings.SwitchMode(mode));
+  //                  if (!VREnabled)
+  //                  {
+                        Slider("Temporal Stability", CTAAManager.CTaaSettings.TemporalStability.value, 3, 16,
+                            stability => CTAAManager.CTaaSettings.TemporalStability.value = stability,
+                            CTAAManager.CTaaSettings.TemporalStability.overrideState,
+                            overrideState => CTAAManager.CTaaSettings.TemporalStability.overrideState = overrideState);
+                        Slider("HDR Response", CTAAManager.CTaaSettings.HdrResponse.value, 0.001f, 4f, "N3",
+                            hdrResponse => CTAAManager.CTaaSettings.HdrResponse.value = hdrResponse,
+                            CTAAManager.CTaaSettings.HdrResponse.overrideState,
+                            overrideState => CTAAManager.CTaaSettings.HdrResponse.overrideState = overrideState);
+                        Slider("Edge Response", CTAAManager.CTaaSettings.EdgeResponse.value, 0f, 2f, "N1",
+                            edgeResponse => CTAAManager.CTaaSettings.EdgeResponse.value = edgeResponse,
+                            CTAAManager.CTaaSettings.EdgeResponse.overrideState,
+                            overrideState => CTAAManager.CTaaSettings.EdgeResponse.overrideState = overrideState);
+                        Slider("Adaptive Sharpness", CTAAManager.CTaaSettings.AdaptiveSharpness.value, 0f, 1.5f, "N1",
+                            adaptiveSharpness => CTAAManager.CTaaSettings.AdaptiveSharpness.value = adaptiveSharpness,
+                            CTAAManager.CTaaSettings.AdaptiveSharpness.overrideState,
+                            overrideState => CTAAManager.CTaaSettings.AdaptiveSharpness.overrideState = overrideState);
+                        Slider("Temporal Jitter Scale", CTAAManager.CTaaSettings.TemporalJitterScale.value, 0f, 0.5f, "N3",
+                            temporalJitterScale => CTAAManager.CTaaSettings.TemporalJitterScale.value = temporalJitterScale,
+                            CTAAManager.CTaaSettings.TemporalJitterScale.overrideState,
+                            overrideState => CTAAManager.CTaaSettings.TemporalJitterScale.overrideState = overrideState);
 
-                    CTAAManager.CTaaSettings.Load(Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAA_PC>());
+                        Selection("Mode", CTAAManager.CTaaSettings.Mode, mode => CTAAManager.CTaaSettings.SwitchMode(mode));
+                        CTAAManager.CTaaSettings.Load(Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAA_PC>());
+ //                   }
+ /*                   else
+                    {
+                        Slider("VR Temporal Edge Power", CTAAManager.CTaaSettings.VRTemporalEdgePower.value, 1.0f, 4.0f, "N1",
+                            VRTemporalEdgePower => CTAAManager.CTaaSettings.VRTemporalEdgePower.value = VRTemporalEdgePower,
+                            CTAAManager.CTaaSettings.VRTemporalEdgePower.overrideState,
+                            overrideState => CTAAManager.CTaaSettings.VRTemporalEdgePower.overrideState = overrideState);
+                        Slider("Adaptive Sharpness", CTAAManager.CTaaSettings.AdaptiveSharpness.value, 0f, 1.0f, "N1",
+                            adaptiveSharpness => CTAAManager.CTaaSettings.AdaptiveSharpness.value = adaptiveSharpness,
+                            CTAAManager.CTaaSettings.AdaptiveSharpness.overrideState,
+                            overrideState => CTAAManager.CTaaSettings.AdaptiveSharpness.overrideState = overrideState);
+                        Slider("Temporal Jitter Scale", CTAAManager.CTaaSettings.TemporalJitterScale.value, 0f, 0.5f, "N3",
+                            temporalJitterScale => CTAAManager.CTaaSettings.TemporalJitterScale.value = temporalJitterScale,
+                            CTAAManager.CTaaSettings.TemporalJitterScale.overrideState,
+                            overrideState => CTAAManager.CTaaSettings.TemporalJitterScale.overrideState = overrideState);
+
+                        CTAAManager.CTaaSettings.Load(Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAAVR_VIVE>());
+                    }
+ */
+                    
                 }
             }
 

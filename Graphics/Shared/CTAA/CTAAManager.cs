@@ -11,7 +11,14 @@ namespace Graphics.CTAA
 
         public static void ApplySetting()
         {
-            CTaaSettings.SwitchMode(CTaaSettings.Mode, true);
+     //       if (Graphics.Instance.CameraSettings.MainCamera.stereoEnabled)
+     //       {
+     //           CTaaSettings.Load(Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAAVR_VIVE>());
+     //       }
+     //       else
+     //       {
+                CTaaSettings.SwitchMode(CTaaSettings.Mode, true);
+     //       }
         }
     }
 }
