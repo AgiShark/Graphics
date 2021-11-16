@@ -60,30 +60,30 @@ namespace Graphics.Inspector
                 }
                 else if (PostProcessingSettings.Antialiasing.CTAA == postProcessingSettings.AntialiasingMode)
                 {
-                    Slider("Temporal Stability", postProcessingSettings.ctaaSettings.TemporalStability.value, 3, 16, 
-                        stability => postProcessingSettings.ctaaSettings.TemporalStability.value = stability, 
-                        postProcessingSettings.ctaaSettings.TemporalStability.overrideState,
-                        overrideState => postProcessingSettings.ctaaSettings.TemporalStability.overrideState = overrideState);
-                    Slider("HDR Response", postProcessingSettings.ctaaSettings.HdrResponse.value, 0.001f, 4f, "N3",
-                        hdrResponse => postProcessingSettings.ctaaSettings.HdrResponse.value = hdrResponse,
-                        postProcessingSettings.ctaaSettings.HdrResponse.overrideState,
-                        overrideState => postProcessingSettings.ctaaSettings.HdrResponse.overrideState = overrideState);
-                    Slider("Edge Response", postProcessingSettings.ctaaSettings.EdgeResponse.value, 0f, 2f, "N1",
-                        edgeResponse => postProcessingSettings.ctaaSettings.EdgeResponse.value = edgeResponse,
-                        postProcessingSettings.ctaaSettings.EdgeResponse.overrideState,
-                        overrideState => postProcessingSettings.ctaaSettings.EdgeResponse.overrideState = overrideState);
-                    Slider("Adaptive Sharpness", postProcessingSettings.ctaaSettings.AdaptiveSharpness.value, 0f, 1.5f, "N1",
-                        adaptiveSharpness => postProcessingSettings.ctaaSettings.AdaptiveSharpness.value = adaptiveSharpness,
-                        postProcessingSettings.ctaaSettings.AdaptiveSharpness.overrideState,
-                        overrideState => postProcessingSettings.ctaaSettings.AdaptiveSharpness.overrideState = overrideState);
-                    Slider("Temporal Jitter Scale", postProcessingSettings.ctaaSettings.TemporalJitterScale.value, 0f, 0.5f, "N3",
-                        temporalJitterScale => postProcessingSettings.ctaaSettings.TemporalJitterScale.value = temporalJitterScale,
-                        postProcessingSettings.ctaaSettings.TemporalJitterScale.overrideState,
-                        overrideState => postProcessingSettings.ctaaSettings.TemporalJitterScale.overrideState = overrideState);
+                    Slider("Temporal Stability", CTAAManager.CTaaSettings.TemporalStability.value, 3, 16, 
+                        stability => CTAAManager.CTaaSettings.TemporalStability.value = stability,
+                        CTAAManager.CTaaSettings.TemporalStability.overrideState,
+                        overrideState => CTAAManager.CTaaSettings.TemporalStability.overrideState = overrideState);
+                    Slider("HDR Response", CTAAManager.CTaaSettings.HdrResponse.value, 0.001f, 4f, "N3",
+                        hdrResponse => CTAAManager.CTaaSettings.HdrResponse.value = hdrResponse,
+                        CTAAManager.CTaaSettings.HdrResponse.overrideState,
+                        overrideState => CTAAManager.CTaaSettings.HdrResponse.overrideState = overrideState);
+                    Slider("Edge Response", CTAAManager.CTaaSettings.EdgeResponse.value, 0f, 2f, "N1",
+                        edgeResponse => CTAAManager.CTaaSettings.EdgeResponse.value = edgeResponse,
+                        CTAAManager.CTaaSettings.EdgeResponse.overrideState,
+                        overrideState => CTAAManager.CTaaSettings.EdgeResponse.overrideState = overrideState);
+                    Slider("Adaptive Sharpness", CTAAManager.CTaaSettings.AdaptiveSharpness.value, 0f, 1.5f, "N1",
+                        adaptiveSharpness => CTAAManager.CTaaSettings.AdaptiveSharpness.value = adaptiveSharpness,
+                        CTAAManager.CTaaSettings.AdaptiveSharpness.overrideState,
+                        overrideState => CTAAManager.CTaaSettings.AdaptiveSharpness.overrideState = overrideState);
+                    Slider("Temporal Jitter Scale", CTAAManager.CTaaSettings.TemporalJitterScale.value, 0f, 0.5f, "N3",
+                        temporalJitterScale => CTAAManager.CTaaSettings.TemporalJitterScale.value = temporalJitterScale,
+                        CTAAManager.CTaaSettings.TemporalJitterScale.overrideState,
+                        overrideState => CTAAManager.CTaaSettings.TemporalJitterScale.overrideState = overrideState);
 
-                    Selection("Mode", postProcessingSettings.ctaaSettings.Mode, mode => postProcessingSettings.ctaaSettings.SwitchMode(mode));
+                    Selection("Mode", CTAAManager.CTaaSettings.Mode, mode => CTAAManager.CTaaSettings.SwitchMode(mode));
 
-                    postProcessingSettings.ctaaSettings.Load(Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAA_PC>());
+                    CTAAManager.CTaaSettings.Load(Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAA_PC>());
                 }
             }
 

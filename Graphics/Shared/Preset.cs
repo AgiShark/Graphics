@@ -1,4 +1,5 @@
-﻿using Graphics.GTAO;
+﻿using Graphics.CTAA;
+using Graphics.GTAO;
 using Graphics.Settings;
 using Graphics.Textures;
 using MessagePack;
@@ -20,6 +21,7 @@ namespace Graphics
         public SkyboxParams skybox;
         public SkyboxSettings skyboxSetting;
         public GTAOSettings gtao;
+        public CTAASettings ctaa;
 
         public Preset(GlobalSettings global, CameraSettings camera, LightingSettings lights, PostProcessingSettings pp, SkyboxParams skybox, SSSSettings sss)
         {
@@ -30,6 +32,7 @@ namespace Graphics
             this.skybox = skybox;
             this.sss = sss;
             this.gtao = GTAOManager.settings;
+            this.ctaa = CTAAManager.CTaaSettings;
 
             // Skybox setting is generated when preset is being saved.
             skyboxSetting = null;
@@ -40,6 +43,7 @@ namespace Graphics
             pp.SaveParameters();
             sss?.SaveParameters();
             gtao = GTAOManager.settings;
+            ctaa = CTAAManager.CTaaSettings;
             SkyboxManager manager = Graphics.Instance.SkyboxManager;
 
             Material mat = manager.Skybox;
@@ -137,7 +141,6 @@ namespace Graphics
             Graphics.Instance.Log.LogInfo($"Applying Parameters");
 #endif
             pp.LoadParameters();
-            Graphics.Instance.PostProcessingSettings.ctaaSettings.CopyFrom(pp.ctaaSettings);
 #if DEBUG
             Graphics.Instance.Log.LogInfo($"Done with PP");
 #endif
@@ -148,8 +151,14 @@ namespace Graphics
             GTAOManager.settings = gtao;
             GTAOManager.UpdateSettings();
 
+            if (ctaa == null)
+                ctaa = new CTAASettings();
+
+            CTAAManager.CTaaSettings = ctaa;            
+            CTAAManager.ApplySetting();
+
 #if DEBUG
-            Graphics.Instance.Log.LogInfo($"Done with GTAO...");
+            Graphics.Instance.Log.LogInfo($"Done with GTAO && CTAA...");
 #endif
             SkyboxManager manager = Graphics.Instance.SkyboxManager;
             if (manager)

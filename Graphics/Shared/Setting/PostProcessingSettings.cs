@@ -22,7 +22,6 @@ namespace Graphics.Settings
         internal VignetteParams paramVignette = new VignetteParams();
         internal MotionBlurParams paramMotionBlur = new MotionBlurParams();
         internal AmplifyOcclusionParams paramAmplifyOcclusion = new AmplifyOcclusionParams();
-        internal CTAASettings ctaaSettings = new CTAASettings();
         //internal AmplifyOcclusion paramAmplifyOcclusion; // not implemented yet
 
         public enum Antialiasing
@@ -236,9 +235,6 @@ namespace Graphics.Settings
             {
                 paramMotionBlur.Save(motionBlurLayer);
             }
-
-            ctaaSettings = new CTAASettings();
-            ctaaSettings.Save(Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAA_PC>());
 #if AI
             if (AmplifyOcclusionComponent != null)
             {
@@ -298,15 +294,6 @@ namespace Graphics.Settings
             {
                 paramMotionBlur.Load(motionBlurLayer);
             }
-#if DEBUG
-            Graphics.Instance.Log.LogInfo($"Loading CTAA Settings...");
-#endif
-            if (ctaaSettings != null)
-                ctaaSettings.Load(Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAA_PC>());
-
-#if DEBUG
-            Graphics.Instance.Log.LogInfo($"Done Loading CTAA Settings...");
-#endif
 #if AI
             if (AmplifyOcclusionComponent != null)
             {
@@ -365,7 +352,7 @@ namespace Graphics.Settings
         {
             get
             {
-                if (ctaaSettings.Enabled)
+                if (CTAAManager.CTaaSettings.Enabled)
                     return Antialiasing.CTAA;
                 else
                     return (Antialiasing)PostProcessLayer.antialiasingMode;
@@ -373,16 +360,16 @@ namespace Graphics.Settings
             set
             {
                 CTAA_PC ctaa = Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAA_PC>();
-                if (value == Antialiasing.CTAA && (!ctaaSettings.Enabled || ctaa == null || !ctaa.enabled))
+                if (value == Antialiasing.CTAA && (!CTAAManager.CTaaSettings.Enabled || ctaa == null || !ctaa.enabled))
                 {                    
-                    PostProcessLayer.antialiasingMode = PostProcessLayer.Antialiasing.None;                    
-                    ctaaSettings.Enabled = true;
-                    ctaaSettings.SwitchMode(ctaaSettings.Mode, true);
+                    PostProcessLayer.antialiasingMode = PostProcessLayer.Antialiasing.None;
+                    CTAAManager.CTaaSettings.Enabled = true;
+                    CTAAManager.CTaaSettings.SwitchMode(CTAAManager.CTaaSettings.Mode, true);
                 }
                 else
                 {                    
-                    if (ctaaSettings.Enabled)
-                        ctaaSettings.Enabled = false;
+                    if (CTAAManager.CTaaSettings.Enabled)
+                        CTAAManager.CTaaSettings.Enabled = false;
                     if (ctaa != null)
                         GameObject.DestroyImmediate(ctaa);
 

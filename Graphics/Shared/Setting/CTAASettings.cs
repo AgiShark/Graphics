@@ -17,7 +17,7 @@ namespace Graphics.Settings
         public FloatValue EdgeResponse = new FloatValue(0.5f, false);
         public FloatValue AdaptiveSharpness = new FloatValue(0.2f, false);
         public FloatValue TemporalJitterScale = new FloatValue(0.475f, false);
-        public CTAA_MODE Mode = 0;
+        public CTAA_MODE Mode = CTAA_MODE.STANDARD;
 
         public enum CTAA_MODE
         {
@@ -60,7 +60,7 @@ namespace Graphics.Settings
         }
 
         public void Load(CTAA_PC ctaa)
-        {
+        {            
             if (runningCoroutine)
                 return;
 
@@ -107,47 +107,6 @@ namespace Graphics.Settings
                 ctaa.TemporalJitterScale = TemporalJitterScale.value;
             else
                 ctaa.TemporalJitterScale = 0.475f;
-
         }
-
-        public void Save(CTAA_PC ctaa)
-        {
-            if (ctaa == null)
-                return;
-
-            Enabled = ctaa.enabled;
-            TemporalStability.value = ctaa.TemporalStability;
-            HdrResponse.value = ctaa.HdrResponse;
-            EdgeResponse.value = ctaa.EdgeResponse;
-            AdaptiveSharpness.value = ctaa.AdaptiveSharpness;
-            TemporalJitterScale.value = ctaa.TemporalJitterScale;
-            Mode = (CTAA_MODE)ctaa.SuperSampleMode;
-
-        }
-
-        public void CopyFrom(CTAASettings other)
-        {
-            Enabled = other.Enabled;
-            
-            TemporalStability.value = other.TemporalStability.value;
-            TemporalStability.overrideState = other.TemporalStability.overrideState;
-
-            HdrResponse.value = other.HdrResponse.value;
-            HdrResponse.overrideState = other.HdrResponse.overrideState;
-
-            EdgeResponse.value = other.EdgeResponse.value;
-            EdgeResponse.overrideState = other.EdgeResponse.overrideState;
-
-            AdaptiveSharpness.value = other.AdaptiveSharpness.value;
-            AdaptiveSharpness.overrideState = other.AdaptiveSharpness.overrideState;
-
-            TemporalJitterScale.value = other.TemporalJitterScale.value;
-            TemporalJitterScale.overrideState = other.TemporalJitterScale.overrideState;
-
-            Mode = other.Mode;
-
-        }
-
-
     }
 }
