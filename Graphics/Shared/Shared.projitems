@@ -91,6 +91,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CharaController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CTAA\CTAA_PC.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CTAA\RenderPostCTAA.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Alloy\AlloyPropertyAttributes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Alloy\AlloyUtils.cs" />
@@ -119,6 +121,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)PostProcessingManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PresetDefaultType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PresetManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Setting\CTAASettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Setting\GTAOSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Setting\PathElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Setting\PerLightSettings.cs" />
@@ -199,5 +202,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\gtao.unity3d" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\ctaa.unity3d" />
   </ItemGroup>
 </Project>

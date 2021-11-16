@@ -1,0 +1,153 @@
+﻿using Graphics.CTAA;
+using MessagePack;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text;
+using UnityEngine;
+
+namespace Graphics.Settings
+{
+    [MessagePackObject(true)]
+    public class CTAASettings
+    {
+        public bool Enabled = false;
+        public IntValue TemporalStability = new IntValue(6, false);
+        public FloatValue HdrResponse = new FloatValue(1.2f, false);
+        public FloatValue EdgeResponse = new FloatValue(0.5f, false);
+        public FloatValue AdaptiveSharpness = new FloatValue(0.2f, false);
+        public FloatValue TemporalJitterScale = new FloatValue(0.475f, false);
+        public CTAA_MODE Mode = 0;
+
+        public enum CTAA_MODE
+        {
+            STANDARD = 0,
+            CINA_SOFT = 1,
+            CINA_ULTRA = 2
+
+        }
+
+        private bool runningCoroutine = false;
+        public void SwitchMode(CTAA_MODE newMode, bool force = false)
+        {
+            if (Mode != newMode || force)
+            {
+                Mode = newMode;
+                runningCoroutine = true;
+                Graphics.Instance.StartCoroutine(DoSwitchMode());
+            }
+        }
+
+        public IEnumerator DoSwitchMode()
+        {
+            CTAA_PC ctaa = Graphics.Instance.CameraSettings.MainCamera.GetOrAddComponent<CTAA_PC>();
+            if (ctaa != null && ctaa.SuperSampleMode != (int)Mode)
+            {
+                GameObject.DestroyImmediate(ctaa);
+                yield return null;
+                ctaa = Graphics.Instance.CameraSettings.MainCamera.GetOrAddComponent<CTAA_PC>();
+                ctaa.SuperSampleMode = (int)Mode;
+                ctaa.ExtendedFeatures = Mode != CTAA_MODE.STANDARD;
+                DoLoad(ctaa);
+                yield return null;
+                ctaa.enabled = false;
+                yield return null;
+                ctaa.enabled = true;
+
+                Graphics.Instance.Log.LogInfo($"Switching CTAA Mode to {Mode}");
+                runningCoroutine = false;
+            }
+        }
+
+        public void Load(CTAA_PC ctaa)
+        {
+            if (runningCoroutine)
+                return;
+
+            if (ctaa == null && !Enabled)
+            {
+                return;
+            }
+            else if (ctaa == null)
+            {
+                ctaa = Graphics.Instance.CameraSettings.MainCamera.GetOrAddComponent<CTAA_PC>();
+                SwitchMode(Mode, true);
+                return;
+            }
+
+            DoLoad(ctaa);
+        }
+
+        private void DoLoad(CTAA_PC ctaa)
+        { 
+            ctaa.enabled = Enabled;
+            ctaa.CTAA_Enabled = Enabled;
+
+            if (TemporalStability.overrideState)
+                ctaa.TemporalStability = TemporalStability.value;
+            else
+                ctaa.TemporalStability = 6;
+
+            if (HdrResponse.overrideState)
+                ctaa.HdrResponse = HdrResponse.value;
+            else
+                ctaa.HdrResponse = 1.2f;
+
+            if (EdgeResponse.overrideState)
+                ctaa.EdgeResponse = EdgeResponse.value;
+            else
+                ctaa.EdgeResponse = 0.5f;
+
+            if (AdaptiveSharpness.overrideState)
+                ctaa.AdaptiveSharpness = AdaptiveSharpness.value;
+            else
+                ctaa.AdaptiveSharpness = 0.2f;
+
+            if (TemporalJitterScale.overrideState)
+                ctaa.TemporalJitterScale = TemporalJitterScale.value;
+            else
+                ctaa.TemporalJitterScale = 0.475f;
+
+        }
+
+        public void Save(CTAA_PC ctaa)
+        {
+            if (ctaa == null)
+                return;
+
+            Enabled = ctaa.enabled;
+            TemporalStability.value = ctaa.TemporalStability;
+            HdrResponse.value = ctaa.HdrResponse;
+            EdgeResponse.value = ctaa.EdgeResponse;
+            AdaptiveSharpness.value = ctaa.AdaptiveSharpness;
+            TemporalJitterScale.value = ctaa.TemporalJitterScale;
+            Mode = (CTAA_MODE)ctaa.SuperSampleMode;
+
+        }
+
+        public void CopyFrom(CTAASettings other)
+        {
+            Enabled = other.Enabled;
+            
+            TemporalStability.value = other.TemporalStability.value;
+            TemporalStability.overrideState = other.TemporalStability.overrideState;
+
+            HdrResponse.value = other.HdrResponse.value;
+            HdrResponse.overrideState = other.HdrResponse.overrideState;
+
+            EdgeResponse.value = other.EdgeResponse.value;
+            EdgeResponse.overrideState = other.EdgeResponse.overrideState;
+
+            AdaptiveSharpness.value = other.AdaptiveSharpness.value;
+            AdaptiveSharpness.overrideState = other.AdaptiveSharpness.overrideState;
+
+            TemporalJitterScale.value = other.TemporalJitterScale.value;
+            TemporalJitterScale.overrideState = other.TemporalJitterScale.overrideState;
+
+            Mode = other.Mode;
+
+        }
+
+
+    }
+}

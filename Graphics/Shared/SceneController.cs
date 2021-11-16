@@ -223,6 +223,9 @@ namespace Graphics
             }
             else
             {
+                if (counter >= settings.Length)
+                    return;
+
                 foreach (LightObject light in lightManager.DirectionalLights)
                 {
                     settings[counter++].ApplySettings(light);
@@ -307,7 +310,7 @@ namespace Graphics
         {
 
             ReflectionProbe[] probes = Graphics.Instance.SkyboxManager.GetReflectinProbes();
-            if (probes != null && settings != null)
+            if (probes != null && settings != null && settings.Length > 0)
             {
                 if (settings.Length > 0 && settings[0].HierarchyPath == null) 
                 {
@@ -330,7 +333,7 @@ namespace Graphics
                 {
                     foreach (ReflectionProbe probe in probes)
                     {
-                        ReflectionProbeSettings setting = settings.FirstOrDefault(s => s.HierarchyPath.Matches(probe.gameObject.transform));
+                        ReflectionProbeSettings setting = settings.FirstOrDefault(s => s.HierarchyPath != null && s.HierarchyPath.Matches(probe.gameObject.transform));
                         if (setting != null)
                             setting.ApplySettings(probe);
                     }

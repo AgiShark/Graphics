@@ -1,4 +1,5 @@
-﻿using MessagePack;
+﻿using Graphics.CTAA;
+using MessagePack;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
@@ -21,6 +22,7 @@ namespace Graphics.Settings
         internal VignetteParams paramVignette = new VignetteParams();
         internal MotionBlurParams paramMotionBlur = new MotionBlurParams();
         internal AmplifyOcclusionParams paramAmplifyOcclusion = new AmplifyOcclusionParams();
+        internal CTAASettings ctaaSettings = new CTAASettings();
         //internal AmplifyOcclusion paramAmplifyOcclusion; // not implemented yet
 
         public enum Antialiasing
@@ -28,7 +30,8 @@ namespace Graphics.Settings
             None = PostProcessLayer.Antialiasing.None,
             FXAA = PostProcessLayer.Antialiasing.FastApproximateAntialiasing,
             SMAA = PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing,
-            TAA = PostProcessLayer.Antialiasing.TemporalAntialiasing
+            TAA = PostProcessLayer.Antialiasing.TemporalAntialiasing,
+            CTAA = 999,
         };
 
         public enum GradingMode
@@ -233,6 +236,9 @@ namespace Graphics.Settings
             {
                 paramMotionBlur.Save(motionBlurLayer);
             }
+
+            ctaaSettings = new CTAASettings();
+            ctaaSettings.Save(Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAA_PC>());
 #if AI
             if (AmplifyOcclusionComponent != null)
             {
@@ -292,6 +298,15 @@ namespace Graphics.Settings
             {
                 paramMotionBlur.Load(motionBlurLayer);
             }
+#if DEBUG
+            Graphics.Instance.Log.LogInfo($"Loading CTAA Settings...");
+#endif
+            if (ctaaSettings != null)
+                ctaaSettings.Load(Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAA_PC>());
+
+#if DEBUG
+            Graphics.Instance.Log.LogInfo($"Done Loading CTAA Settings...");
+#endif
 #if AI
             if (AmplifyOcclusionComponent != null)
             {
@@ -348,8 +363,32 @@ namespace Graphics.Settings
 
         public Antialiasing AntialiasingMode
         {
-            get => (Antialiasing)PostProcessLayer.antialiasingMode;
-            set => PostProcessLayer.antialiasingMode = (PostProcessLayer.Antialiasing)value;
+            get
+            {
+                if (ctaaSettings.Enabled)
+                    return Antialiasing.CTAA;
+                else
+                    return (Antialiasing)PostProcessLayer.antialiasingMode;
+            }            
+            set
+            {
+                CTAA_PC ctaa = Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAA_PC>();
+                if (value == Antialiasing.CTAA && (!ctaaSettings.Enabled || ctaa == null || !ctaa.enabled))
+                {                    
+                    PostProcessLayer.antialiasingMode = PostProcessLayer.Antialiasing.None;                    
+                    ctaaSettings.Enabled = true;
+                    ctaaSettings.SwitchMode(ctaaSettings.Mode, true);
+                }
+                else
+                {                    
+                    if (ctaaSettings.Enabled)
+                        ctaaSettings.Enabled = false;
+                    if (ctaa != null)
+                        GameObject.DestroyImmediate(ctaa);
+
+                    PostProcessLayer.antialiasingMode = (PostProcessLayer.Antialiasing)value;
+                }
+            }
         }
 
         public float FocalDistance

@@ -109,7 +109,7 @@ namespace Graphics
                 catch (Exception e)
                 {
                     Graphics.Instance.Log.Log(BepInEx.Logging.LogLevel.Error, string.Format("Couldn't open preset file '{0}' at {1}", name + ".preset", targetPath));
-                    Graphics.Instance.Log.Log(BepInEx.Logging.LogLevel.Error, e.Message);
+                    Graphics.Instance.Log.Log(BepInEx.Logging.LogLevel.Error, e.Message + "\n" + e.StackTrace);
                     return false;
                 }
             }
@@ -133,11 +133,24 @@ namespace Graphics
 
         public void ApplyParameters()
         {
+#if DEBUG
+            Graphics.Instance.Log.LogInfo($"Applying Parameters");
+#endif
             pp.LoadParameters();
+            Graphics.Instance.PostProcessingSettings.ctaaSettings.CopyFrom(pp.ctaaSettings);
+#if DEBUG
+            Graphics.Instance.Log.LogInfo($"Done with PP");
+#endif
             sss?.LoadParameters();
+#if DEBUG
+            Graphics.Instance.Log.LogInfo($"Done with SSS");
+#endif
             GTAOManager.settings = gtao;
             GTAOManager.UpdateSettings();
 
+#if DEBUG
+            Graphics.Instance.Log.LogInfo($"Done with GTAO...");
+#endif
             SkyboxManager manager = Graphics.Instance.SkyboxManager;
             if (manager)
             {
@@ -149,7 +162,13 @@ namespace Graphics
 
                 manager.SetupDefaultReflectionProbe(Graphics.Instance.LightingSettings);
             }
+#if DEBUG
+            Graphics.Instance.Log.LogInfo($"Done with skybox");
+#endif
             Graphics.Instance.LightingSettings.DefaultReflectionProbeSettings = lights.DefaultReflectionProbeSettings;
+#if DEBUG
+            Graphics.Instance.Log.LogInfo($"Done with Default RP");
+#endif
         }
     }
 }

@@ -45,7 +45,7 @@ namespace Graphics
                 catch (Exception e)
                 {
                     Graphics.Instance.Log.Log(BepInEx.Logging.LogLevel.Error, string.Format("Couldn't open map light preset file '{0}' at {1}", name + ".light", targetPath));
-                    Graphics.Instance.Log.Log(BepInEx.Logging.LogLevel.Error, e.Message);
+                    Graphics.Instance.Log.Log(BepInEx.Logging.LogLevel.Error, e.Message + "\n" + e.StackTrace);
                     return false;
                 }
             }
