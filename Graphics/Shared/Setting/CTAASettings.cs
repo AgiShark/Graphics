@@ -19,6 +19,7 @@ namespace Graphics.Settings
         public FloatValue TemporalJitterScale = new FloatValue(0.475f, false);
         public FloatValue VRTemporalEdgePower = new FloatValue(2.0f, false);
         public CTAA_MODE Mode = CTAA_MODE.STANDARD;
+        
 
         public enum CTAA_MODE
         {
@@ -66,7 +67,7 @@ namespace Graphics.Settings
             {
                 return;
             }
-            else if (vrCtaa == null)
+            else if (vrCtaa == null && Enabled)
             {
                 CTAAVR_Velocity_OPENVR vrCtaaVelocity = Graphics.Instance.CameraSettings.MainCamera.GetOrAddComponent<CTAAVR_Velocity_OPENVR>();
                 vrCtaa = Graphics.Instance.CameraSettings.MainCamera.GetOrAddComponent<CTAAVR_VIVE>();
@@ -89,7 +90,7 @@ namespace Graphics.Settings
             {
                 return;
             }
-            else if (ctaa == null)
+            else if (ctaa == null && Enabled)
             {
                 SwitchMode(Mode, true);
                 return;

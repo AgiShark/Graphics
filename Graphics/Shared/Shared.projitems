@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CharaController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CTAA\CTAAExclude.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CTAA\CTAAManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CTAA\CTAAVR_Velocity_OPENVR.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CTAA\CTAAVR_VIVE.cs" />

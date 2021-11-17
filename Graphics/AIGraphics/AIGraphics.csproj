@@ -115,6 +115,10 @@
       <HintPath>..\packages\IllusionLibs.AIGirl.UnityEngine.UI.2018.2.21.4\lib\net46\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\lib\net46\UnityEngine.UIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.VRModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\IllusionLibs.AIGirl.UnityEngine.VRModule.2018.2.21.4\lib\net46\UnityEngine.VRModule.dll</HintPath>
       <Private>False</Private>
@@ -160,6 +164,7 @@
     <Error Condition="!Exists('..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets'))" />
     <Error Condition="!Exists('..\packages\IllusionLibs.AIGirl.UnityEngine.VRModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.VRModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.AIGirl.UnityEngine.VRModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.VRModule.targets'))" />
     <Error Condition="!Exists('..\packages\IllusionLibs.AIGirl.UnityEngine.XRModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.XRModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.AIGirl.UnityEngine.XRModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.XRModule.targets'))" />
+    <Error Condition="!Exists('..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets'))" />
   </Target>
   <Import Project="..\packages\IllusionLibs.AIGirl.Cinemachine.2018.2.21.4\build\IllusionLibs.AIGirl.Cinemachine.targets" Condition="Exists('..\packages\IllusionLibs.AIGirl.Cinemachine.2018.2.21.4\build\IllusionLibs.AIGirl.Cinemachine.targets')" />
   <Import Project="..\packages\IllusionLibs.AIGirl.MessagePack.2020.5.29.4\build\IllusionLibs.AIGirl.MessagePack.targets" Condition="Exists('..\packages\IllusionLibs.AIGirl.MessagePack.2020.5.29.4\build\IllusionLibs.AIGirl.MessagePack.targets')" />
@@ -175,4 +180,5 @@
   <Import Project="..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\packages\IllusionLibs.BepInEx.Harmony.2.2.0.1\build\IllusionLibs.BepInEx.Harmony.targets')" />
   <Import Project="..\packages\IllusionLibs.AIGirl.UnityEngine.VRModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.VRModule.targets" Condition="Exists('..\packages\IllusionLibs.AIGirl.UnityEngine.VRModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.VRModule.targets')" />
   <Import Project="..\packages\IllusionLibs.AIGirl.UnityEngine.XRModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.XRModule.targets" Condition="Exists('..\packages\IllusionLibs.AIGirl.UnityEngine.XRModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.XRModule.targets')" />
+  <Import Project="..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets" Condition="Exists('..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.4\build\IllusionLibs.AIGirl.UnityEngine.UIModule.targets')" />
 </Project>

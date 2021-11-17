@@ -101,7 +101,7 @@ namespace Graphics
 
         void OnWillRenderObject()
         {
-            if (Camera.current != Camera.main)
+            if (Camera.current != Graphics.Instance.CameraSettings.MainCamera)
                 return;
 
             if (sleeping)

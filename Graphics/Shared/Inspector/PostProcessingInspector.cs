@@ -60,10 +60,10 @@ namespace Graphics.Inspector
                 }
                 else if (PostProcessingSettings.Antialiasing.CTAA == postProcessingSettings.AntialiasingMode)
                 {
-//                    bool VREnabled = Graphics.Instance.CameraSettings.MainCamera.stereoEnabled;
+                    bool VREnabled = Graphics.Instance.CameraSettings.MainCamera.stereoEnabled;
 
-  //                  if (!VREnabled)
-  //                  {
+                    if (!VREnabled)
+                    {
                         Slider("Temporal Stability", CTAAManager.CTaaSettings.TemporalStability.value, 3, 16,
                             stability => CTAAManager.CTaaSettings.TemporalStability.value = stability,
                             CTAAManager.CTaaSettings.TemporalStability.overrideState,
@@ -87,8 +87,8 @@ namespace Graphics.Inspector
 
                         Selection("Mode", CTAAManager.CTaaSettings.Mode, mode => CTAAManager.CTaaSettings.SwitchMode(mode));
                         CTAAManager.CTaaSettings.Load(Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAA_PC>());
- //                   }
- /*                   else
+                    }
+                    else
                     {
                         Slider("VR Temporal Edge Power", CTAAManager.CTaaSettings.VRTemporalEdgePower.value, 1.0f, 4.0f, "N1",
                             VRTemporalEdgePower => CTAAManager.CTaaSettings.VRTemporalEdgePower.value = VRTemporalEdgePower,
@@ -104,9 +104,7 @@ namespace Graphics.Inspector
                             overrideState => CTAAManager.CTaaSettings.TemporalJitterScale.overrideState = overrideState);
 
                         CTAAManager.CTaaSettings.Load(Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAAVR_VIVE>());
-                    }
- */
-                    
+                    }                    
                 }
             }
 

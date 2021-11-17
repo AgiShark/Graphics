@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
+using Graphics.CTAA;
 using Graphics.GTAO;
 using Graphics.Hooks;
 using Graphics.Inspector;

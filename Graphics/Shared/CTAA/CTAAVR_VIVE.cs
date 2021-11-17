@@ -8,6 +8,7 @@ using UnityEngine;
 using System.Collections;
 using KKAPI.Utilities;
 using System.Collections.Generic;
+using Manager;
 
 namespace Graphics
 {
@@ -53,6 +54,27 @@ namespace Graphics
             _velocity = GetComponent<CTAAVR_Velocity_OPENVR>();
         }
 
+        void Update()
+        {
+            if (KKAPI.Studio.StudioAPI.InsideStudio)
+            {
+#if HS2
+                foreach (SkinnedMeshRenderer smr in Scene.commonSpace.GetComponentsInChildren<SkinnedMeshRenderer>())                {
+#elif AI
+                foreach (SkinnedMeshRenderer smr in Scene.Instance.commonSpace.GetComponentsInChildren<SkinnedMeshRenderer>())                {
+#endif
+                    smr.GetOrAddComponent<DynamicObjectTag>();
+                }
+#if HS2
+                foreach (MeshFilter mf in Scene.commonSpace.GetComponentsInChildren<MeshFilter>())
+#elif AI
+                foreach (MeshFilter mf in Scene.Instance.commonSpace.GetComponentsInChildren<MeshFilter>())
+#endif
+                {
+                    mf.GetOrAddComponent<DynamicObjectTag>();
+                }
+            }
+        }
 
 
         private Material mat_txaa;
@@ -182,8 +204,11 @@ namespace Graphics
         private int frameCounter;
 
 
-        private float[] x_jit = new float[] { 0.5f, -0.25f, 0.75f, -0.125f, 0.625f, 0.575f, -0.875f, 0.0625f, -0.3f, 0.75f, -0.25f, -0.625f, 0.325f, 0.975f, -0.075f, 0.625f };
-        private float[] y_jit = new float[] { 0.33f, -0.66f, 0.51f, 0.44f, -0.77f, 0.12f, -0.55f, 0.88f, -0.83f, 0.14f, 0.71f, -0.34f, 0.87f, -0.12f, 0.75f, 0.08f };
+        private float[] left_x_jit = new float[] { 0.5f, -0.25f, 0.75f, -0.125f, 0.625f, 0.575f, -0.875f, 0.0625f, -0.3f, 0.75f, -0.25f, -0.625f, 0.325f, 0.975f, -0.075f, 0.625f };
+        private float[] left_y_jit = new float[] { 0.33f, -0.66f, 0.51f, 0.44f, -0.77f, 0.12f, -0.55f, 0.88f, -0.83f, 0.14f, 0.71f, -0.34f, 0.87f, -0.12f, 0.75f, 0.08f };
+
+        private float[] right_x_jit = new float[] { 0.5f, -0.25f, 0.75f, -0.125f, 0.625f, 0.575f, -0.875f, 0.0625f, -0.3f, 0.75f, -0.25f, -0.625f, 0.325f, 0.975f, -0.075f, 0.625f };
+        private float[] right_y_jit = new float[] { 0.33f, -0.66f, 0.51f, 0.44f, -0.77f, 0.12f, -0.55f, 0.88f, -0.83f, 0.14f, 0.71f, -0.34f, 0.87f, -0.12f, 0.75f, 0.08f };
 
         void OnPreCull()
         {
@@ -193,22 +218,28 @@ namespace Graphics
 
         void jitterCam()
         {
-            Camera.StereoscopicEye VRCameraEYE = Camera.StereoscopicEye.Left;
             Camera _camera = base.GetComponent<Camera>();
-
-            if (_camera.stereoActiveEye == Camera.MonoOrStereoscopicEye.Right)
-                VRCameraEYE = Camera.StereoscopicEye.Right;
-
             base.GetComponent<Camera>().ResetStereoProjectionMatrices();
-            Matrix4x4 matrixx = _camera.GetStereoProjectionMatrix(VRCameraEYE);
-            float num = this.x_jit[this.frameCounter] * jitterScale;
-            float num2 = this.y_jit[this.frameCounter] * jitterScale;
-            matrixx.m02 += ((num * 2f) - 1f) / base.GetComponent<Camera>().pixelRect.width;
-            matrixx.m12 += ((num2 * 2f) - 1f) / base.GetComponent<Camera>().pixelRect.height;
-            this.frameCounter++;
-            this.frameCounter = this.frameCounter % 16;
 
-            _camera.SetStereoProjectionMatrix(VRCameraEYE, matrixx);
+
+            Matrix4x4 left_matrixx = _camera.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left);
+            float lnum = this.left_x_jit[this.frameCounter] * jitterScale;
+            float lnum2 = this.left_y_jit[this.frameCounter] * jitterScale;
+            left_matrixx.m02 += ((lnum * 2f) - 1f) / base.GetComponent<Camera>().pixelRect.width;
+            left_matrixx.m12 += ((lnum2 * 2f) - 1f) / base.GetComponent<Camera>().pixelRect.height;
+
+            _camera.SetStereoProjectionMatrix(Camera.StereoscopicEye.Left, left_matrixx);
+
+            Matrix4x4 right_matrixx = _camera.GetStereoProjectionMatrix(Camera.StereoscopicEye.Right);
+            float rnum = this.right_x_jit[this.frameCounter] * jitterScale;
+            float rnum2 = this.right_y_jit[this.frameCounter] * jitterScale;
+            right_matrixx.m02 += ((rnum * 2f) - 1f) / base.GetComponent<Camera>().pixelRect.width;
+            right_matrixx.m12 += ((rnum2 * 2f) - 1f) / base.GetComponent<Camera>().pixelRect.height;
+
+            _camera.SetStereoProjectionMatrix(Camera.StereoscopicEye.Right, right_matrixx);
+
+            this.frameCounter++;
+            this.frameCounter = this.frameCounter % 16;            
 
         }
 
@@ -257,6 +288,15 @@ namespace Graphics
                 afterPreEnhace.hideFlags = HideFlags.HideAndDontSave;
                 afterPreEnhace.filterMode = FilterMode.Point;
                 afterPreEnhace.wrapMode = TextureWrapMode.Clamp;
+            }
+
+            if (base.GetComponent<Camera>().stereoActiveEye == Camera.MonoOrStereoscopicEye.Right)
+            {
+                _velocity.VRCameraEYE = Camera.StereoscopicEye.Right;
+            }
+            else
+            {
+                _velocity.VRCameraEYE = Camera.StereoscopicEye.Left;
             }
 
             _velocity.RenderVel();

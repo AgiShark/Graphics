@@ -359,7 +359,7 @@ namespace Graphics.Settings
             }            
             set
             {
-  /*              if (Graphics.Instance.CameraSettings.MainCamera.stereoEnabled)
+                if (Graphics.Instance.CameraSettings.MainCamera.stereoEnabled)
                 {
                     CTAAVR_VIVE vrCtaa = Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAAVR_VIVE>();
                     if (value == Antialiasing.CTAA && (!CTAAManager.CTaaSettings.Enabled || vrCtaa == null || !vrCtaa.enabled))
@@ -381,7 +381,7 @@ namespace Graphics.Settings
                         PostProcessLayer.antialiasingMode = (PostProcessLayer.Antialiasing)value;
                     }
                 }
-                else */
+                else 
                 {
                     CTAA_PC ctaa = Graphics.Instance.CameraSettings.MainCamera.GetComponent<CTAA_PC>();
                     if (value == Antialiasing.CTAA && (!CTAAManager.CTaaSettings.Enabled || ctaa == null || !ctaa.enabled))
