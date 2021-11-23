@@ -28,6 +28,15 @@ namespace Graphics
         {
             PluginData pluginData = GetExtendedData();
 
+            StartCoroutine(LoadCoroutine(operation, pluginData, loadedItems));
+        } 
+        
+        private IEnumerator LoadCoroutine(SceneOperationKind operation, PluginData pluginData, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
+        {
+            yield return null;
+            yield return null;
+            yield return null;
+
             if (operation == SceneOperationKind.Import)
             {
                 // Copy over light settings from the newly imported lights
@@ -40,11 +49,10 @@ namespace Graphics
             }
             else
                 DoLoad(pluginData);
-        }        
+        }
 
         private void DoLoad(PluginData pluginData)
         {
-            Studio.Studio studio = GetStudio();
             Graphics parent = Graphics.Instance;
             parent?.PresetManager?.Load(pluginData);
 
@@ -254,12 +262,12 @@ namespace Graphics
                 foreach (PerLightSettings setting in newDirectionalLights)
                 {
 #if DEBUG
-                    Graphics.Instance.Log.LogInfo($"Adding Additional Light {setting.LightName}");
+                    Graphics.Instance.Log.LogInfo($"Adding Additional Light {setting.LightName} {setting.HierarchyPath} {setting.LightId}");
 #endif
 
                     GameObject lightGameObject = new GameObject(setting.LightName);
                     Light lightComp = lightGameObject.AddComponent<Light>();
-                    lightGameObject.GetComponent<Light>().type = LightType.Directional;      
+                    lightGameObject.GetComponent<Light>().type = LightType.Directional;
                 }
                 lightManager.Light();
                 foreach (LightObject light in lightManager.DirectionalLights)
