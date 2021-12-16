@@ -1,18 +1,13 @@
-﻿// Copyright (c) 2016-2018 Jakub Boksansky - All Rights Reserved
+// Copyright (c) 2016-2018 Jakub Boksansky - All Rights Reserved
 // Volumetric Ambient Occlusion Unity Plugin 2.0
-
 using UnityEngine;
 using UnityEngine.Rendering;
-#if UNITY_EDITOR
-using UnityEditor;
-using UnityEditor.AnimatedValues;
-#endif
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using KKAPI.Utilities;
 
-
-namespace Wilberforce.VAO
+namespace Graphics.VAO
 {
 
     [ExecuteInEditMode]
@@ -523,6 +518,9 @@ namespace Wilberforce.VAO
 
         #region Shader, Material, Camera
 
+
+        private AssetBundle assetBundle;
+
         public Shader vaoMainShader;
         public Shader vaoMainColorbleedShader;
         public Shader raycastMainShader;
@@ -626,12 +624,14 @@ namespace Wilberforce.VAO
 
         void Start()
         {
-            if (vaoMainShader == null) vaoMainShader = Shader.Find("Hidden/Wilberforce/VAOStandardShader");
-            if (vaoMainColorbleedShader == null) vaoMainColorbleedShader = Shader.Find("Hidden/Wilberforce/VAOStandardColorbleedShader");
-            if (raycastMainShader == null) raycastMainShader = Shader.Find("Hidden/Wilberforce/RaycastShader");
-            if (raycastMainColorbleedShader == null) raycastMainColorbleedShader = Shader.Find("Hidden/Wilberforce/RaycastColorbleedShader");
-            if (vaoFinalPassShader == null) vaoFinalPassShader = Shader.Find("Hidden/Wilberforce/VAOFinalPassShader");
-            if (vaoBeforeReflectionsBlendShader == null) vaoBeforeReflectionsBlendShader = Shader.Find("Hidden/Wilberforce/VAOBeforeReflectionsBlendShader");
+            assetBundle = AssetBundle.LoadFromMemory(ResourceUtils.GetEmbeddedResource("vao.unity3d"));
+
+            if (vaoMainShader == null) vaoMainShader = assetBundle.LoadAsset<Shader>("assets/shaders/vaoshader.shader");
+            if (vaoMainColorbleedShader == null) vaoMainColorbleedShader = assetBundle.LoadAsset<Shader>("assets/shaders/vaocolorbleed.shader");
+            if (raycastMainShader == null) raycastMainShader = assetBundle.LoadAsset<Shader>("assets/shaders/raycast.shader");
+            if (raycastMainColorbleedShader == null) raycastMainColorbleedShader = assetBundle.LoadAsset<Shader>("assets/shaders/raycastcolorbleed.shader");
+            if (vaoFinalPassShader == null) vaoFinalPassShader = assetBundle.LoadAsset<Shader>("assets/shaders/vaofinalpassshader.shader");
+            if (vaoBeforeReflectionsBlendShader == null) vaoBeforeReflectionsBlendShader = assetBundle.LoadAsset<Shader>("assets/shaders/vaobeforereflectionsblendshader.shader");
 
             if (vaoMainShader == null)
             {
@@ -1012,7 +1012,7 @@ namespace Wilberforce.VAO
                 downscaled4Texture = RenderTexture.GetTemporary(source.width / 4, source.height / 4, 0, hBufferFormat);
                 downscaled4Texture.filterMode = FilterMode.Bilinear;
 
-                Graphics.Blit(null, downscaled2Texture, VAOFinalPassMaterial, (int)ShaderFinalPass.DownscaleDepthNormalsPass);
+                UnityEngine.Graphics.Blit(null, downscaled2Texture, VAOFinalPassMaterial, (int)ShaderFinalPass.DownscaleDepthNormalsPass);
                 DoShaderBlitCopy(downscaled2Texture, downscaled4Texture);
 
                 if (downscaled2Texture != null) algorithmMaterial.SetTexture("depthNormalsTexture2", downscaled2Texture);
@@ -1046,7 +1046,7 @@ namespace Wilberforce.VAO
                 cullingPrepassTextureHalfRes = RenderTexture.GetTemporary(source.width / (CullingPrepassDownsamplingFactor * 2), source.height / (CullingPrepassDownsamplingFactor * 2), 0, prepassFormat);
                 cullingPrepassTextureHalfRes.filterMode = FilterMode.Bilinear;
 
-                Graphics.Blit(source, cullingPrepassTexture, algorithmMaterial, (int)ShaderPass.CullingPrepass);
+                UnityEngine.Graphics.Blit(source, cullingPrepassTexture, algorithmMaterial, (int)ShaderPass.CullingPrepass);
                 DoShaderBlitCopy(cullingPrepassTexture, cullingPrepassTextureHalfRes);
             }
 
@@ -1089,13 +1089,13 @@ namespace Wilberforce.VAO
                     algorithmMaterial.SetTexture("aoHistoryTexture", aoHistory[baseIdx + (1 - aoHistoryCurrentIdx)]);
                 }
 
-                Graphics.SetRenderTarget(renderBuffer, (destination as RenderTexture).depthBuffer);
+                UnityEngine.Graphics.SetRenderTarget(renderBuffer, (destination as RenderTexture).depthBuffer);
 
-                Graphics.Blit(source, algorithmMaterial, (int)GetMainPass(Algorithm, DetailAmount > 0.5f, DetailAmount > 0.0f));
+                UnityEngine.Graphics.Blit(source, algorithmMaterial, (int)GetMainPass(Algorithm, DetailAmount > 0.5f, DetailAmount > 0.0f));
             }
             else
             {
-                Graphics.Blit(source, vaoTexture, algorithmMaterial, (int)GetMainPass(Algorithm, DetailAmount > 0.5f, DetailAmount > 0.0f));
+                UnityEngine.Graphics.Blit(source, vaoTexture, algorithmMaterial, (int)GetMainPass(Algorithm, DetailAmount > 0.5f, DetailAmount > 0.0f));
             }
             VAOFinalPassMaterial.SetTexture("textureAO", vaoTexture);
 
@@ -1115,10 +1115,10 @@ namespace Wilberforce.VAO
                     RenderTexture tempTexture = RenderTexture.GetTemporary(blurTextureWidth, blurTextureHeight, 0, aoTextureFormat);
                     tempTexture.filterMode = FilterMode.Bilinear;
 
-                    Graphics.Blit(null, tempTexture, VAOFinalPassMaterial, (int)ShaderFinalPass.EnhancedBlurFirstPass);
+                    UnityEngine.Graphics.Blit(null, tempTexture, VAOFinalPassMaterial, (int)ShaderFinalPass.EnhancedBlurFirstPass);
 
                     VAOFinalPassMaterial.SetTexture("textureAO", tempTexture);
-                    Graphics.Blit(source, destination, VAOFinalPassMaterial, (int)ShaderFinalPass.EnhancedBlurSecondPass);
+                    UnityEngine.Graphics.Blit(source, destination, VAOFinalPassMaterial, (int)ShaderFinalPass.EnhancedBlurSecondPass);
 
                     RenderTexture.ReleaseTemporary(tempTexture);
                 }
@@ -1126,13 +1126,13 @@ namespace Wilberforce.VAO
                 {
                     int uniformBlurPass = (BlurQuality == BlurQualityType.Fast) ? (int)ShaderFinalPass.StandardBlurUniformFast : (int)ShaderFinalPass.StandardBlurUniform;
 
-                    Graphics.Blit(source, destination, VAOFinalPassMaterial, uniformBlurPass);
+                    UnityEngine.Graphics.Blit(source, destination, VAOFinalPassMaterial, uniformBlurPass);
                 }
             }
             else
             {
                 // Mixing pass
-                Graphics.Blit(source, destination, VAOFinalPassMaterial, (int)ShaderFinalPass.Mixing);
+                UnityEngine.Graphics.Blit(source, destination, VAOFinalPassMaterial, (int)ShaderFinalPass.Mixing);
             }
 
             // Cleanup
@@ -1561,11 +1561,11 @@ namespace Wilberforce.VAO
             if (isSPSR && !CommandBufferEnabled)
             {
                 VAOFinalPassMaterial.SetTexture("texCopySource", sourceTexture);
-                Graphics.Blit(sourceTexture, destinationTexture, VAOFinalPassMaterial, (int)ShaderFinalPass.TexCopyImageEffectSPSR);
+                UnityEngine.Graphics.Blit(sourceTexture, destinationTexture, VAOFinalPassMaterial, (int)ShaderFinalPass.TexCopyImageEffectSPSR);
             }
             else
             {
-                Graphics.Blit(sourceTexture, destinationTexture);
+                UnityEngine.Graphics.Blit(sourceTexture, destinationTexture);
             }
         }
 
@@ -2078,12 +2078,15 @@ namespace Wilberforce.VAO
 
         private void EnsureMaterials()
         {
-            if (vaoMainShader == null) vaoMainShader = Shader.Find("Hidden/Wilberforce/VAOStandardShader");
-            if (vaoMainColorbleedShader == null) vaoMainColorbleedShader = Shader.Find("Hidden/Wilberforce/VAOStandardColorbleedShader");
-            if (raycastMainShader == null) raycastMainShader = Shader.Find("Hidden/Wilberforce/RaycastShader");
-            if (raycastMainColorbleedShader == null) raycastMainColorbleedShader = Shader.Find("Hidden/Wilberforce/RaycastColorbleedShader");
-            if (vaoFinalPassShader == null) vaoFinalPassShader = Shader.Find("Hidden/Wilberforce/VAOFinalPassShader");
-            if (vaoBeforeReflectionsBlendShader == null) vaoBeforeReflectionsBlendShader = Shader.Find("Hidden/Wilberforce/VAOBeforeReflectionsBlendShader");
+            assetBundle = AssetBundle.LoadFromMemory(ResourceUtils.GetEmbeddedResource("vao.unity3d"));
+
+            if (vaoMainShader == null) vaoMainShader = assetBundle.LoadAsset<Shader>("assets/shaders/vaoshader.shader");
+            if (vaoMainColorbleedShader == null) vaoMainColorbleedShader = assetBundle.LoadAsset<Shader>("assets/shaders/vaocolorbleed.shader");
+            if (raycastMainShader == null) raycastMainShader = assetBundle.LoadAsset<Shader>("assets/shaders/raycast.shader");
+            if (raycastMainColorbleedShader == null) raycastMainColorbleedShader = assetBundle.LoadAsset<Shader>("assets/shaders/raycastcolorbleed.shader");
+            if (vaoFinalPassShader == null) vaoFinalPassShader = assetBundle.LoadAsset<Shader>("assets/shaders/vaofinalpassshader.shader");
+            if (vaoBeforeReflectionsBlendShader == null) vaoBeforeReflectionsBlendShader = assetBundle.LoadAsset<Shader>("assets/shaders/vaobeforereflectionsblendshader.shader");
+
 
             if (!VAOMaterial && vaoMainShader.isSupported)
             {
@@ -2623,7 +2626,7 @@ namespace Wilberforce.VAO
 #if UNITY_5_6_OR_NEWER
             if (camera != null) return camera.allowHDR;
 #else
-            if (camera != null) return camera.hdr;
+            if (camera != null) return camera.allowHDR;
 #endif
             return false;
         }
