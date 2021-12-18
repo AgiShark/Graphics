@@ -27,8 +27,8 @@ namespace Graphics.Settings
         public FloatValue SSAOBias = new FloatValue(0.005f, false);
         public BoolValue MaxRadiusEnabled = new BoolValue(true, false);
         public FloatValue MaxRadius = new FloatValue(0.5f, false);
-        public AlgorithmType Algorithm = AlgorithmType.StandardVAO;
-        public DistanceFalloffModeType DistanceFalloffMode = DistanceFalloffModeType.Off;
+        public AlgorithmType Algorithm = AlgorithmType.RaycastAO;
+        public DistanceFalloffModeType DistanceFalloffMode = DistanceFalloffModeType.Relative;
         public FloatValue DistanceFalloffStartAbsolute = new FloatValue(100.0f, false);
         public FloatValue DistanceFalloffStartRelative = new FloatValue(0.1f, false);
         public FloatValue DistanceFalloffSpeedAbsolute = new FloatValue(30.0f, false);
@@ -104,6 +104,8 @@ namespace Graphics.Settings
             else
                 vao.BordersIntensity = 0.3f;
 
+            vao.DetailQuality = DetailQuality;
+
             if (DetailAmountVAO.overrideState)
                 vao.DetailAmountVAO = DetailAmountVAO.value;
             else
@@ -112,7 +114,7 @@ namespace Graphics.Settings
             if (DetailAmountRaycast.overrideState)
                 vao.DetailAmountRaycast = DetailAmountRaycast.value;
             else
-                vao.DetailAmountRaycast = 0.0f;
+                vao.DetailAmountRaycast = 0.0f;            
 
             if (Quality.overrideState)
                 vao.Quality = Quality.value;
@@ -130,6 +132,10 @@ namespace Graphics.Settings
                 vao.MaxRadius = MaxRadius.value;
             else
                 vao.MaxRadius = 0.5f;
+
+            vao.Algorithm = Algorithm;
+
+            vao.DistanceFalloffMode = DistanceFalloffMode;
 
             if (DistanceFalloffStartAbsolute.overrideState)
                 vao.DistanceFalloffStartAbsolute = DistanceFalloffStartAbsolute.value;
@@ -151,15 +157,21 @@ namespace Graphics.Settings
             else
                 vao.DistanceFalloffSpeedRelative = 0.1f;
 
+            vao.AdaptiveType = AdaptiveType;
+
             if (AdaptiveQualityCoefficient.overrideState)
                 vao.AdaptiveQualityCoefficient = AdaptiveQualityCoefficient.value;
             else
                 vao.AdaptiveQualityCoefficient = 1.0f;
 
+            vao.CullingPrepassMode = CullingPrepassMode;
+
             if (Downsampling.overrideState)
                 vao.Downsampling = Downsampling.value;
             else
                 vao.Downsampling = 1;
+
+            vao.HierarchicalBufferState = HierarchicalBufferState;
 
             vao.CommandBufferEnabled = CommandBufferEnabled.value;
 
@@ -228,9 +240,20 @@ namespace Graphics.Settings
             else
                 vao.ColorBleedQuality = 2;
 
+            vao.ColorBleedSelfOcclusionFixLevel = ColorBleedSelfOcclusionFixLevel;
+
+            vao.VaoCameraEvent = VaoCameraEvent;
+            vao.FarPlaneSource = FarPlaneSource;
+            vao.IntermediateScreenTextureFormat = IntermediateScreenTextureFormat;
+
             vao.GiBackfaces = GiBackfaces.value;
 
+            vao.LuminanceMode = LuminanceMode;
+
             vao.BlurMode = BlurMode;
+            vao.BlurQuality = BlurQuality;
+
+            vao.Mode = Mode;
 
             if (EnhancedBlurSize.overrideState)
                 vao.EnhancedBlurSize = EnhancedBlurSize.value;
@@ -243,6 +266,7 @@ namespace Graphics.Settings
                 vao.EnhancedBlurDeviation = 1.3f;
 
             vao.OutputAOOnly = OutputAOOnly.value;
+            vao.NormalsSource = NormalsSource;
         }
 
         public void Save(VAOEffect vao)
