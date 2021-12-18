@@ -27,8 +27,8 @@ namespace Graphics.Settings
         public FloatValue SSAOBias = new FloatValue(0.005f, false);
         public BoolValue MaxRadiusEnabled = new BoolValue(true, false);
         public FloatValue MaxRadius = new FloatValue(0.5f, false);
-        public AlgorithmType Algorithm = AlgorithmType.RaycastAO;
-        public DistanceFalloffModeType DistanceFalloffMode = DistanceFalloffModeType.Relative;
+        public AlgorithmType Algorithm = AlgorithmType.StandardVAO;
+        public DistanceFalloffModeType DistanceFalloffMode = DistanceFalloffModeType.Off;
         public FloatValue DistanceFalloffStartAbsolute = new FloatValue(100.0f, false);
         public FloatValue DistanceFalloffStartRelative = new FloatValue(0.1f, false);
         public FloatValue DistanceFalloffSpeedAbsolute = new FloatValue(30.0f, false);

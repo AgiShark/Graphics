@@ -219,6 +219,13 @@ namespace Graphics.Inspector
                     }
 
                     Selection("Distance Fallof", vaoSettings.DistanceFalloffMode, distancefalloff => { vaoSettings.DistanceFalloffMode = distancefalloff; VAOManager.UpdateSettings(); });
+                    if (vaoSettings.DistanceFalloffMode != VAOEffectCommandBuffer.DistanceFalloffModeType.Off)
+                    {
+                        Slider("Distance Fallof Start Absolute", vaoSettings.DistanceFalloffStartAbsolute.value, 50f, 5000f, "N0", distanceFalloffStartAbsolute => { vaoSettings.DistanceFalloffStartAbsolute.value = distanceFalloffStartAbsolute; VAOManager.UpdateSettings(); }, vaoSettings.DistanceFalloffStartAbsolute.overrideState, overrideState => { vaoSettings.DistanceFalloffStartAbsolute.overrideState = overrideState; VAOManager.UpdateSettings();  }); ;
+                        Slider("Distance Fallof Start Relative", vaoSettings.DistanceFalloffStartRelative.value, 0.01f, 1.0f, "N2", distanceFalloffStartRelative => { vaoSettings.DistanceFalloffStartRelative.value = distanceFalloffStartRelative; VAOManager.UpdateSettings(); }, vaoSettings.DistanceFalloffStartRelative.overrideState, overrideState => { vaoSettings.DistanceFalloffStartRelative.overrideState = overrideState; VAOManager.UpdateSettings(); }); ;
+                        Slider("Distance Fallof Speed Absolute", vaoSettings.DistanceFalloffSpeedAbsolute.value, 15f, 300f, "N0", distanceFalloffSpeedAbsolute => { vaoSettings.DistanceFalloffSpeedAbsolute.value = distanceFalloffSpeedAbsolute; VAOManager.UpdateSettings(); }, vaoSettings.DistanceFalloffSpeedAbsolute.overrideState, overrideState => { vaoSettings.DistanceFalloffSpeedAbsolute.overrideState = overrideState; VAOManager.UpdateSettings(); }); ;
+                        Slider("Distance Fallof Speed Relative", vaoSettings.DistanceFalloffSpeedRelative.value, 0.01f, 1.0f, "N2", distanceFalloffSpeedRelative => { vaoSettings.DistanceFalloffSpeedRelative.value = distanceFalloffSpeedRelative; VAOManager.UpdateSettings(); }, vaoSettings.DistanceFalloffSpeedRelative.overrideState, overrideState => { vaoSettings.DistanceFalloffSpeedRelative.overrideState = overrideState; VAOManager.UpdateSettings(); }); ;
+                    }
 
                     Label("", "", true);
                     Label("Coloring Settings:", "", true);
