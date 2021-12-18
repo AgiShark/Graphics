@@ -11,8 +11,8 @@ namespace Graphics.VAO
     {
         public static Settings.VAOSettings settings;
 
-        internal static VAOEffect VAOInstance;
-        private static List<VAOEffect> otherVAOInstances = new List<VAOEffect>();
+        internal static VAOEffectCommandBuffer VAOInstance;
+        private static List<VAOEffectCommandBuffer> otherVAOInstances = new List<VAOEffectCommandBuffer>();
 
         // Initialize Components
         internal void Initialize()
@@ -62,7 +62,7 @@ namespace Graphics.VAO
             DestroyVAOInstance(VAOInstance);
             for (int i = otherVAOInstances.Count - 1; i >= 0; i--)
             {
-                VAOEffect otherInstance = otherVAOInstances[i];
+                VAOEffectCommandBuffer otherInstance = otherVAOInstances[i];
                 if (otherInstance == null)
                 {
                 }
@@ -75,7 +75,7 @@ namespace Graphics.VAO
             }
         }
 
-        public static void DestroyVAOInstance(VAOEffect VAOInstance)
+        public static void DestroyVAOInstance(VAOEffectCommandBuffer VAOInstance)
         {
             otherVAOInstances.Remove(VAOInstance);
         }
@@ -89,7 +89,7 @@ namespace Graphics.VAO
         public void CheckInstance()
         {
             if (VAOInstance == null)
-            {
+            {                
                 Camera camera = Graphics.Instance.CameraSettings.MainCamera;
                 VAOInstance = camera.GetOrAddComponent<VAOEffect>();
             }

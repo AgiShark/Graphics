@@ -519,7 +519,7 @@ namespace Graphics.VAO
         #region Shader, Material, Camera
 
 
-        private AssetBundle assetBundle;
+        private static AssetBundle assetBundle;
 
         public Shader vaoMainShader;
         public Shader vaoMainColorbleedShader;
@@ -624,7 +624,8 @@ namespace Graphics.VAO
 
         void Start()
         {
-            assetBundle = AssetBundle.LoadFromMemory(ResourceUtils.GetEmbeddedResource("vao.unity3d"));
+            if (assetBundle == null)
+                assetBundle = AssetBundle.LoadFromMemory(ResourceUtils.GetEmbeddedResource("vao.unity3d"));
 
             if (vaoMainShader == null) vaoMainShader = assetBundle.LoadAsset<Shader>("assets/shaders/vaoshader.shader");
             if (vaoMainColorbleedShader == null) vaoMainColorbleedShader = assetBundle.LoadAsset<Shader>("assets/shaders/vaocolorbleed.shader");
@@ -2078,7 +2079,8 @@ namespace Graphics.VAO
 
         private void EnsureMaterials()
         {
-            assetBundle = AssetBundle.LoadFromMemory(ResourceUtils.GetEmbeddedResource("vao.unity3d"));
+            if (assetBundle == null)
+                assetBundle = AssetBundle.LoadFromMemory(ResourceUtils.GetEmbeddedResource("vao.unity3d"));
 
             if (vaoMainShader == null) vaoMainShader = assetBundle.LoadAsset<Shader>("assets/shaders/vaoshader.shader");
             if (vaoMainColorbleedShader == null) vaoMainColorbleedShader = assetBundle.LoadAsset<Shader>("assets/shaders/vaocolorbleed.shader");
@@ -2344,6 +2346,9 @@ namespace Graphics.VAO
                     newComponent = oldGameObject.AddComponent<VAOEffectCommandBuffer>();
                     (newComponent as VAOEffectCommandBuffer).SetParameters(parameters);
                     oldComponentIndex = i;
+                    VAOManager.VAOInstance = (VAOEffectCommandBuffer)newComponent;
+                    VAOManager.UpdateSettings();
+                    Graphics.Instance.Log.LogInfo($"Swapping to VAOEffectCommandBuffer");
                     break;
                 }
 
@@ -2355,6 +2360,9 @@ namespace Graphics.VAO
                     newComponent = oldGameObject.AddComponent<VAOEffect>();
                     (newComponent as VAOEffect).SetParameters(parameters);
                     oldComponentIndex = i;
+                    VAOManager.VAOInstance = (VAOEffect)newComponent;
+                    VAOManager.UpdateSettings();
+                    Graphics.Instance.Log.LogInfo($"Swapping to VAOEffect");
                     break;
                 }
             }

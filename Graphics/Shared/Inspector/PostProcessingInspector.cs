@@ -196,22 +196,18 @@ namespace Graphics.Inspector
                     Slider("Presence", vaoSettings.Presence.value, 0f, 1f, "N2", presence => { vaoSettings.Presence.value = presence; VAOManager.UpdateSettings(); }, vaoSettings.Presence.overrideState, overrideState => { vaoSettings.Presence.overrideState = overrideState; VAOManager.UpdateSettings(); });
                     Slider("Detail", vaoSettings.DetailAmountVAO.value, 0f, 1f, "N2", detail => { vaoSettings.DetailAmountVAO.value = detail; VAOManager.UpdateSettings(); }, vaoSettings.DetailAmountVAO.overrideState, overrideState => { vaoSettings.DetailAmountVAO.overrideState = overrideState; VAOManager.UpdateSettings(); });
 
-                    Selection("Quality", vaoSettings.DetailQuality, quality => vaoSettings.DetailQuality = quality);
-                    Selection("Algorithm", vaoSettings.Algorithm, algorithm => vaoSettings.Algorithm = algorithm);
+                    Selection("Quality", vaoSettings.DetailQuality, quality => { vaoSettings.DetailQuality = quality; VAOManager.UpdateSettings(); }) ;
+                    Selection("Algorithm", vaoSettings.Algorithm, algorithm => { vaoSettings.Algorithm = algorithm; VAOManager.UpdateSettings(); });
 
-                    //Not working
-                    if (VAOEffectCommandBuffer.AlgorithmType.StandardVAO == vaoSettings.AlgorithmType)
+                    if (VAOEffectCommandBuffer.AlgorithmType.StandardVAO == vaoSettings.Algorithm)
                     {
-                        Label("Test1", "", true);
                         Slider("Thickness", vaoSettings.Thickness.value, 0f, 1.0f, "N2", thickness => { vaoSettings.Thickness.value = thickness; VAOManager.UpdateSettings(); }, vaoSettings.Thickness.overrideState, overrideState => { vaoSettings.Thickness.overrideState = overrideState; VAOManager.UpdateSettings(); });
                     }
-
-                    else if (VAOEffectCommandBuffer.AlgorithmType.RaycastAO == vaoSettings.AlgorithmType)
+                    else if (VAOEffectCommandBuffer.AlgorithmType.RaycastAO == vaoSettings.Algorithm)
                     {
-                        Label("Test2", "", true);
+ 
                         Slider("Bias", vaoSettings.SSAOBias.value, 0f, 0.1f, "N2", bias => { vaoSettings.SSAOBias.value = bias; VAOManager.UpdateSettings(); }, vaoSettings.SSAOBias.overrideState, overrideState => { vaoSettings.SSAOBias.overrideState = overrideState; VAOManager.UpdateSettings(); });
                     }
-                    //Not working
 
                     Slider("BordersAO", vaoSettings.BordersIntensity.value, 0f, 1f, "N2", borders => { vaoSettings.BordersIntensity.value = borders; VAOManager.UpdateSettings(); }, vaoSettings.BordersIntensity.overrideState, overrideState => { vaoSettings.BordersIntensity.overrideState = overrideState; VAOManager.UpdateSettings(); });
                     Label("", "", true);
@@ -222,11 +218,11 @@ namespace Graphics.Inspector
                         Slider("MaxRadius", vaoSettings.MaxRadius.value, 0f, 3f, "N2", maxradius => { vaoSettings.MaxRadius.value = maxradius; VAOManager.UpdateSettings(); }, vaoSettings.MaxRadius.overrideState, overrideState => { vaoSettings.MaxRadius.overrideState = overrideState; VAOManager.UpdateSettings(); });
                     }
 
-                    Selection("Distance Fallof", vaoSettings.DistanceFalloffMode, distancefalloff => vaoSettings.DistanceFalloffMode = distancefalloff);
+                    Selection("Distance Fallof", vaoSettings.DistanceFalloffMode, distancefalloff => { vaoSettings.DistanceFalloffMode = distancefalloff; VAOManager.UpdateSettings(); });
 
                     Label("", "", true);
                     Label("Coloring Settings:", "", true);
-                    Selection("Effect Mode", vaoSettings.Mode, effectmode => vaoSettings.Mode = effectmode);
+                    Selection("Effect Mode", vaoSettings.Mode, effectmode => { vaoSettings.Mode = effectmode; VAOManager.UpdateSettings(); });
 
                     if (VAOEffectCommandBuffer.EffectMode.ColorTint == vaoSettings.Mode)
                     {
@@ -238,7 +234,7 @@ namespace Graphics.Inspector
                         Label("Color Bleed Settings:", "", true);
                         Slider("Power", vaoSettings.ColorBleedPower.value, 0f, 10f, "N2", colorbleedpower => { vaoSettings.ColorBleedPower.value = colorbleedpower; VAOManager.UpdateSettings(); }, vaoSettings.ColorBleedPower.overrideState, overrideState => { vaoSettings.ColorBleedPower.overrideState = overrideState; VAOManager.UpdateSettings(); });
                         Slider("Presence", vaoSettings.ColorBleedPresence.value, 0f, 10f, "N2", colorbleedpresence => { vaoSettings.ColorBleedPresence.value = colorbleedpresence; VAOManager.UpdateSettings(); }, vaoSettings.ColorBleedPresence.overrideState, overrideState => { vaoSettings.ColorBleedPresence.overrideState = overrideState; VAOManager.UpdateSettings(); });
-                        Selection("Texture Format", vaoSettings.IntermediateScreenTextureFormat, intermediatetextureformat => vaoSettings.IntermediateScreenTextureFormat = intermediatetextureformat);
+                        Selection("Texture Format", vaoSettings.IntermediateScreenTextureFormat, intermediatetextureformat => { vaoSettings.IntermediateScreenTextureFormat = intermediatetextureformat; VAOManager.UpdateSettings(); });
                         Toggle("Same Color Hue Attenuation", vaoSettings.ColorbleedHueSuppresionEnabled.value, true, huesuppresion => { vaoSettings.ColorbleedHueSuppresionEnabled.value = huesuppresion; VAOManager.UpdateSettings(); });
 
                         if (vaoSettings.ColorbleedHueSuppresionEnabled.value)
@@ -253,40 +249,40 @@ namespace Graphics.Inspector
                         }
                         //Causing plugin crush. Actual veriable is Int, Probably need conversion to enum.
                         //Selection("Quality", vaoSettings.ColorBleedQuality, colorbleedquality => vaoSettings.ColorBleedQuality = colorbleedquality);
-                        Selection("Dampen Self Bleeding", vaoSettings.ColorBleedSelfOcclusionFixLevel, colorbleedocclusionfixlevel => vaoSettings.ColorBleedSelfOcclusionFixLevel = colorbleedocclusionfixlevel);
+                        Selection("Dampen Self Bleeding", vaoSettings.ColorBleedSelfOcclusionFixLevel, colorbleedocclusionfixlevel => { vaoSettings.ColorBleedSelfOcclusionFixLevel = colorbleedocclusionfixlevel; VAOManager.UpdateSettings(); });
                         Toggle("Skip Backfaces", vaoSettings.GiBackfaces.value, true, gibackfaces => { vaoSettings.GiBackfaces.value = gibackfaces; VAOManager.UpdateSettings(); });
                     }
 
                     Label("", "", true);
                     Label("Performance Settings:", "", true);
                     Toggle("Temporal Filtering", vaoSettings.EnableTemporalFiltering.value, true, temporalfiltering => { vaoSettings.EnableTemporalFiltering.value = temporalfiltering; VAOManager.UpdateSettings(); });
-                    Selection("Adaptive Sampling", vaoSettings.AdaptiveType, adaptivetype => vaoSettings.AdaptiveType = adaptivetype);
+                    Selection("Adaptive Sampling", vaoSettings.AdaptiveType, adaptivetype => {vaoSettings.AdaptiveType = adaptivetype; VAOManager.UpdateSettings(); });
 
                     if (vaoSettings.EnableTemporalFiltering.value)
                     {                    
                     }
                     else
                     {
-                        Selection("Downsampled Pre-Pass", vaoSettings.CullingPrepassMode, cullingprepass => vaoSettings.CullingPrepassMode = cullingprepass);
+                        Selection("Downsampled Pre-Pass", vaoSettings.CullingPrepassMode, cullingprepass => {vaoSettings.CullingPrepassMode = cullingprepass; VAOManager.UpdateSettings(); });
                     }
 
                  // Causing plugin crush!
                  // Selection("Downsampling", vaoSettings.Downsampling, downsampling => vaoSettings.Downsampling = downsampling);
 
-                    Selection("Hierarchical Buffers", vaoSettings.HierarchicalBufferState, hierarchicalbuffers => vaoSettings.HierarchicalBufferState = hierarchicalbuffers);
+                    Selection("Hierarchical Buffers", vaoSettings.HierarchicalBufferState, hierarchicalbuffers => {vaoSettings.HierarchicalBufferState = hierarchicalbuffers; VAOManager.UpdateSettings(); });
 
                     if (vaoSettings.EnableTemporalFiltering.value)
                     {
                     }
                     else
                     {
-                        Selection("Detail Quality", vaoSettings.DetailQuality, detailquality => vaoSettings.DetailQuality = detailquality);
+                        Selection("Detail Quality", vaoSettings.DetailQuality, detailquality => {vaoSettings.DetailQuality = detailquality; VAOManager.UpdateSettings(); });
                     }
 
                     Label("", "", true);
                     Label("Rendering Settings:", "", true);
                     Toggle("Command Buffer", vaoSettings.CommandBufferEnabled.value, true, commandbuffer => { vaoSettings.CommandBufferEnabled.value = commandbuffer; VAOManager.UpdateSettings(); });
-                    Selection("Normal Source", vaoSettings.NormalsSource, normalsource => vaoSettings.NormalsSource = normalsource);
+                    Selection("Normal Source", vaoSettings.NormalsSource, normalsource => { vaoSettings.NormalsSource = normalsource; VAOManager.UpdateSettings(); });
 
                     if (Graphics.Instance.CameraSettings.RenderingPath != CameraSettings.AIRenderingPath.Deferred)
                     {
@@ -297,18 +293,18 @@ namespace Graphics.Inspector
                     {
                         Label("", "", true);
                         Label("Rendering Mode: DEFERRED", "", true);                      
-                        Selection("Cmd Buffer Integration", vaoSettings.VaoCameraEvent, vaocameraevent => vaoSettings.VaoCameraEvent = vaocameraevent);
+                        Selection("Cmd Buffer Integration", vaoSettings.VaoCameraEvent, vaocameraevent => { vaoSettings.VaoCameraEvent = vaocameraevent; VAOManager.UpdateSettings(); });
                         Toggle("G-Buffer Depth & Normals", vaoSettings.UseGBuffer.value, true, usegbuffer => { vaoSettings.UseGBuffer.value = usegbuffer; VAOManager.UpdateSettings(); });
                     }
 
-                    Selection("Far Plane Source", vaoSettings.FarPlaneSource, farplanesource => vaoSettings.FarPlaneSource = farplanesource);
+                    Selection("Far Plane Source", vaoSettings.FarPlaneSource, farplanesource => { vaoSettings.FarPlaneSource = farplanesource; VAOManager.UpdateSettings(); });
 
                     Label("", "", true);
                     Toggle("Luma Sensitivity", vaoSettings.IsLumaSensitive.value, true, lumasensitive => { vaoSettings.IsLumaSensitive.value = lumasensitive; VAOManager.UpdateSettings(); });
 
                     if (vaoSettings.IsLumaSensitive.value)
                     {
-                        Selection("Luminance Mode", vaoSettings.LuminanceMode, luminancemode => vaoSettings.LuminanceMode = luminancemode);
+                        Selection("Luminance Mode", vaoSettings.LuminanceMode, luminancemode => { vaoSettings.LuminanceMode = luminancemode; VAOManager.UpdateSettings(); });
                         Slider("Threshold (HDR)", vaoSettings.LumaThreshold.value, 0f, 10f, "N2", lumathreshold => { vaoSettings.LumaThreshold.value = lumathreshold; VAOManager.UpdateSettings(); }, vaoSettings.LumaThreshold.overrideState, overrideState => { vaoSettings.LumaThreshold.overrideState = overrideState; VAOManager.UpdateSettings(); });
                         Slider("Falloff Width", vaoSettings.LumaKneeWidth.value, 0f, 10f, "N2", lumakneewidth => { vaoSettings.LumaKneeWidth.value = lumakneewidth; VAOManager.UpdateSettings(); }, vaoSettings.LumaKneeWidth.overrideState, overrideState => { vaoSettings.LumaKneeWidth.overrideState = overrideState; VAOManager.UpdateSettings(); });
                         Slider("Falloff Softness", vaoSettings.LumaKneeLinearity.value, 1f, 10f, "N2", lumakneelinearity => { vaoSettings.LumaKneeLinearity.value = lumakneelinearity; VAOManager.UpdateSettings(); }, vaoSettings.LumaKneeLinearity.overrideState, overrideState => { vaoSettings.LumaKneeLinearity.overrideState = overrideState; VAOManager.UpdateSettings(); });
@@ -317,11 +313,13 @@ namespace Graphics.Inspector
 
                     Label("", "", true);
                     Label("Enhanced Blur Settings:", "", true);
+                    Selection("Blur Mode", vaoSettings.BlurMode, blurMode => { vaoSettings.BlurMode = blurMode; VAOManager.UpdateSettings(); });
                     Slider("Blur Size", vaoSettings.EnhancedBlurSize.value, 3, 17, "N2", enhancedblursize => { vaoSettings.EnhancedBlurSize.value = (int) enhancedblursize; VAOManager.UpdateSettings(); }, vaoSettings.EnhancedBlurSize.overrideState, overrideState => { vaoSettings.EnhancedBlurSize.overrideState = overrideState; VAOManager.UpdateSettings(); });
                     Slider("Blur Sharpness", vaoSettings.EnhancedBlurDeviation.value, 0.01f, 3.0f, "N2", enhancedblurdeviation => { vaoSettings.EnhancedBlurDeviation.value = enhancedblurdeviation; VAOManager.UpdateSettings(); }, vaoSettings.EnhancedBlurDeviation.overrideState, overrideState => { vaoSettings.EnhancedBlurDeviation.overrideState = overrideState; VAOManager.UpdateSettings(); });
                     Label("", "", true);
                     Toggle("Debug Mode:", vaoSettings.OutputAOOnly.value, true, outputaoonly => { vaoSettings.OutputAOOnly.value = outputaoonly; VAOManager.UpdateSettings(); });
                     Label("", "", true);
+
                 }
 
                 GUILayout.EndVertical();

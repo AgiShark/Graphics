@@ -56,7 +56,7 @@ namespace Graphics.Settings
         public FloatValue ColorBleedPower = new FloatValue(5.0f, false);
         public FloatValue ColorBleedPresence = new FloatValue(1.0f, false);
         public ScreenTextureFormat IntermediateScreenTextureFormat = ScreenTextureFormat.Auto;
-        public BoolValue ColorbleedHueSuppresionEnabled = new BoolValue(false, false);
+        public BoolValue ColorbleedHueSuppresionEnabled = new BoolValue(true, true);
         public FloatValue ColorBleedHueSuppresionThreshold = new FloatValue(7.0f, false);
         public FloatValue ColorBleedHueSuppresionWidth = new FloatValue(2.0f, false);
         public FloatValue ColorBleedHueSuppresionSaturationThreshold = new FloatValue(0.5f, false);
@@ -67,14 +67,13 @@ namespace Graphics.Settings
         public ColorBleedSelfOcclusionFixLevelType ColorBleedSelfOcclusionFixLevel = ColorBleedSelfOcclusionFixLevelType.Hard;
         public BoolValue GiBackfaces = new BoolValue(false, false);
         public BlurQualityType BlurQuality = BlurQualityType.Precise;
-        public BlurModeType BlurMode = BlurModeType.Enhanced;
+        public BlurModeType BlurMode = BlurModeType.Basic;
         public IntValue EnhancedBlurSize = new IntValue(5, false);
         public FloatValue EnhancedBlurDeviation = new FloatValue(1.3f, false);
         public BoolValue OutputAOOnly = new BoolValue(false, false);
         public NormalsSourceType NormalsSource = NormalsSourceType.GBuffer;
-        public AlgorithmType AlgorithmType { get; internal set; }
 
-        public void Load(VAOEffect vao)
+        public void Load(VAOEffectCommandBuffer vao)
         {
             if (vao == null)
                 return;
@@ -125,10 +124,7 @@ namespace Graphics.Settings
             else
                 vao.SSAOBias = 0.005f;
 
-            if (MaxRadiusEnabled.overrideState)
-                vao.MaxRadiusEnabled = MaxRadiusEnabled.value;
-            else
-                vao.MaxRadiusEnabled = true;
+            vao.MaxRadiusEnabled = MaxRadiusEnabled.value;
 
             if (MaxRadius.overrideState)
                 vao.MaxRadius = MaxRadius.value;
@@ -165,35 +161,15 @@ namespace Graphics.Settings
             else
                 vao.Downsampling = 1;
 
-            if (CommandBufferEnabled.overrideState)
-                vao.CommandBufferEnabled = CommandBufferEnabled.value;
-            else
-                vao.CommandBufferEnabled = true;
+            vao.CommandBufferEnabled = CommandBufferEnabled.value;
 
-            if (UseGBuffer.overrideState)
-                vao.UseGBuffer = UseGBuffer.value;
-            else
-                vao.UseGBuffer = true;
+            vao.UseGBuffer = UseGBuffer.value;
 
-            if (UsePreciseDepthBuffer.overrideState)
-                vao.UsePreciseDepthBuffer = UsePreciseDepthBuffer.value;
-            else
-                vao.UsePreciseDepthBuffer = true;
+            vao.UsePreciseDepthBuffer = UsePreciseDepthBuffer.value;
 
-            if (UsePreciseDepthBuffer.overrideState)
-                vao.UsePreciseDepthBuffer = UsePreciseDepthBuffer.value;
-            else
-                vao.UsePreciseDepthBuffer = true;
+            vao.EnableTemporalFiltering = EnableTemporalFiltering.value;
 
-            if (EnableTemporalFiltering.overrideState)
-                vao.EnableTemporalFiltering = EnableTemporalFiltering.value;
-            else
-                vao.EnableTemporalFiltering = true;
-
-            if (IsLumaSensitive.overrideState)
-                vao.IsLumaSensitive = IsLumaSensitive.value;
-            else
-                vao.IsLumaSensitive = false;
+            vao.IsLumaSensitive = IsLumaSensitive.value;
 
             if (LumaThreshold.overrideState)
                 vao.LumaThreshold = LumaThreshold.value;
@@ -220,10 +196,7 @@ namespace Graphics.Settings
             else
                 vao.ColorBleedPresence = 1.0f;
 
-            if (ColorbleedHueSuppresionEnabled.overrideState)
-                vao.ColorbleedHueSuppresionEnabled = ColorbleedHueSuppresionEnabled.value;
-            else
-                vao.ColorbleedHueSuppresionEnabled = true;
+            vao.ColorbleedHueSuppresionEnabled = ColorbleedHueSuppresionEnabled.value;
 
             if (ColorBleedHueSuppresionThreshold.overrideState)
                 vao.ColorBleedHueSuppresionThreshold = ColorBleedHueSuppresionThreshold.value;
@@ -255,10 +228,9 @@ namespace Graphics.Settings
             else
                 vao.ColorBleedQuality = 2;
 
-            if (GiBackfaces.overrideState)
-                vao.GiBackfaces = GiBackfaces.value;
-            else
-                vao.GiBackfaces = false;
+            vao.GiBackfaces = GiBackfaces.value;
+
+            vao.BlurMode = BlurMode;
 
             if (EnhancedBlurSize.overrideState)
                 vao.EnhancedBlurSize = EnhancedBlurSize.value;
@@ -270,10 +242,7 @@ namespace Graphics.Settings
             else
                 vao.EnhancedBlurDeviation = 1.3f;
 
-            if (OutputAOOnly.overrideState)
-                vao.OutputAOOnly = OutputAOOnly.value;
-            else
-                vao.OutputAOOnly = false;
+            vao.OutputAOOnly = OutputAOOnly.value;
         }
 
         public void Save(VAOEffect vao)
