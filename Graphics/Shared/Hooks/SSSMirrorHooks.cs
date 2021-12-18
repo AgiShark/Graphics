@@ -67,6 +67,11 @@ namespace Graphics
                 GroundTruthAmbientOcclusion gtao = planeCam.gameObject.AddComponent<GroundTruthAmbientOcclusion>();
                 GTAOManager.RegisterAdditionalInstance(gtao);
             }
+            if (planeCam.gameObject.GetComponent<VAO.VAOEffectCommandBuffer>() == null && planeCam.gameObject.GetComponent<VAO.VAOEffect>() == null)
+            {
+                VAO.VAOEffect vao = planeCam.gameObject.AddComponent<VAO.VAOEffect>();
+                VAO.VAOManager.RegisterAdditionalInstance(vao);
+            }
         }
 
         private static void AddSSSComponentToMirrorCamera(Camera currentCamera, Camera reflectionCamera)
@@ -84,6 +89,11 @@ namespace Graphics
             {
                 GroundTruthAmbientOcclusion gtao = reflectionCamera.gameObject.AddComponent<GroundTruthAmbientOcclusion>();
                 GTAOManager.RegisterAdditionalInstance(gtao);
+            }
+            if (reflectionCamera.gameObject.GetComponent<VAO.VAOEffectCommandBuffer>() == null && reflectionCamera.gameObject.GetComponent<VAO.VAOEffect>() == null)
+            {
+                VAO.VAOEffect vao = reflectionCamera.gameObject.AddComponent<VAO.VAOEffect>();
+                VAO.VAOManager.RegisterAdditionalInstance(vao);
             }
         }
 

@@ -18,6 +18,7 @@ namespace Graphics.VAO
         internal void Initialize()
         {
             VAOInstance = Graphics.Instance.CameraSettings.MainCamera.GetOrAddComponent<VAOEffect>();
+            Graphics.Instance.Log.LogInfo($"Adding VAO to {Graphics.Instance.CameraSettings.MainCamera.name}");
             if (settings == null)
                 settings = new VAOSettings();
 
@@ -88,10 +89,12 @@ namespace Graphics.VAO
         }
         public void CheckInstance()
         {
-            if (VAOInstance == null)
-            {                
-                Camera camera = Graphics.Instance.CameraSettings.MainCamera;
+            Camera camera = Graphics.Instance.CameraSettings.MainCamera;
+            if (camera.GetComponent<VAOEffect>() == null && camera.GetComponent<VAOEffectCommandBuffer>() == null)
+            {
+                Graphics.Instance.Log.LogInfo($"Adding VAO to {camera.name}");
                 VAOInstance = camera.GetOrAddComponent<VAOEffect>();
+                UpdateSettings();
             }
         }
     }

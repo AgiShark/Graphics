@@ -326,6 +326,35 @@ namespace Graphics
                         Destroy(gtao);
                     }
                 }
+                if (VAO.VAOManager.settings.Enabled)
+                {
+                    if (LightingCamera.gameObject.GetComponent<VAO.VAOEffectCommandBuffer>() == null && LightingCamera.gameObject.GetComponent<VAO.VAOEffect>() == null)
+                    {
+                        VAO.VAOEffect vao = LightingCamera.gameObject.AddComponent<VAO.VAOEffect>();
+                        VAO.VAOManager.RegisterAdditionalInstance(vao);
+                    }
+                }
+                else
+                {
+                    if (LightingCamera.gameObject.GetComponent<VAO.VAOEffectCommandBuffer>() != null || LightingCamera.gameObject.GetComponent<VAO.VAOEffect>() != null)
+                    {
+                        VAO.VAOEffectCommandBuffer vao = LightingCamera.GetComponent<VAO.VAOEffectCommandBuffer>();
+                        if (vao != null)
+                        {
+                            VAO.VAOManager.DestroyVAOInstance(vao);
+                            Destroy(vao);
+                        }
+                        else
+                        {
+                            vao = LightingCamera.GetComponent<VAO.VAOEffect>();
+                            if (vao != null)
+                            {
+                                VAO.VAOManager.DestroyVAOInstance(vao);
+                                Destroy(vao);
+                            }
+                        }
+                    }
+                }
 
 
                 // if (SurfaceScattering)
