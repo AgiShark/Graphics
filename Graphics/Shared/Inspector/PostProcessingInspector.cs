@@ -322,10 +322,17 @@ namespace Graphics.Inspector
 
 
                     Label("", "", true);
-                    Label("Enhanced Blur Settings:", "", true);
+                    
                     Selection("Blur Mode", vaoSettings.BlurMode, blurMode => { vaoSettings.BlurMode = blurMode; VAOManager.UpdateSettings(); });
-                    Slider("Blur Size", vaoSettings.EnhancedBlurSize.value, 3, 17, "N2", enhancedblursize => { vaoSettings.EnhancedBlurSize.value = (int) enhancedblursize; VAOManager.UpdateSettings(); }, vaoSettings.EnhancedBlurSize.overrideState, overrideState => { vaoSettings.EnhancedBlurSize.overrideState = overrideState; VAOManager.UpdateSettings(); });
-                    Slider("Blur Sharpness", vaoSettings.EnhancedBlurDeviation.value, 0.01f, 3.0f, "N2", enhancedblurdeviation => { vaoSettings.EnhancedBlurDeviation.value = enhancedblurdeviation; VAOManager.UpdateSettings(); }, vaoSettings.EnhancedBlurDeviation.overrideState, overrideState => { vaoSettings.EnhancedBlurDeviation.overrideState = overrideState; VAOManager.UpdateSettings(); });
+
+                    if (VAOEffectCommandBuffer.BlurModeType.Enhanced == vaoSettings.BlurMode)
+                    {
+                        Label("Enhanced Blur Settings:", "", true);
+                        Slider("Blur Size", vaoSettings.EnhancedBlurSize.value, 3, 17, "N2", enhancedblursize => { vaoSettings.EnhancedBlurSize.value = (int)enhancedblursize; VAOManager.UpdateSettings(); }, vaoSettings.EnhancedBlurSize.overrideState, overrideState => { vaoSettings.EnhancedBlurSize.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                        Slider("Blur Sharpness", vaoSettings.EnhancedBlurDeviation.value, 0.01f, 3.0f, "N2", enhancedblurdeviation => { vaoSettings.EnhancedBlurDeviation.value = enhancedblurdeviation; VAOManager.UpdateSettings(); }, vaoSettings.EnhancedBlurDeviation.overrideState, overrideState => { vaoSettings.EnhancedBlurDeviation.overrideState = overrideState; VAOManager.UpdateSettings(); });
+
+                    }
+                    
                     Label("", "", true);
                     Toggle("Debug Mode:", vaoSettings.OutputAOOnly.value, true, outputaoonly => { vaoSettings.OutputAOOnly.value = outputaoonly; VAOManager.UpdateSettings(); });
                     Label("", "", true);
