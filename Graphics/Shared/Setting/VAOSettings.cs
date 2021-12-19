@@ -203,6 +203,8 @@ namespace Graphics.Settings
             else
                 vao.ColorBleedPower = 5.0f;
 
+            vao.ColorTint = ColorTint;
+
             if (ColorBleedPresence.overrideState)
                 vao.ColorBleedPresence = ColorBleedPresence.value;
             else
