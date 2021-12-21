@@ -323,6 +323,7 @@ namespace Graphics.Inspector
 
                     Label("", "", true);
                     
+                    Selection("Blur Quality", vaoSettings.BlurQuality, blurQuality => { vaoSettings.BlurQuality = blurQuality; VAOManager.UpdateSettings(); });
                     Selection("Blur Mode", vaoSettings.BlurMode, blurMode => { vaoSettings.BlurMode = blurMode; VAOManager.UpdateSettings(); });
 
                     if (VAOEffectCommandBuffer.BlurModeType.Enhanced == vaoSettings.BlurMode)
