@@ -2346,8 +2346,7 @@ namespace Graphics.VAO
                     newComponent = oldGameObject.AddComponent<VAOEffectCommandBuffer>();
                     (newComponent as VAOEffectCommandBuffer).SetParameters(parameters);
                     oldComponentIndex = i;
-                    VAOManager.VAOInstance = (VAOEffectCommandBuffer)newComponent;
-                    VAOManager.UpdateSettings();
+                    VAOManager.SwapInstance(this, newComponent as VAOEffectCommandBuffer);
                     Graphics.Instance.Log.LogInfo($"Swapping to VAOEffectCommandBuffer");
                     break;
                 }
@@ -2360,8 +2359,7 @@ namespace Graphics.VAO
                     newComponent = oldGameObject.AddComponent<VAOEffect>();
                     (newComponent as VAOEffect).SetParameters(parameters);
                     oldComponentIndex = i;
-                    VAOManager.VAOInstance = (VAOEffect)newComponent;
-                    VAOManager.UpdateSettings();
+                    VAOManager.SwapInstance(this, newComponent as VAOEffectCommandBuffer);
                     Graphics.Instance.Log.LogInfo($"Swapping to VAOEffect");
                     break;
                 }
