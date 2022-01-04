@@ -57,6 +57,11 @@ namespace Graphics
                 GroundTruthAmbientOcclusion gtao = cam.gameObject.AddComponent<GroundTruthAmbientOcclusion>();
                 GTAOManager.RegisterAdditionalInstance(gtao);
             }
+            if (cam.gameObject.GetComponent<VAO.VAOEffectCommandBuffer>() == null && cam.gameObject.GetComponent<VAO.VAOEffect>() ==  null)
+            {
+                VAO.VAOEffect vao = cam.gameObject.AddComponent<VAO.VAOEffect>();
+                VAO.VAOManager.RegisterAdditionalInstance(vao);
+            }
         }
         
 

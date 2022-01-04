@@ -1,5 +1,6 @@
-﻿using Graphics.CTAA;
+using Graphics.CTAA;
 using Graphics.GTAO;
+using Graphics.VAO;
 using Graphics.Settings;
 using System;
 using UnityEngine;
@@ -177,7 +178,168 @@ namespace Graphics.Inspector
                         Toggle("MultiBounce", gtaoSettings.MultiBounce.value, true, multiBounce => { gtaoSettings.MultiBounce.value = multiBounce; GTAOManager.UpdateSettings(); });
 
                     }
-     //           }
+
+                GUILayout.EndVertical();
+            }
+
+            if (VAOManager.settings != null)
+            {
+                VAOSettings vaoSettings = VAOManager.settings;
+                GUILayout.BeginVertical(GUIStyles.Skin.box);
+
+                Toggle("Volumetric Ambient Occlusion", vaoSettings.Enabled, true, enabled => { vaoSettings.Enabled = enabled; VAOManager.UpdateSettings(); });
+                if (vaoSettings.Enabled)
+                {
+                    Label("Basic Settings:", "", true);
+                    Slider("Radius", vaoSettings.Radius.value, 0f, 0.5f, "N2", radius => { vaoSettings.Radius.value = radius; VAOManager.UpdateSettings(); }, vaoSettings.Radius.overrideState, overrideState => { vaoSettings.Radius.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                    Slider("Power", vaoSettings.Power.value, 0f, 2f, "N2", power => { vaoSettings.Power.value = power; VAOManager.UpdateSettings(); }, vaoSettings.Power.overrideState, overrideState => { vaoSettings.Power.overrideState = overrideState; VAOManager.UpdateSettings(); });                   
+                    Slider("Presence", vaoSettings.Presence.value, 0f, 1f, "N2", presence => { vaoSettings.Presence.value = presence; VAOManager.UpdateSettings(); }, vaoSettings.Presence.overrideState, overrideState => { vaoSettings.Presence.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                    Slider("Detail", vaoSettings.DetailAmountVAO.value, 0f, 1f, "N2", detail => { vaoSettings.DetailAmountVAO.value = detail; VAOManager.UpdateSettings(); }, vaoSettings.DetailAmountVAO.overrideState, overrideState => { vaoSettings.DetailAmountVAO.overrideState = overrideState; VAOManager.UpdateSettings(); });
+
+                    Selection("Quality", vaoSettings.DetailQuality, quality => { vaoSettings.DetailQuality = quality; VAOManager.UpdateSettings(); }) ;
+                    Selection("Algorithm", vaoSettings.Algorithm, algorithm => { vaoSettings.Algorithm = algorithm; VAOManager.UpdateSettings(); });
+
+                    if (VAOEffectCommandBuffer.AlgorithmType.StandardVAO == vaoSettings.Algorithm)
+                    {
+                        Slider("Thickness", vaoSettings.Thickness.value, 0f, 1.0f, "N2", thickness => { vaoSettings.Thickness.value = thickness; VAOManager.UpdateSettings(); }, vaoSettings.Thickness.overrideState, overrideState => { vaoSettings.Thickness.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                    }
+                    else if (VAOEffectCommandBuffer.AlgorithmType.RaycastAO == vaoSettings.Algorithm)
+                    {
+ 
+                        Slider("Bias", vaoSettings.SSAOBias.value, 0f, 0.1f, "N2", bias => { vaoSettings.SSAOBias.value = bias; VAOManager.UpdateSettings(); }, vaoSettings.SSAOBias.overrideState, overrideState => { vaoSettings.SSAOBias.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                    }
+
+                    Slider("BordersAO", vaoSettings.BordersIntensity.value, 0f, 1f, "N2", borders => { vaoSettings.BordersIntensity.value = borders; VAOManager.UpdateSettings(); }, vaoSettings.BordersIntensity.overrideState, overrideState => { vaoSettings.BordersIntensity.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                    Label("", "", true);
+                    Toggle("Limit Max Radius", vaoSettings.MaxRadiusEnabled.value, true, limitmaxradius => { vaoSettings.MaxRadiusEnabled.value = limitmaxradius; VAOManager.UpdateSettings(); });
+
+                    if (vaoSettings.MaxRadiusEnabled.value)
+                    {
+                        Slider("MaxRadius", vaoSettings.MaxRadius.value, 0f, 3f, "N2", maxradius => { vaoSettings.MaxRadius.value = maxradius; VAOManager.UpdateSettings(); }, vaoSettings.MaxRadius.overrideState, overrideState => { vaoSettings.MaxRadius.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                    }
+
+                    Selection("Distance Falloff", vaoSettings.DistanceFalloffMode, distancefalloff => { vaoSettings.DistanceFalloffMode = distancefalloff; VAOManager.UpdateSettings(); });
+                    if (vaoSettings.DistanceFalloffMode == VAOEffectCommandBuffer.DistanceFalloffModeType.Absolute)
+                    {
+                        Slider("Distance Falloff Start Absolute", vaoSettings.DistanceFalloffStartAbsolute.value, 50f, 5000f, "N0", distanceFalloffStartAbsolute => { vaoSettings.DistanceFalloffStartAbsolute.value = distanceFalloffStartAbsolute; VAOManager.UpdateSettings(); }, vaoSettings.DistanceFalloffStartAbsolute.overrideState, overrideState => { vaoSettings.DistanceFalloffStartAbsolute.overrideState = overrideState; VAOManager.UpdateSettings();  }); ;
+                        Slider("Distance Falloff Speed Absolute", vaoSettings.DistanceFalloffSpeedAbsolute.value, 15f, 300f, "N0", distanceFalloffSpeedAbsolute => { vaoSettings.DistanceFalloffSpeedAbsolute.value = distanceFalloffSpeedAbsolute; VAOManager.UpdateSettings(); }, vaoSettings.DistanceFalloffSpeedAbsolute.overrideState, overrideState => { vaoSettings.DistanceFalloffSpeedAbsolute.overrideState = overrideState; VAOManager.UpdateSettings(); }); ;
+                    }
+                    else if (vaoSettings.DistanceFalloffMode == VAOEffectCommandBuffer.DistanceFalloffModeType.Relative)
+                    {
+                        Slider("Distance Falloff Start Relative", vaoSettings.DistanceFalloffStartRelative.value, 0.01f, 1.0f, "N2", distanceFalloffStartRelative => { vaoSettings.DistanceFalloffStartRelative.value = distanceFalloffStartRelative; VAOManager.UpdateSettings(); }, vaoSettings.DistanceFalloffStartRelative.overrideState, overrideState => { vaoSettings.DistanceFalloffStartRelative.overrideState = overrideState; VAOManager.UpdateSettings(); }); ;
+                        Slider("Distance Falloff Speed Relative", vaoSettings.DistanceFalloffSpeedRelative.value, 0.01f, 1.0f, "N2", distanceFalloffSpeedRelative => { vaoSettings.DistanceFalloffSpeedRelative.value = distanceFalloffSpeedRelative; VAOManager.UpdateSettings(); }, vaoSettings.DistanceFalloffSpeedRelative.overrideState, overrideState => { vaoSettings.DistanceFalloffSpeedRelative.overrideState = overrideState; VAOManager.UpdateSettings(); }); ;
+                    }
+
+                    Label("", "", true);
+                    Label("Coloring Settings:", "", true);
+                    Selection("Effect Mode", vaoSettings.Mode, effectmode => { vaoSettings.Mode = effectmode; VAOManager.UpdateSettings(); });
+
+                    if (VAOEffectCommandBuffer.EffectMode.ColorTint == vaoSettings.Mode)
+                    {
+                        Label("", "", true);
+                        SliderColor("Color Tint", vaoSettings.ColorTint, colortint => { vaoSettings.ColorTint = colortint; VAOManager.UpdateSettings(); });
+                    }
+                    else if (VAOEffectCommandBuffer.EffectMode.ColorBleed == vaoSettings.Mode)
+                    {
+                        Label("Color Bleed Settings:", "", true);
+                        Slider("Power", vaoSettings.ColorBleedPower.value, 0f, 10f, "N2", colorbleedpower => { vaoSettings.ColorBleedPower.value = colorbleedpower; VAOManager.UpdateSettings(); }, vaoSettings.ColorBleedPower.overrideState, overrideState => { vaoSettings.ColorBleedPower.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                        Slider("Presence", vaoSettings.ColorBleedPresence.value, 0f, 10f, "N2", colorbleedpresence => { vaoSettings.ColorBleedPresence.value = colorbleedpresence; VAOManager.UpdateSettings(); }, vaoSettings.ColorBleedPresence.overrideState, overrideState => { vaoSettings.ColorBleedPresence.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                        Selection("Texture Format", vaoSettings.IntermediateScreenTextureFormat, intermediatetextureformat => { vaoSettings.IntermediateScreenTextureFormat = intermediatetextureformat; VAOManager.UpdateSettings(); });
+                        Toggle("Same Color Hue Attenuation", vaoSettings.ColorbleedHueSuppresionEnabled.value, true, huesuppresion => { vaoSettings.ColorbleedHueSuppresionEnabled.value = huesuppresion; VAOManager.UpdateSettings(); });
+
+                        if (vaoSettings.ColorbleedHueSuppresionEnabled.value)
+                        {
+                            Label("Hue Filter", "", true);
+                            Slider("Tolerance", vaoSettings.ColorBleedHueSuppresionThreshold.value, 0f, 50f, "N2", colorbleedhuesuppresionthreshold => { vaoSettings.ColorBleedHueSuppresionThreshold.value = colorbleedhuesuppresionthreshold; VAOManager.UpdateSettings(); }, vaoSettings.ColorBleedHueSuppresionThreshold.overrideState, overrideState => { vaoSettings.ColorBleedHueSuppresionThreshold.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                            Slider("Softness", vaoSettings.ColorBleedHueSuppresionWidth.value, 0f, 10f, "N2", colorbleedhuesuppresionwidth => { vaoSettings.ColorBleedHueSuppresionWidth.value = colorbleedhuesuppresionwidth; VAOManager.UpdateSettings(); }, vaoSettings.ColorBleedHueSuppresionWidth.overrideState, overrideState => { vaoSettings.ColorBleedHueSuppresionWidth.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                            Label("Saturation Filter", "", true);
+                            Slider("Threshold", vaoSettings.ColorBleedHueSuppresionSaturationThreshold.value, 0f, 1f, "N2", colorbleedhuesuppresionthreshold => { vaoSettings.ColorBleedHueSuppresionSaturationThreshold.value = colorbleedhuesuppresionthreshold; VAOManager.UpdateSettings(); }, vaoSettings.ColorBleedHueSuppresionSaturationThreshold.overrideState, overrideState => { vaoSettings.ColorBleedHueSuppresionSaturationThreshold.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                            Slider("Softness", vaoSettings.ColorBleedHueSuppresionSaturationWidth.value, 0f, 1f, "N2", colorbleedhuesuppresionsaturationwidth => { vaoSettings.ColorBleedHueSuppresionSaturationWidth.value = colorbleedhuesuppresionsaturationwidth; VAOManager.UpdateSettings(); }, vaoSettings.ColorBleedHueSuppresionSaturationWidth.overrideState, overrideState => { vaoSettings.ColorBleedHueSuppresionSaturationWidth.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                            Slider("Brightness", vaoSettings.ColorBleedHueSuppresionBrightness.value, 0f, 1f, "N2", colorbleedhuesuppresionbrightness => { vaoSettings.ColorBleedHueSuppresionBrightness.value = colorbleedhuesuppresionbrightness; VAOManager.UpdateSettings(); }, vaoSettings.ColorBleedHueSuppresionBrightness.overrideState, overrideState => { vaoSettings.ColorBleedHueSuppresionBrightness.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                        }
+                        //Causing plugin crush. Actual veriable is Int, Probably need conversion to enum.
+                        //Selection("Quality", vaoSettings.ColorBleedQuality, colorbleedquality => vaoSettings.ColorBleedQuality = colorbleedquality);
+                        Selection("Dampen Self Bleeding", vaoSettings.ColorBleedSelfOcclusionFixLevel, colorbleedocclusionfixlevel => { vaoSettings.ColorBleedSelfOcclusionFixLevel = colorbleedocclusionfixlevel; VAOManager.UpdateSettings(); });
+                        Toggle("Skip Backfaces", vaoSettings.GiBackfaces.value, true, gibackfaces => { vaoSettings.GiBackfaces.value = gibackfaces; VAOManager.UpdateSettings(); });
+                    }
+
+                    Label("", "", true);
+                    Label("Performance Settings:", "", true);
+                    Toggle("Temporal Filtering", vaoSettings.EnableTemporalFiltering.value, true, temporalfiltering => { vaoSettings.EnableTemporalFiltering.value = temporalfiltering; VAOManager.UpdateSettings(); });
+                    Selection("Adaptive Sampling", vaoSettings.AdaptiveType, adaptivetype => {vaoSettings.AdaptiveType = adaptivetype; VAOManager.UpdateSettings(); });
+
+                    if (vaoSettings.EnableTemporalFiltering.value)
+                    {                    
+                    }
+                    else
+                    {
+                        Selection("Downsampled Pre-Pass", vaoSettings.CullingPrepassMode, cullingprepass => {vaoSettings.CullingPrepassMode = cullingprepass; VAOManager.UpdateSettings(); });
+                    }
+
+                 // Causing plugin crush!
+                 // Selection("Downsampling", vaoSettings.Downsampling, downsampling => vaoSettings.Downsampling = downsampling);
+
+                    Selection("Hierarchical Buffers", vaoSettings.HierarchicalBufferState, hierarchicalbuffers => {vaoSettings.HierarchicalBufferState = hierarchicalbuffers; VAOManager.UpdateSettings(); });
+
+                    if (vaoSettings.EnableTemporalFiltering.value)
+                    {
+                    }
+                    else
+                    {
+                        Selection("Detail Quality", vaoSettings.DetailQuality, detailquality => {vaoSettings.DetailQuality = detailquality; VAOManager.UpdateSettings(); });
+                    }
+
+                    Label("", "", true);
+                    Label("Rendering Settings:", "", true);
+                    Toggle("Command Buffer", vaoSettings.CommandBufferEnabled.value, true, commandbuffer => { vaoSettings.CommandBufferEnabled.value = commandbuffer; VAOManager.UpdateSettings(); });
+                    Selection("Normal Source", vaoSettings.NormalsSource, normalsource => { vaoSettings.NormalsSource = normalsource; VAOManager.UpdateSettings(); });
+
+                    if (Graphics.Instance.CameraSettings.RenderingPath != CameraSettings.AIRenderingPath.Deferred)
+                    {
+                        Label("Rendering Mode: FORWARD", "", true);
+                        Toggle("High Precision Depth Buffer", vaoSettings.UsePreciseDepthBuffer.value, true, useprecisiondepthbuffer => { vaoSettings.UsePreciseDepthBuffer.value = useprecisiondepthbuffer; VAOManager.UpdateSettings(); });
+                    }
+                    else
+                    {
+                        Label("", "", true);
+                        Label("Rendering Mode: DEFERRED", "", true);                      
+                        Selection("Cmd Buffer Integration", vaoSettings.VaoCameraEvent, vaocameraevent => { vaoSettings.VaoCameraEvent = vaocameraevent; VAOManager.UpdateSettings(); });
+                        Toggle("G-Buffer Depth & Normals", vaoSettings.UseGBuffer.value, true, usegbuffer => { vaoSettings.UseGBuffer.value = usegbuffer; VAOManager.UpdateSettings(); });
+                    }
+
+                    Selection("Far Plane Source", vaoSettings.FarPlaneSource, farplanesource => { vaoSettings.FarPlaneSource = farplanesource; VAOManager.UpdateSettings(); });
+
+                    Label("", "", true);
+                    Toggle("Luma Sensitivity", vaoSettings.IsLumaSensitive.value, true, lumasensitive => { vaoSettings.IsLumaSensitive.value = lumasensitive; VAOManager.UpdateSettings(); });
+
+                    if (vaoSettings.IsLumaSensitive.value)
+                    {
+                        Selection("Luminance Mode", vaoSettings.LuminanceMode, luminancemode => { vaoSettings.LuminanceMode = luminancemode; VAOManager.UpdateSettings(); });
+                        Slider("Threshold (HDR)", vaoSettings.LumaThreshold.value, 0f, 10f, "N2", lumathreshold => { vaoSettings.LumaThreshold.value = lumathreshold; VAOManager.UpdateSettings(); }, vaoSettings.LumaThreshold.overrideState, overrideState => { vaoSettings.LumaThreshold.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                        Slider("Falloff Width", vaoSettings.LumaKneeWidth.value, 0f, 10f, "N2", lumakneewidth => { vaoSettings.LumaKneeWidth.value = lumakneewidth; VAOManager.UpdateSettings(); }, vaoSettings.LumaKneeWidth.overrideState, overrideState => { vaoSettings.LumaKneeWidth.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                        Slider("Falloff Softness", vaoSettings.LumaKneeLinearity.value, 1f, 10f, "N2", lumakneelinearity => { vaoSettings.LumaKneeLinearity.value = lumakneelinearity; VAOManager.UpdateSettings(); }, vaoSettings.LumaKneeLinearity.overrideState, overrideState => { vaoSettings.LumaKneeLinearity.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                    }
+
+
+                    Label("", "", true);
+                    
+                    Selection("Blur Quality", vaoSettings.BlurQuality, blurQuality => { vaoSettings.BlurQuality = blurQuality; VAOManager.UpdateSettings(); });
+                    Selection("Blur Mode", vaoSettings.BlurMode, blurMode => { vaoSettings.BlurMode = blurMode; VAOManager.UpdateSettings(); });
+
+                    if (VAOEffectCommandBuffer.BlurModeType.Enhanced == vaoSettings.BlurMode)
+                    {
+                        Label("Enhanced Blur Settings:", "", true);
+                        Slider("Blur Size", vaoSettings.EnhancedBlurSize.value, 3, 17, "N2", enhancedblursize => { vaoSettings.EnhancedBlurSize.value = (int)enhancedblursize; VAOManager.UpdateSettings(); }, vaoSettings.EnhancedBlurSize.overrideState, overrideState => { vaoSettings.EnhancedBlurSize.overrideState = overrideState; VAOManager.UpdateSettings(); });
+                        Slider("Blur Sharpness", vaoSettings.EnhancedBlurDeviation.value, 0.01f, 3.0f, "N2", enhancedblurdeviation => { vaoSettings.EnhancedBlurDeviation.value = enhancedblurdeviation; VAOManager.UpdateSettings(); }, vaoSettings.EnhancedBlurDeviation.overrideState, overrideState => { vaoSettings.EnhancedBlurDeviation.overrideState = overrideState; VAOManager.UpdateSettings(); });
+
+                    }
+                    
+                    Label("", "", true);
+                    Toggle("Debug Mode:", vaoSettings.OutputAOOnly.value, true, outputaoonly => { vaoSettings.OutputAOOnly.value = outputaoonly; VAOManager.UpdateSettings(); });
+                    Label("", "", true);
+
+                }
+
                 GUILayout.EndVertical();
             }
 #if AI

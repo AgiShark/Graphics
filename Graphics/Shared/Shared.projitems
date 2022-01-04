@@ -127,6 +127,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Setting\PathElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Setting\PerLightSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Setting\ReflectionProbeSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Setting\VAOSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SSSManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Patch\Studio.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PCSS\PCSSLight.cs" />
@@ -152,6 +153,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Texture\SkyboxManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Texture\TextureManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)VAO\VAOEffect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)VAO\VAOEffectCommandBuffer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)VAO\VAOManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\box.png" />
@@ -206,5 +210,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\ctaa.unity3d" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\vao.unity3d" />
   </ItemGroup>
 </Project>

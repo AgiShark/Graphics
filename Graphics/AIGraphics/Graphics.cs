@@ -1,4 +1,4 @@
-﻿using BepInEx;
+using BepInEx;
 using Graphics.Settings;
 using KKAPI;
 using KKAPI.Studio.SaveLoad;
@@ -40,6 +40,7 @@ namespace Graphics
 
             _sssManager?.CheckInstance();
             _gtaoManager?.CheckInstance();
+            _vaoManager?.CheckInstance();
             if (CameraSettings.MainCamera.stereoEnabled) // VR...use VR
             {
                 _presetManager?.LoadDefault(PresetDefaultType.VR_GAME);
