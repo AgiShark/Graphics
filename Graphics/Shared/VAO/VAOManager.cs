@@ -38,7 +38,7 @@ namespace Graphics.VAO
             UpdateSettings();
         }
 
-        public static void RegisterAdditionalInstance(VAOEffect otherInstance)
+        public static void RegisterAdditionalInstance(VAOEffectCommandBuffer otherInstance)
         {
             if (!otherVAOInstances.Contains(otherInstance))
             {
@@ -60,7 +60,7 @@ namespace Graphics.VAO
 
         internal static void CopySettingsToOtherInstances()
         {
-            foreach (VAOEffect otherInstance in otherVAOInstances)
+            foreach (VAOEffectCommandBuffer otherInstance in otherVAOInstances)
             {
                 settings.Load(otherInstance);
             }
