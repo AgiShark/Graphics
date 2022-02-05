@@ -100,6 +100,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Alloy\AreaLight\AlloyAreaLight.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CullingMaskExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FocusPuller.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GraphicsAdditionalCamLight.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GTAO\GroundTruthAmbientOcclusion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GTAO\GTAOManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GTAO\GTAOShaderIDs.cs" />

@@ -1,4 +1,5 @@
-﻿﻿﻿﻿﻿using Studio;
+﻿using Shared;
+using Studio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,7 +75,7 @@ namespace Graphics
         internal class LightObject
         {
             private Light _light;
-            private OCILight _ociLight;
+            private OCILight _ociLight;           
 
             internal LightObject(Light light)
             {
@@ -109,6 +110,41 @@ namespace Graphics
                     List<Light> lights = GameObject.FindObjectsOfType<Light>().ToList();
                     List<LightObject> lightObjects = lights.Select(light => new LightObject(light)).ToList();
                     return lightObjects;
+                }
+            }
+
+            internal bool IsNotAdditionalCamAvailable {
+                get 
+                {
+                    if (KKAPI.Studio.StudioAPI.InsideStudio)
+                    {
+                        return light.name == "Cam Light" && light.transform.IsChildOf(GameObject.Find("StudioScene/Camera").transform);
+                    }
+                    else
+                    {
+                        return !light.name.StartsWith("(Graphics)");
+                    }
+                }
+            }
+            
+            internal bool AdditionalCamLight 
+            { 
+                get => light?.gameObject.GetComponent<GraphicsAdditionalCamLight>() != null;
+                set
+                {
+                    GraphicsAdditionalCamLight addCamlightMB = light?.gameObject.GetComponent<GraphicsAdditionalCamLight>();
+                    if (value && addCamlightMB != null)
+                        return;
+                    else if (value && addCamlightMB == null)
+                    {
+                        addCamlightMB = light.gameObject.AddComponent<GraphicsAdditionalCamLight>();
+                        addCamlightMB.Camera = Graphics.Instance.CameraSettings.MainCamera;
+                        addCamlightMB.Light = light;
+                        addCamlightMB.OCILight = _ociLight;
+                    }
+                    else if (!value && addCamlightMB != null)
+                        Component.Destroy(addCamlightMB);
+
                 }
             }
 

@@ -508,8 +508,7 @@ namespace Graphics.Inspector
                         Label("Tone", "");
                         if (GradingMode.HighDefinitionRange == settings.colorGradingLayer.gradingMode.value)
                         {
-                            Text("Post-exposure (EV)", settings.colorGradingLayer.postExposure.value, "N2", value => settings.colorGradingLayer.postExposure.value = value,
-                                settings.colorGradingLayer.postExposure.overrideState, overrideState => settings.colorGradingLayer.postExposure.overrideState = overrideState);
+                            Slider("Post-exposure (EV)", settings.colorGradingLayer.postExposure.value, -3, 3, "N2", value => settings.colorGradingLayer.postExposure.value = value, settings.colorGradingLayer.postExposure.overrideState, overrideState => settings.colorGradingLayer.postExposure.overrideState = overrideState);
                         }
                         Slider("Hue Shift", settings.colorGradingLayer.hueShift.value, -180, 180, "N1", hueShift => settings.colorGradingLayer.hueShift.value = hueShift,
                             settings.colorGradingLayer.hueShift.overrideState, overrideState => settings.colorGradingLayer.hueShift.overrideState = overrideState);
@@ -523,11 +522,11 @@ namespace Graphics.Inspector
                         Slider("Contrast", settings.colorGradingLayer.contrast.value, -100, 100, "N1", contrast => settings.colorGradingLayer.contrast.value = contrast,
                             settings.colorGradingLayer.contrast.overrideState, overrideState => settings.colorGradingLayer.contrast.overrideState = overrideState);
                         SliderColor("Lift", settings.colorGradingLayer.lift.value, colour => settings.colorGradingLayer.lift.value = colour, false,
-                            settings.colorGradingLayer.lift.overrideState, overrideState => settings.colorGradingLayer.lift.overrideState = overrideState, "Lift range", -3f, 12f);
+                            settings.colorGradingLayer.lift.overrideState, overrideState => settings.colorGradingLayer.lift.overrideState = overrideState, "Lift range", -1.5f, 3f);
                         SliderColor("Gamma", settings.colorGradingLayer.gamma.value, colour => settings.colorGradingLayer.gamma.value = colour, false,
-                            settings.colorGradingLayer.gamma.overrideState, overrideSate => settings.colorGradingLayer.gamma.overrideState = overrideSate, "Gamma range", -1.5f, 100f);
+                            settings.colorGradingLayer.gamma.overrideState, overrideSate => settings.colorGradingLayer.gamma.overrideState = overrideSate, "Gamma range", -1.5f, 3f);
                         SliderColor("Gain", settings.colorGradingLayer.gain.value, colour => settings.colorGradingLayer.gain.value = colour, false,
-                            settings.colorGradingLayer.gain.overrideState, overrideSate => settings.colorGradingLayer.gain.overrideState = overrideSate, "Gain range", -1.5f, 100f);
+                            settings.colorGradingLayer.gain.overrideState, overrideSate => settings.colorGradingLayer.gain.overrideState = overrideSate, "Gain range", -1.5f, 3f);
                     }
                     else
                     {

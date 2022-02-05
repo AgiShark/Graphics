@@ -37,6 +37,7 @@ namespace Graphics
         public int LightId { get; set; }
 
         public int Type { get; set; }
+        public bool AdditionalCamLight { get; set; }
 
         internal void ApplySettings(LightObject lightObject)
         {            
@@ -99,6 +100,7 @@ namespace Graphics
             }
             lightObject.light.renderMode = (LightRenderMode)RenderMode;
             lightObject.light.cullingMask = CullingMask;
+            lightObject.AdditionalCamLight = AdditionalCamLight;
         }
 
         internal void FillSettings(LightObject lightObject)
@@ -176,7 +178,11 @@ namespace Graphics
 
             if (lightObject.ociLight != null)
                 LightId = lightObject.ociLight.lightInfo.dicKey;
+
+            AdditionalCamLight = lightObject.AdditionalCamLight;
         }
+
+        
 
         internal static bool GraphicsAddedLight(Light light)
         {

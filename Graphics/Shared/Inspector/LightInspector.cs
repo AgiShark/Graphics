@@ -1,4 +1,5 @@
 ﻿using Graphics.Settings;
+using KKAPI.Studio;
 using System.Collections.Generic;
 using UnityEngine;
 using static Graphics.Inspector.Util;
@@ -161,13 +162,42 @@ namespace Graphics.Inspector
 
                                         if (lightManager.SelectedLight.light.name != "Cam Light" || !lightManager.SelectedLight.light.transform.IsChildOf(GameObject.Find("StudioScene/Camera").transform))
                                         {
-                                            Vector3 rot = lightManager.SelectedLight.rotation;
-                                            Slider("Vertical Rotation", rot.x, LightSettings.RotationXMin, LightSettings.RotationXMax, "N1", x => { rot.x = x; });
-                                            Slider("Horizontal Rotation", rot.y, LightSettings.RotationYMin, LightSettings.RotationYMax, "N1", y => { rot.y = y; });
-
-                                            if (rot != lightManager.SelectedLight.rotation)
+                                            if (!lightManager.SelectedLight.AdditionalCamLight)
                                             {
-                                                lightManager.SelectedLight.rotation = rot;
+                                                Vector3 rot = lightManager.SelectedLight.rotation;
+                                                Slider("Vertical Rotation", rot.x, LightSettings.RotationXMin, LightSettings.RotationXMax, "N1", x => { rot.x = x; });
+                                                Slider("Horizontal Rotation", rot.y, LightSettings.RotationYMin, LightSettings.RotationYMax, "N1", y => { rot.y = y; });
+
+                                                if (rot != lightManager.SelectedLight.rotation)
+                                                {
+                                                    lightManager.SelectedLight.rotation = rot;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (!StudioAPI.InsideStudio)
+                                                {
+                                                    GraphicsAdditionalCamLight graphicsAdditionalCamLight = lightManager.SelectedLight.light.gameObject.GetComponent<GraphicsAdditionalCamLight>();
+                                                    Vector3 rot = graphicsAdditionalCamLight.OriginalRotation.eulerAngles;
+                                                    Slider("Vertical Rotation", rot.x, LightSettings.RotationXMin, LightSettings.RotationXMax, "N1", x => { rot.x = x; });
+                                                    Slider("Horizontal Rotation", rot.y, LightSettings.RotationYMin, LightSettings.RotationYMax, "N1", y => { rot.y = y; });
+
+                                                    if (rot != graphicsAdditionalCamLight.OriginalRotation.eulerAngles)
+                                                    {
+                                                        graphicsAdditionalCamLight.OriginalRotation = Quaternion.Euler(rot);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    Vector3 rot = lightManager.SelectedLight.ociLight.guideObject.changeAmount.rot;
+                                                    Slider("Vertical Rotation", rot.x, LightSettings.RotationXMin, LightSettings.RotationXMax, "N1", x => { rot.x = x; });
+                                                    Slider("Horizontal Rotation", rot.y, LightSettings.RotationYMin, LightSettings.RotationYMax, "N1", y => { rot.y = y; });
+
+                                                    if (rot != lightManager.SelectedLight.ociLight.guideObject.changeAmount.rot)
+                                                    {
+                                                        lightManager.SelectedLight.ociLight.guideObject.changeAmount.rot = rot;
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -188,6 +218,10 @@ namespace Graphics.Inspector
                                         {
                                             Slider("Length", alloyLight.Length, 0f, 1f, "N2", i => alloyLight.Length = i);
                                         }
+                                    }
+                                    if (!lightManager.SelectedLight.IsNotAdditionalCamAvailable && (lightManager.SelectedLight.type == LightType.Directional || lightManager.SelectedLight.type == LightType.Spot))
+                                    {
+                                        Toggle("Additional Cam Light", lightManager.SelectedLight.AdditionalCamLight, false, addCamLight => lightManager.SelectedLight.AdditionalCamLight = addCamLight);
                                     }
                                     if (showAdvanced)
                                     {
