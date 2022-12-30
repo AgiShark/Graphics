@@ -27,7 +27,9 @@ namespace Graphics
             catch { }
 
             HarmonyMethod sssComponentAdd = new HarmonyMethod(typeof(SSSMirrorHooks), "AddSSSComponentToMirrorCamera");
+            HarmonyMethod sssComponentAddLux = new HarmonyMethod(typeof(SSSMirrorHooks), "AddLuxWaterPlaneSSSComponent");
             harmony.Patch(AccessTools.Method(typeof(MirrorReflection), "CreateMirrorObjects"), null, sssComponentAdd);
+            harmony.Patch(AccessTools.Method(typeof(LuxWater_PlanarReflection), "RenderReflectionFor"), null, sssComponentAddLux);
             if (monPlaneType != null)
             {
                 harmony.Patch(AccessTools.Method(monPlaneType, "Start"), null, new HarmonyMethod(typeof(SSSMirrorHooks), "AddMonPlaneSSSComponent"));
@@ -95,7 +97,50 @@ namespace Graphics
                 VAO.VAOEffect vao = reflectionCamera.gameObject.AddComponent<VAO.VAOEffect>();
                 VAO.VAOManager.RegisterAdditionalInstance(vao);
             }
+        }        
+        private static void AddSSSComponentToMirrorCamera(Camera currentCamera, Camera reflectionCamera)
+        {
+            if (reflectionCamera.gameObject.GetComponent<SSS>() == null)
+            {
+                Graphics.Instance.Log.LogInfo($"Adding SSS Component to Camera: {reflectionCamera.name} GO: {reflectionCamera.gameObject.name}");
+                SSS mirrorSSS = reflectionCamera.gameObject.AddComponent<SSS>();
+                mirrorSSS.enabled = true;
+                mirrorSSS.Enabled = true;
+                mirrorSSS.MirrorSSS = true;
+                SSSManager.RegisterAdditionalInstance(mirrorSSS);
+            }
+            if (reflectionCamera.gameObject.GetComponent<GroundTruthAmbientOcclusion>() == null)
+            {
+                GroundTruthAmbientOcclusion gtao = reflectionCamera.gameObject.AddComponent<GroundTruthAmbientOcclusion>();
+                GTAOManager.RegisterAdditionalInstance(gtao);
+            }
+            if (reflectionCamera.gameObject.GetComponent<VAO.VAOEffectCommandBuffer>() == null && reflectionCamera.gameObject.GetComponent<VAO.VAOEffect>() == null)
+            {
+                VAO.VAOEffect vao = reflectionCamera.gameObject.AddComponent<VAO.VAOEffect>();
+                VAO.VAOManager.RegisterAdditionalInstance(vao);
+            }
         }
-
+        private static void AddLuxWaterPlaneSSSComponent(Camera cam, Camera reflectCamera)
+        {
+            if (reflectCamera.gameObject.GetComponent<SSS>() == null)
+            {
+                Graphics.Instance.Log.LogInfo($"Adding SSS Component to Camera: {reflectCamera.name} GO: {reflectCamera.gameObject.name}");
+                SSS mirrorSSS = reflectCamera.gameObject.AddComponent<SSS>();
+                mirrorSSS.enabled = true;
+                mirrorSSS.Enabled = true;
+                mirrorSSS.MirrorSSS = true;
+                SSSManager.RegisterAdditionalInstance(mirrorSSS);
+            }
+            if (reflectCamera.gameObject.GetComponent<GroundTruthAmbientOcclusion>() == null)
+            {
+                GroundTruthAmbientOcclusion gtao = reflectCamera.gameObject.AddComponent<GroundTruthAmbientOcclusion>();
+                GTAOManager.RegisterAdditionalInstance(gtao);
+            }
+            if (reflectCamera.gameObject.GetComponent<VAO.VAOEffectCommandBuffer>() == null && reflectCamera.gameObject.GetComponent<VAO.VAOEffect>() == null)
+            {
+                VAO.VAOEffect vao = reflectCamera.gameObject.AddComponent<VAO.VAOEffect>();
+                VAO.VAOManager.RegisterAdditionalInstance(vao);
+            }
+        }
     }
 }
